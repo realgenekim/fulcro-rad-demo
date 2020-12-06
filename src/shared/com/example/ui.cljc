@@ -83,7 +83,10 @@
                (ui-dropdown {:className "item" :text "Reports"}
                  (ui-dropdown-menu {}
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this dashboard/Dashboard {}))} "Dashboard")
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this sales-report/RealSalesReport {}))} "Sales Report"))))))
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this sales-report/RealSalesReport {}))} "Sales Report")))
+               (ui-dropdown {:className "item" :text "Gene"}
+                 (ui-dropdown-menu
+                   (ui-dropdown-menu {:onClick (fn [] (rroute/route-to! this dashboard/Dashboard {}))} "Dashboard"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})

@@ -9,6 +9,7 @@
     [com.example.model.seed :as seed]
     [com.example.model.account :as account]
     [com.example.model.address :as address]
+    [com.example.model.session :as session]
     [com.fulcrologic.rad.ids :refer [new-uuid]]
     [com.fulcrologic.rad.database-adapters.datomic-cloud :as datomic]
     [com.fulcrologic.rad.resolvers :as res]
@@ -23,11 +24,41 @@
 (comment
   (clojure.core/require 'development)
   (development/go)
-  (development/reset))
+  (restart)
+  (development/reset)
+
+  (com.example.components.parser/parser
+    com.example.components.config/config
+    [:session/id]))
 
 (comment
   (let [db (d/db (:main datomic-connections))]
-    (d/pull db '[*] [:account/id (new-uuid 100)])))
+    (d/pull db '[*] [:account/id (new-uuid 100)]))
+
+  ; OMG, it works!
+
+  (let [db (d/db (:video datomic-connections))]
+    (d/q '[:find (pull ?s [*])
+           :where
+           [?s :session/title _]] db))
+
+  (get-in com.example.components.config/config [com.fulcrologic.rad.database-adapters.datomic-options/databases])
+
+  (let [env com.example.components.config/config]
+    (some-> (get-in env [com.fulcrologic.rad.database-adapters.datomic-options/databases :production]) deref))
+
+  (com.fulcrologic.rad.database-adapters.datomic-options/databases
+    com.example.components.config/config)
+
+  (com.example.components.database-queries/get-all-sessions
+    ;datomic-connections
+    com.example.components.config/config
+    {})
+
+  ,)
+
+
+
 
 (defn seed! []
   (dt/set-timezone! "America/Los_Angeles")

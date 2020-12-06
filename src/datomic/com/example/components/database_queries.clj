@@ -99,6 +99,17 @@
                   [?c :category/id ?cid]] db line-item-id))
     (log/error "No database atom for production schema!")))
 
+(defn get-all-sessions
+  [env query-params]
+  (if-let [db (some-> (get-in env [do/databases :production]) deref)]
+    (let [ids (d/q '[:find ?s
+                     :where
+                     [?s :session/title _]] db)]
+      (->> ids
+           flatten
+           (mapv (fn [id] {:session/session id}))))
+    (log/error "No database atom for production schema!")))
+
 (defn get-login-info
   "Get the account name, time zone, and password info via a username (email)."
   [{::datomic/keys [databases] :as env} username]
