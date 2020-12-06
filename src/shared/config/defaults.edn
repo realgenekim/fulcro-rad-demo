@@ -6,7 +6,17 @@
                                             :datomic/database "example"
                                             :datomic/client {:server-type :dev-local
                                                              :system "fulcro-rad-demo"}
-                                            :datomic/prevent-changes? true}}
+                                            :datomic/prevent-changes? true}
+
+                                     :video {:datomic/schema :production
+                                             :datomic/client  {:server-type   :ion
+                                                               :region        "us-west-2"                        ;; e.g. us-east-1
+                                                               :system        "datomic-2"
+                                                               :creds-profile "default"
+                                                               :endpoint      "http://entry.datomic-2.us-west-2.datomic.net:8182/"
+                                                               :proxy-port    8182}
+                                             :datomic/database "videolibrary"
+                                             :datomic/prevent-changes? true}}
 
  :com.fulcrologic.rad.database-adapters.sql/databases
                                     {:main {:flyway/migrate?          false

@@ -39,7 +39,8 @@
                                      com.fulcrologic/fulcro-rad-sql {:mvn/version "0.0.2-alpha"}}}
 
            :datomic   {:extra-paths ["src/datomic" "src/datomic-tests"]
-                       :extra-deps  {com.datomic/dev-local              {:mvn/version "0.9.184"}
+                       :extra-deps  {com.datomic/dev-local              {:mvn/version "0.9.225"}
+                                     com.datomic/client-cloud           {:mvn/version "0.8.102"}
                                      com.fulcrologic/fulcro-rad-datomic {:mvn/version "1.0.0"}}}
            :run-tests {:main-opts  ["-m" "kaocha.runner"]
                        :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.629"}}}

@@ -21,6 +21,11 @@
 (set-refresh-dirs "src/main" "src/datomic" "src/dev" "src/shared")
 
 (comment
+  (clojure.core/require 'development)
+  (development/go)
+  (development/reset))
+
+(comment
   (let [db (d/db (:main datomic-connections))]
     (d/pull db '[*] [:account/id (new-uuid 100)])))
 
