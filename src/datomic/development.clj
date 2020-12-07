@@ -27,9 +27,24 @@
   (restart)
   (development/reset)
 
+  (mount/find-all-states)
+  ; ("#'com.example.components.parser/parser"
+  ; "#'com.example.components.blob-store/temporary-blob-store"
+  ; "#'com.example.components.ring-middleware/middleware"
+  ; "#'com.example.components.server/http-server"
+  ; "#'com.example.components.auto-resolvers/automatic-resolvers"
+  ; "#'com.example.components.config/config"
+  ; "#'com.example.components.blob-store/image-blob-store"
+  ; "#'com.example.components.datomic/datomic-connections"
+  ; "#'com.example.components.blob-store/file-blob-store")
+  (mount/current-state "#'com.example.components.config/config")
+  (mount/current-state "#'com.example.components.parser/parser")
+
+  ; OMG, this works, too!
+
   (com.example.components.parser/parser
     com.example.components.config/config
-    [:session/id]))
+    {:address/id 1}))
 
 (comment
   (let [db (d/db (:main datomic-connections))]
@@ -41,6 +56,13 @@
     (d/q '[:find (pull ?s [*])
            :where
            [?s :session/title _]] db))
+
+  (parser com.example.components.config/config
+        {:address/id 1}))
+
+(comment
+
+  (require 'app.parser)
 
   (get-in com.example.components.config/config [com.fulcrologic.rad.database-adapters.datomic-options/databases])
 
