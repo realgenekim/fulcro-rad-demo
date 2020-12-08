@@ -109,8 +109,9 @@
   (println "db all: " (get-in env [do/databases]))
   (if-let [db (some-> (get-in env [do/databases :production]) deref)]
     (let [ids (d/q '[:find (pull ?s [*])
+    ;(let [ids (d/q '[:find ?s
                      :where
-                     [?s :session/title ?title]] db)]
+                     [?s :session/title _]] db)]
       (println "db: " db)
       (println "ids: " ids)
       ;ids)
