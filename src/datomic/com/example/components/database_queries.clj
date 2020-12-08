@@ -101,13 +101,22 @@
 
 (defn get-all-sessions
   [env query-params]
+  (println "get-all-sessions...")
+  ; :com.fulcrologic.rad.database-adapters.datomic/databases
+  (println "env: ")
+  ;(clojure.pprint/pprint env)
+  (println "db production: " (get-in env [do/databases :production]))
+  (println "db all: " (get-in env [do/databases]))
   (if-let [db (some-> (get-in env [do/databases :production]) deref)]
-    (let [ids (d/q '[:find ?s
+    (let [ids (d/q '[:find (pull ?s [*])
                      :where
-                     [?s :session/title _]] db)]
+                     [?s :session/title ?title]] db)]
+      (println "db: " db)
+      (println "ids: " ids)
+      ;ids)
       (->> ids
            flatten
-           (mapv (fn [id] {:session/session id}))))
+           (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
 (defn get-login-info

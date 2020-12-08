@@ -23,6 +23,7 @@
     [(rad.attr/pathom-plugin all-attributes)
      (form/pathom-plugin save/middleware delete/middleware)
      (sql/pathom-plugin (fn [_] {:production (:main pools/connection-pools)}))
+     (sql/pathom-plugin (fn [_] {:production (:video pools/connection-pools)}))
      (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
                                                   :avatar-images bs/image-blob-store})]
     [automatic-resolvers

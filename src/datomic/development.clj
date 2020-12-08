@@ -17,7 +17,8 @@
     [taoensso.timbre :as log]
     [datomic.client.api :as d]
     [com.fulcrologic.rad.attributes :as attr]
-    [com.fulcrologic.rad.type-support.date-time :as dt]))
+    [com.fulcrologic.rad.type-support.date-time :as dt]
+    [com.fulcrologic.rad.database-adapters.datomic-options :as do]))
 
 (set-refresh-dirs "src/main" "src/datomic" "src/dev" "src/shared")
 
@@ -38,13 +39,9 @@
   ; "#'com.example.components.datomic/datomic-connections"
   ; "#'com.example.components.blob-store/file-blob-store")
   (mount/current-state "#'com.example.components.config/config")
-  (mount/current-state "#'com.example.components.parser/parser")
+  (mount/current-state "#'com.example.components.parser/parser"))
 
-  ; OMG, this works, too!
 
-  (com.example.components.parser/parser
-    com.example.components.config/config
-    {:address/id 1}))
 
 (comment
   (let [db (d/db (:main datomic-connections))]
@@ -57,14 +54,43 @@
            :where
            [?s :session/title _]] db))
 
-  (parser com.example.components.config/config
-        {:address/id 1}))
+  ; OMG, this works, too!
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        {:address/id 1})
+
+  ; works
+  (com.example.components.parser/parser com.example.components.config/config
+                                       [:account/all-accounts])
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [:session/all-sessions])
+
+
+  ; works ^^^
+  ; now working on getting joins working
+  (restart)
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{:session/all-sessions
+                                          [:db/id :session/title]}])
+
+
+
+  ; :account/all-accounts
+
+
+  ,)
 
 (comment
 
-  (require 'app.parser)
+  (identity com.example.components.config/config)
 
-  (get-in com.example.components.config/config [com.fulcrologic.rad.database-adapters.datomic-options/databases])
+  (get-in com.example.components.config/config
+          [com.fulcrologic.rad.database-adapters.datomic-options/databases])
+
+  (get-in com.example.components.config/config
+          [do/databases])
 
   (let [env com.example.components.config/config]
     (some-> (get-in env [com.fulcrologic.rad.database-adapters.datomic-options/databases :production]) deref))

@@ -12,7 +12,7 @@
 
 (defattr title :session/title :string
   {ao/cardinality :one
-   ao/identities #{:session/id}
+   ao/identities #{:db/id}
    ao/schema      :production})
 
 ;
@@ -47,10 +47,29 @@
 
 (defattr all-sessions :session/all-sessions :ref
   {ao/target     :session/id
-   ao/pc-output  [{:session/all-sessions [:session/id]}]
+   ao/pc-output  [{:session/all-sessions [:db/id]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    #?(:clj
                       {:session/all-sessions (queries/get-all-sessions env query-params)}))})
+
+;(pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
+;  {::pc/input #{:session/id}
+;   ::pc/output [:session/id :session/full-name :club/id]}
+;  (let [res (d/pull db [:person/id :person/full-name {:club/_manager [:club/id]}] id)]
+;    (-> res
+;        (assoc :club/id (get-in res [:club/_manager :club/id])))))
+
+;(pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
+;  {::pc/input #{:db/id}
+;   ::pc/output [:session/title]}
+;  (d/pull db [:session/title] id))
+
+;(pc/defresolver person-by-eid [{:keys [db] :as env} {:keys [db/id]}]
+;  {::pc/input #{:person/id}
+;   ::pc/output [:person/id :person/full-name :club/id]}
+;  (let [res (d/pull db [:person/id :person/full-name {:club/_manager [:club/id]}] id)]
+;    (-> res
+;        (assoc :club/id (get-in res [:club/_manager :club/id])))))
 
 ;#?(:clj
 ;   (pc/defresolver item-category-resolver [{:keys [parser] :as env} {:item/keys [id]}]
