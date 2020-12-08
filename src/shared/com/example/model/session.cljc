@@ -10,10 +10,62 @@
   {ao/identity? true
    ao/schema    :production})
 
+(defattr title :session/conf-sched-id :string
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
+(defattr title :session/conf-id :ref
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
+(defattr title :session/venue :string
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
+(defattr title :session/venue :string
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
 (defattr title :session/title :string
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
+
+(defattr title :session/sched-id :long
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
+(defattr title :session/start-time-utc :instant
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
+(defattr title :session/type :ref
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
+(defattr title :session/speakers :string
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
+
+(comment
+
+  #:db{:id {:session/conf-sched-id "5348024557502565-30",
+            :session/conf-id #:db{:id 5348024557502565},
+            :session/venue "All Tracks",
+            :session/title "Closing Remarks",
+            :session/sched-id 30,
+            :session/start-time-utc #inst"2020-10-15T00:15:00.000-00:00",
+            :session/type #:db{:id 9649314045362249, :ident :session-type/plenary},
+            :db/id 71521032363573428,
+            :session/speakers "Gene Kim; Jeff Gallimore"}})
 
 ;
 ;(defattr category :item/category :ref
@@ -51,6 +103,12 @@
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    #?(:clj
                       {:session/all-sessions (queries/get-all-sessions env query-params)}))})
+
+#?(:clj
+    (pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
+      {::pc/input #{:db/id}
+       ::pc/output [:session/title]}
+      (queries/get-session-from-eid db [:person/full-name] id)))
 
 ;(pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
 ;  {::pc/input #{:session/id}

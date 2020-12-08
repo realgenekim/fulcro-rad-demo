@@ -120,6 +120,25 @@
            (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
+(defn get-session-from-eid
+  [env session-id]
+  (if-let [db (some-> (get-in env [do/databases :production]) deref)]
+    (let [session (d/q '[:find (pull ?e [*])
+                         :in $ ?id
+                         ;(let [ids (d/q '[:find ?s
+                         :where
+                         [?e :session/title _]] db session-id)]
+      ;(println "db: " db)
+      (println "session: " session))
+      ;ids)
+      ;(->> ids
+      ;     flatten
+      ;     (mapv (fn [id] {:db/id id}))))
+    (log/error "No database atom for production schema!")))
+
+
+
+
 (defn get-login-info
   "Get the account name, time zone, and password info via a username (email)."
   [{::datomic/keys [databases] :as env} username]
