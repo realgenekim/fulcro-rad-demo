@@ -103,11 +103,13 @@
   [env query-params]
   (println "get-all-sessions...")
   ; :com.fulcrologic.rad.database-adapters.datomic/databases
-  (println "env: ")
+  ;(println "env: ")
   ;(clojure.pprint/pprint env)
-  (println "db production: " (get-in env [do/databases :production]))
-  (println "db all: " (get-in env [do/databases]))
-  (if-let [db (some-> (get-in env [do/databases :production]) deref)]
+  ;(println "db production: " (get-in env [do/databases :production]))
+  ;(println "db all: " (get-in env [do/databases]))
+  ;(if-let [db (some-> (get-in env [do/databases :main #_:video]) deref)])
+  ;(if-let [db (some-> (get-in env [do/databases :production]) deref)]
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (let [ids (d/q '[:find (pull ?s [*])
     ;(let [ids (d/q '[:find ?s
                      :where
@@ -123,13 +125,15 @@
 (defn get-session-from-eid
   [env session-id]
   (if-let [db (some-> (get-in env [do/databases :production]) deref)]
-    (let [session (d/q '[:find (pull ?e [*])
-                         :in $ ?id
-                         ;(let [ids (d/q '[:find ?s
-                         :where
-                         [?e :session/title _]] db session-id)]
-      ;(println "db: " db)
-      (println "session: " session))
+    (do
+      (log/info "get-session-from-eid: id: " session-id)
+      (let [session (d/q '[:find (pull ?e [*])
+                           :in $ ?id
+                           ;(let [ids (d/q '[:find ?s
+                           :where
+                           [?e :session/title _]] db session-id)]
+        ;(println "db: " db)
+        (println "session: " session)))
       ;ids)
       ;(->> ids
       ;     flatten

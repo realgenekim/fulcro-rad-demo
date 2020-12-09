@@ -26,7 +26,12 @@
   (pathom/new-parser config
     [(attr/pathom-plugin all-attributes)
      (form/pathom-plugin save/middleware delete/middleware)
-     (datomic/pathom-plugin (fn [env] {:production (:main datomic-connections)}))
+     ;(datomic/pathom-plugin (fn [env] {:production (:main datomic-connections)}))
+     ; put both databases into pathom
+     ;   and specify during the query
+     (datomic/pathom-plugin (fn [env] {
+                                       :production (:main datomic-connections)
+                                       :video (:video datomic-connections)}))
      ;(datomic/pathom-plugin (fn [env] {:production (:video datomic-connections)}))
      ;(datomic/pathom-plugin (fn [env] {:main (:main datomic-connections)
      ;                                  :video (:video datomic-connections)}))
