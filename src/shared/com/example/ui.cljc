@@ -36,7 +36,7 @@
    :router-targets      [LandingPage ItemForm InvoiceForm InvoiceList AccountList AccountForm AccountInvoices
                          sales-report/SalesReport InventoryReport
                          sales-report/RealSalesReport
-                         SessionReport
+                         SessionReport SessionForm
                          dashboard/Dashboard]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)

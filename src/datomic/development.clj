@@ -18,7 +18,8 @@
     [datomic.client.api :as d]
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.type-support.date-time :as dt]
-    [com.fulcrologic.rad.database-adapters.datomic-options :as do]))
+    [com.fulcrologic.rad.database-adapters.datomic-options :as do]
+    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]))
 
 (set-refresh-dirs "src/main" "src/datomic" "src/dev" "src/shared")
 
@@ -54,7 +55,12 @@
            :where
            [?s :session/title _]] db))
 
-  ; OMG, this works, too!
+  (let [db (d/db (:video datomic-connections))]
+      (d/q '[:find (pull ?e [*])
+             :where
+             [?e :session/title _]] db 70368744177664139))
+
+      
 
   (com.example.components.parser/parser com.example.components.config/config
                                         {:address/id 1})
@@ -74,9 +80,15 @@
   
   (com.example.components.parser/parser com.example.components.config/config
                                         [{:session/all-sessions
-                                          [:db/id :session/title]}])
+                                          [:db/id :session/title :session/speakers]}])
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                          [{[:db/id 70368744177664139]
+                                            [:session/speakers]}])
 
 
+  (com.example.components.parser/parser com.example.components.config/config
+                                            {:db/id 70368744177664139})
 
   ; :account/all-accounts
 
@@ -99,7 +111,7 @@
           [do/databases])
 
   (let [env com.example.components.config/config]
-    (some-> (get-in env [com.fulcrologic.rad.database-adapters.datomic-options/databases :production]) deref))
+    (some-> (get-in env [com.fulcrologic.rad.database-adapters.datomic-options/databases :video]) deref))
 
   (com.fulcrologic.rad.database-adapters.datomic-options/databases
     com.example.components.config/config)
@@ -109,8 +121,20 @@
     com.example.components.config/config
     {})
 
-  ,)
+  (com.example.components.database-queries/get-session-from-eid
+           datomic-connections
+           39762738506891394)
 
+  (let [db (d/db (:video datomic-connections))])
+
+       ;(d/q '[:find (pull ?s [*])
+       ;       :where
+       ;       [?s :session/title _]] db))
+
+  (com.example.components.database-queries/get-session-from-eid
+      datomic-connections
+      ;com.example.components.config/config,
+      47872736273367215))
 
 
 

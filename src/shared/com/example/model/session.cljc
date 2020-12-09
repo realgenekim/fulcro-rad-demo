@@ -41,10 +41,10 @@
    ao/identities #{:db/id}
    ao/schema      :production})
 
-;(defattr stype :session/type :ref
-;  {ao/cardinality :one
-;   ao/identities #{:db/id}
-;   ao/schema      :production})
+(defattr stype :session/type :ref
+  {ao/cardinality :one
+   ao/identities #{:db/id}
+   ao/schema      :production})
 
 (defattr speakers :session/speakers :string
   {ao/cardinality :one
@@ -100,11 +100,29 @@
                    #?(:clj
                       {:session/all-sessions (queries/get-all-sessions env query-params)}))})
 
+;(defattr seesion-by-eid :session/id
+;  {ao/target :session/id
+;   ao/pc-output [:session/title :session/venue :session/start-time-utc :session/speakers :session/sched-id]
+;   ao/pc-input :session/id
+;   ao/pc-resolve (fn [{:keys [db query-params] :as env} {:keys [db/id]}]
+;                   #?(:clj
+;                      (queries/get-session-from-eid db id)))})
+;                      ;{:account/all-accounts (queries/get-all-accounts env query-params)}))})
+
+
 #?(:clj
-    (pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
+    (pc/defresolver session-by-eid [{:keys [db] :as env} input]
       {::pc/input #{:db/id}
-       ::pc/output [:session/title]}
-      (queries/get-session-from-eid db id)))
+       ::pc/output [:session/title
+                    :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
+      (queries/get-session-from-eid db input)))
+
+; #?(:clj
+;   (pc/defresolver item-category-resolver [{:keys [parser] :as env} {:item/keys [id]}]
+;     {::pc/input  #{:item/id}
+;      ::pc/output [:category/id :category/label]}
+;     (let [result (parser env [{[:item/id id] [{:item/category [:category/id :category/label]}]}])]
+;       (get-in (log/spy :info result) [[:item/id id] :item/category]))))
 
 ;(pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
 ;  {::pc/input #{:session/id}
