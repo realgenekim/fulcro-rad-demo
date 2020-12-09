@@ -111,16 +111,32 @@
   ;(if-let [db (some-> (get-in env [do/databases :production]) deref)]
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (let [ids (d/q '[:find (pull ?s [*])
-    ;(let [ids (d/q '[:find ?s
+                     ;(let [ids (d/q '[:find ?s
                      :where
                      [?s :session/title _]] db)]
       (println "db: " db)
       (println "ids: " ids)
-      ;ids)
       (->> ids
-           flatten
-           (mapv (fn [id] {:db/id id}))))
+           ;(take 5)
+           flatten))
+      ;(->> ids
+      ;     (take 5)
+      ;     flatten
+      ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
+
+(comment
+  [:session/all-sessions
+    [#:db{:id {:session/conf-sched-id "5348024557502565-136",
+               :session/conf-id #:db{:id 5348024557502565},
+               :session/venue "All Tracks",
+               :session/title "Creating Inclusive Organizations",
+               :session/sched-id 136,
+               :session/start-time-utc #inst"2020-10-15T16:40:00.000-00:00",
+               :session/type #:db{:id 9649314045362249, :ident :session-type/plenary},
+               :db/id 321057395310723,
+               :session/speakers "Dr. J. Goosby Smith"}}]])
+
 
 (defn get-session-from-eid
   [env session-id]

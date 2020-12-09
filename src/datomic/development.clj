@@ -63,14 +63,15 @@
   (com.example.components.parser/parser com.example.components.config/config
                                        [:account/all-accounts])
 
-  (com.example.components.parser/parser com.example.components.config/config
-                                        [:session/all-sessions])
 
 
   ; works ^^^
   ; now working on getting joins working
   (restart)
 
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [:session/all-sessions])
+  
   (com.example.components.parser/parser com.example.components.config/config
                                         [{:session/all-sessions
                                           [:db/id :session/title]}])

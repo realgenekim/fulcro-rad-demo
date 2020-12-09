@@ -6,7 +6,7 @@
     #?(:clj [com.example.components.database-queries :as queries])
     [taoensso.timbre :as log]))
 
-(defattr id :session/id :long
+(defattr id :db/id :long
   {ao/identity? true
    ao/schema    :production})
 
@@ -15,10 +15,11 @@
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr conf-id :session/conf-id :ref
-  {ao/cardinality :one
-   ao/identities #{:db/id}
-   ao/schema      :production})
+;(defattr conf-id :session/conf-id :ref
+;  {ao/cardinality :one
+;   ao/identities #{:db/id}
+;   ao/target :session-type
+;   ao/schema      :production})
 
 (defattr venue :session/venue :string
   {ao/cardinality :one
@@ -40,10 +41,10 @@
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr stype :session/type :ref
-  {ao/cardinality :one
-   ao/identities #{:db/id}
-   ao/schema      :production})
+;(defattr stype :session/type :ref
+;  {ao/cardinality :one
+;   ao/identities #{:db/id}
+;   ao/schema      :production})
 
 (defattr speakers :session/speakers :string
   {ao/cardinality :one
