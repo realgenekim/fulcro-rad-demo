@@ -26,8 +26,10 @@
   (pathom/new-parser config
     [(attr/pathom-plugin all-attributes)
      (form/pathom-plugin save/middleware delete/middleware)
-     ;(datomic/pathom-plugin (fn [env] {:production (:main datomic-connections)}))
-     (datomic/pathom-plugin (fn [env] {:production (:video datomic-connections)}))
+     (datomic/pathom-plugin (fn [env] {:production (:main datomic-connections)}))
+     ;(datomic/pathom-plugin (fn [env] {:production (:video datomic-connections)}))
+     ;(datomic/pathom-plugin (fn [env] {:main (:main datomic-connections)
+     ;                                  :video (:video datomic-connections)}))
      (blob/pathom-plugin bs/temporary-blob-store {:files         bs/file-blob-store
                                                   :avatar-images bs/image-blob-store})
      {::p/wrap-parser

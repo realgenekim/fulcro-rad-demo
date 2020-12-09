@@ -10,22 +10,17 @@
   {ao/identity? true
    ao/schema    :production})
 
-(defattr title :session/conf-sched-id :string
+(defattr conf-sched-id :session/conf-sched-id :string
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr title :session/conf-id :ref
+(defattr conf-id :session/conf-id :ref
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr title :session/venue :string
-  {ao/cardinality :one
-   ao/identities #{:db/id}
-   ao/schema      :production})
-
-(defattr title :session/venue :string
+(defattr venue :session/venue :string
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
@@ -35,22 +30,22 @@
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr title :session/sched-id :long
+(defattr sched-id :session/sched-id :long
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr title :session/start-time-utc :instant
+(defattr start-time-utc :session/start-time-utc :instant
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr title :session/type :ref
+(defattr stype :session/type :ref
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
 
-(defattr title :session/speakers :string
+(defattr speakers :session/speakers :string
   {ao/cardinality :one
    ao/identities #{:db/id}
    ao/schema      :production})
@@ -108,7 +103,7 @@
     (pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
       {::pc/input #{:db/id}
        ::pc/output [:session/title]}
-      (queries/get-session-from-eid db [:person/full-name] id)))
+      (queries/get-session-from-eid db id)))
 
 ;(pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
 ;  {::pc/input #{:session/id}

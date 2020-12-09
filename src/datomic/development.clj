@@ -79,9 +79,14 @@
 
   ; :account/all-accounts
 
+  (com.example.components.parser/parser com.example.components.config/config
+                                        {:account/email "tony@example.com"})
 
-  ,)
-
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{:account/email "tony@example.com"}
+                                         :password/hashed-value
+                                         :password/salt,
+                                         :password/iterations]))
 (comment
 
   (identity com.example.components.config/config)
@@ -110,7 +115,8 @@
 
 (defn seed! []
   (dt/set-timezone! "America/Los_Angeles")
-  (let [connection (:main datomic-connections)
+  ;(let [connection (:main datomic-connections)])
+  (let [connection (:video datomic-connections)
         date-1 (dt/html-datetime-string->inst "2020-01-01T12:00")
         date-2 (dt/html-datetime-string->inst "2020-01-05T12:00")
         date-3 (dt/html-datetime-string->inst "2020-02-01T12:00")
