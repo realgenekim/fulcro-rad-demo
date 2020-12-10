@@ -100,23 +100,23 @@
                    #?(:clj
                       {:session/all-sessions (queries/get-all-sessions env query-params)}))})
 
-;(defattr seesion-by-eid :session/id
-;  {ao/target :session/id
-;   ao/pc-output [:session/title :session/venue :session/start-time-utc :session/speakers :session/sched-id]
-;   ao/pc-input :session/id
-;   ao/pc-resolve (fn [{:keys [db query-params] :as env} {:keys [db/id]}]
-;                   #?(:clj
-;                      (queries/get-session-from-eid db id)))})
-;                      ;{:account/all-accounts (queries/get-all-accounts env query-params)}))})
+(defattr session-by-eid :session/id :ref
+  {ao/target :session/id
+   ao/pc-output [:session/title :session/venue :session/start-time-utc :session/speakers :session/sched-id]
+   ;ao/pc-input :session/id
+   ao/pc-resolve (fn [{:keys [db query-params] :as env} {:keys [db/id]}]
+                   #?(:clj
+                      (queries/get-session-from-eid db id)))})
+                      ;{:account/all-accounts (queries/get-all-accounts env query-params)}))})
 
 
 
-(pc/defresolver session-by-eid [{:keys [db] :as env} input]
-  {::pc/input #{:db/id}
-   ::pc/output [:session/title
-                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
-  #?(:clj
-     (queries/get-session-from-eid db input)))
+;(pc/defresolver session-by-eid [{:keys [db] :as env} input]
+;  {::pc/input #{:db/id}
+;   ::pc/output [:session/title
+;                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
+;  #?(:clj
+;     (queries/get-session-from-eid db input)))
 
 
  ;(pc/defresolver session-by-speakers [{:keys [db] :as env} input]
