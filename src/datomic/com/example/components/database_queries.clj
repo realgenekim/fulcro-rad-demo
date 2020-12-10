@@ -117,40 +117,29 @@
       (println "db: " db)
       (println "ids: " ids)
       (->> ids
-           ;(take 5)
-           flatten))
+           (take 5)
+           flatten
+           (#(apply vector %))))
       ;(->> ids
       ;     (take 5)
       ;     flatten
       ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
-(comment
-  [:session/all-sessions
-    [#:db{:id {:session/conf-sched-id "5348024557502565-136",
-               :session/conf-id #:db{:id 5348024557502565},
-               :session/venue "All Tracks",
-               :session/title "Creating Inclusive Organizations",
-               :session/sched-id 136,
-               :session/start-time-utc #inst"2020-10-15T16:40:00.000-00:00",
-               :session/type #:db{:id 9649314045362249, :ident :session-type/plenary},
-               :db/id 321057395310723,
-               :session/speakers "Dr. J. Goosby Smith"}}]])
-
-
 (defn get-session-from-eid
   [env session-id]
-  (if-let [db (some-> (get-in env [do/databases :production]) deref)]
+  (log/error "get-session-from-eid: " session-id)
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (do
       (log/info "get-session-from-eid: id: " session-id)
-      (let [session (d/q '[:find (pull ?e [*])
+      (let [session (d/q '[:find (pull ?id [*])
                            :in $ ?id
                            ;(let [ids (d/q '[:find ?s
                            :where
-                           [?e :session/title _]] db session-id)]
+                           [?id :session/speakers _]] db session-id)]
         ;(println "db: " db)
-        (println "session: " session)))
-      ;ids)
+        (println "session: " session)
+        session))
       ;(->> ids
       ;     flatten
       ;     (mapv (fn [id] {:db/id id}))))
