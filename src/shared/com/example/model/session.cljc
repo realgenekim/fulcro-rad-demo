@@ -110,12 +110,20 @@
 ;                      ;{:account/all-accounts (queries/get-all-accounts env query-params)}))})
 
 
-#?(:clj
-    (pc/defresolver session-by-eid [{:keys [db] :as env} input]
-      {::pc/input #{:db/id}
-       ::pc/output [:session/title
-                    :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
-      (queries/get-session-from-eid db input)))
+
+(pc/defresolver session-by-eid [{:keys [db] :as env} input]
+  {::pc/input #{:db/id}
+   ::pc/output [:session/title
+                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
+  #?(:clj
+     (queries/get-session-from-eid db input)))
+
+
+ ;(pc/defresolver session-by-speakers [{:keys [db] :as env} input]
+ ;  {::pc/input #{:session/speakers}
+ ;   ::pc/output [:session/id :session/title
+ ;                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
+ ;  (queries/get-session-from-speakers db input)))
 
 ; #?(:clj
 ;   (pc/defresolver item-category-resolver [{:keys [parser] :as env} {:item/keys [id]}]
@@ -150,7 +158,7 @@
 ;     (let [result (parser env [{[:item/id id] [{:item/category [:category/id :category/label]}]}])]
 ;       (get-in (log/spy :info result) [[:item/id id] :item/category]))))
 
-(def attributes [id title all-sessions])
+(def attributes [id title all-sessions session-by-eid])
                  ;item-name category description price in-stock all-items])
 
 ;#?(:clj
