@@ -87,10 +87,11 @@
   ;                                          [:session/speakers]}])
 
   ; XXX: Jakub: I'm trying to get this to work...
+  (restart)
 
   (com.example.components.parser/parser com.example.components.config/config
-                                            [{[:session/uuid "1912f7e7-c378-44bb-96a8-093a792fb841"]
-                                              [:session/venue]}])
+                                            [{[:session/uuid #uuid"8a481331-eb1d-4e5b-9d19-759da23cb674"]
+                                              [:session/venue :session/speakers :session/start-time-utc]}])
 
   ; ￼12:38PM IT WORKS!!  THANK YOU JAKUB!
   

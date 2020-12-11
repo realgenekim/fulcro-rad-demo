@@ -112,15 +112,16 @@
 
 
 
-(pc/defresolver session-by-uuid [{:keys [db] :as env} input]
+(pc/defresolver session-by-uuid [{:keys [db] :as env} {:session/keys [uuid] :as input}]
   {::pc/input #{:session/uuid}
    ::pc/output [:session/title
                 :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
-  (println "defresolver: env, input: " env input)
+  ;(println "defresolver: input: " env input)
+  (println "defresolver: uuid: " uuid)
   #?(:clj
-     {:session/uuid "abc"
-      :session/venue "abc"}))
-     ;(queries/get-session-from-uuid db input)))
+     ;{:session/uuid "abc"
+     ; :session/venue "abc"}))
+     (queries/get-session-from-uuid env uuid)))
 
 
  ;(pc/defresolver session-by-speakers [{:keys [db] :as env} input]

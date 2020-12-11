@@ -126,39 +126,22 @@
       ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
-(defn get-session-from-eid
-  [env session-id]
-  (log/error "get-session-from-eid: " session-id)
-  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
-    (do
-      (log/info "get-session-from-eid: id: " session-id)
-      (let [session (d/q '[:find (pull ?id [*])
-                           :in $ ?id
-                           ;(let [ids (d/q '[:find ?s
-                           :where
-                           [?id :session/speakers _]] db session-id)]
-        ;(println "db: " db)
-        (println "session: " session)
-        session))
-      ;(->> ids
-      ;     flatten
-      ;     (mapv (fn [id] {:db/id id}))))
-    (log/error "No database atom for production schema!")))
-
+; must return a map; Jakub noted that it returned a empty vector
+; can return a nil, but not a vector
 (defn get-session-from-uuid
   [env uuid]
   (log/error "get-session-from-uuid: " uuid)
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (do
       (log/info "get-session-from-uuid: id: " uuid)
-      (let [session (d/q '[:find (pull ?uuid [*])
+      (let [session (d/q '[:find (pull ?e [*])
                            :in $ ?uuid
                            ;(let [ids (d/q '[:find ?s
                            :where
-                           [?_ :session/speakers ?uuid]] db uuid)]
+                           [?e :session/uuid ?uuid]] db uuid)]
         ;(println "db: " db)
         (println "session: " session)
-        session))
+        (ffirst session)))
     ;(->> ids
     ;     flatten
     ;     (mapv (fn [id] {:db/id id}))))
