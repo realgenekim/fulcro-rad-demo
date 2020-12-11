@@ -80,15 +80,26 @@
   
   (com.example.components.parser/parser com.example.components.config/config
                                         [{:session/all-sessions
-                                          [:db/id :session/title :session/speakers]}])
+                                          [:session/uuid :session/title :session/speakers]}])
+
+  ;(com.example.components.parser/parser com.example.components.config/config
+  ;                                        [{session/:db/id 70368744177664139
+  ;                                          [:session/speakers]}])
+
+  ; XXX: Jakub: I'm trying to get this to work...
 
   (com.example.components.parser/parser com.example.components.config/config
-                                          [{[:db/id 70368744177664139]
-                                            [:session/speakers]}])
+                                            [{[:session/uuid "1912f7e7-c378-44bb-96a8-093a792fb841"]
+                                              [:session/venue]}])
 
+  ; ￼12:38PM IT WORKS!!  THANK YOU JAKUB!
+  
+
+  ; was seriously discouraged to not use native Datomic ids
 
   (com.example.components.parser/parser com.example.components.config/config
-                                            {:db/id 70368744177664139})
+                                              [{[:db/id 70368744177664139]
+                                                [:session/venue]}])
 
   ; :account/all-accounts
 

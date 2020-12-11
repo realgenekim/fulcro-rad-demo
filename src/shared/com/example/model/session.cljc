@@ -6,13 +6,16 @@
     #?(:clj [com.example.components.database-queries :as queries])
     [taoensso.timbre :as log]))
 
-(defattr id :db/id :long
+; who cares about the attrs: no one except for you
+; it's just a map: you use them in reports and forms, to tell the forms/reports what to display
+
+(defattr id :session/uuid :uuid
   {ao/identity? true
    ao/schema    :production})
 
 (defattr conf-sched-id :session/conf-sched-id :string
   {ao/cardinality :one
-   ao/identities #{:db/id}
+   ao/identities #{:session/id}
    ao/schema      :production})
 
 ;(defattr conf-id :session/conf-id :ref
@@ -23,32 +26,32 @@
 
 (defattr venue :session/venue :string
   {ao/cardinality :one
-   ao/identities #{:db/id}
+   ao/identities #{:session/uuid}
    ao/schema      :production})
 
 (defattr title :session/title :string
   {ao/cardinality :one
-   ao/identities #{:db/id}
+   ao/identities #{:session/uuid}
    ao/schema      :production})
 
 (defattr sched-id :session/sched-id :long
   {ao/cardinality :one
-   ao/identities #{:db/id}
+   ao/identities #{:session/uuid}
    ao/schema      :production})
 
 (defattr start-time-utc :session/start-time-utc :instant
   {ao/cardinality :one
-   ao/identities #{:db/id}
+   ao/identities #{:session/uuid}
    ao/schema      :production})
 
 (defattr stype :session/type :ref
   {ao/cardinality :one
-   ao/identities #{:db/id}
+   ao/identities #{:session/uuid}
    ao/schema      :production})
 
 (defattr speakers :session/speakers :string
   {ao/cardinality :one
-   ao/identities #{:db/id}
+   ao/identities #{:session/uuid}
    ao/schema      :production})
 
 (comment
@@ -94,29 +97,30 @@
 ;                     {:session/all-session (queries/get-all-sessions env (log/spy :info query-params))}))})
 
 (defattr all-sessions :session/all-sessions :ref
-  {ao/target     :session/id
-   ao/pc-output  [{:session/all-sessions [:db/id]}]
+  {ao/pc-output  [{:session/all-sessions [:session/uuid]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    #?(:clj
                       {:session/all-sessions (queries/get-all-sessions env query-params)}))})
 
-(defattr session-by-eid :session/id :ref
-  {ao/target :session/id
-   ao/pc-output [:session/title :session/venue :session/start-time-utc :session/speakers :session/sched-id]
-   ;ao/pc-input :session/id
-   ao/pc-resolve (fn [{:keys [db query-params] :as env} {:keys [db/id]}]
-                   #?(:clj
-                      (queries/get-session-from-eid db id)))})
-                      ;{:account/all-accounts (queries/get-all-accounts env query-params)}))})
+;(defattr session-by-uuid :session/uuid :ref
+;  {ao/pc-output [:session/title :session/venue :session/start-time-utc :session/speakers :session/sched-id]
+;   ao/pc-input :session/id
+;   ao/pc-resolve (fn [{:keys [db query-params] :as env} {:keys [db/id]}]
+;                   #?(:clj
+;                      (queries/get-session-from-uuid db id)))})
+;                      ;{:account/all-accounts (queries/get-all-accounts env query-params)}))})
 
 
 
-;(pc/defresolver session-by-eid [{:keys [db] :as env} input]
-;  {::pc/input #{:db/id}
-;   ::pc/output [:session/title
-;                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
-;  #?(:clj
-;     (queries/get-session-from-eid db input)))
+(pc/defresolver session-by-uuid [{:keys [db] :as env} input]
+  {::pc/input #{:session/uuid}
+   ::pc/output [:session/title
+                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
+  (println "defresolver: env, input: " env input)
+  #?(:clj
+     {:session/uuid "abc"
+      :session/venue "abc"}))
+     ;(queries/get-session-from-uuid db input)))
 
 
  ;(pc/defresolver session-by-speakers [{:keys [db] :as env} input]
@@ -158,9 +162,9 @@
 ;     (let [result (parser env [{[:item/id id] [{:item/category [:category/id :category/label]}]}])]
 ;       (get-in (log/spy :info result) [[:item/id id] :item/category]))))
 
-(def attributes [id title all-sessions session-by-eid])
+(def attributes [id title all-sessions])
                  ;item-name category description price in-stock all-items])
 
-;#?(:clj
-;   (def resolvers [item-category-resolver]))
+#?(:clj
+   (def resolvers [session-by-uuid]))
 

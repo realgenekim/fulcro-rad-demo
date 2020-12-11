@@ -19,7 +19,8 @@
     [com.example.model.sales :as sales]
     [com.example.model.item :as item]
     [com.wsscode.pathom.core :as p]
-    [com.fulcrologic.rad.type-support.date-time :as dt]))
+    [com.fulcrologic.rad.type-support.date-time :as dt]
+    [com.example.model.session :as session]))
 
 (defstate parser
   :start
@@ -49,6 +50,7 @@
      form/resolvers
      (blob/resolvers all-attributes)
      account/resolvers
+     session/resolvers
      invoice/resolvers
      item/resolvers
      sales/resolvers
