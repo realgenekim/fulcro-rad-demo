@@ -18,9 +18,10 @@
 
 (form/defsc-form SessionForm [this props]
   {fo/id            session/id
-   fo/attributes    [session/id
+   fo/attributes    [
+                     session/id
                      session/title
-                     session/venue
+                     ;session/venue
                      session/speakers
                      ;session/stype
                      session/start-time-utc]

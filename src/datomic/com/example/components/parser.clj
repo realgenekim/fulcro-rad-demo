@@ -13,6 +13,8 @@
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.blob :as blob]
     [com.fulcrologic.rad.database-adapters.datomic-cloud :as datomic]
+    [com.fulcrologic.rad.database-adapters.datomic-common :as dc]
+    [com.fulcrologic.rad.database-adapters.datomic-options :as do]
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.pathom :as pathom]
     [mount.core :refer [defstate]]
@@ -30,9 +32,15 @@
      ;(datomic/pathom-plugin (fn [env] {:production (:main datomic-connections)}))
      ; put both databases into pathom
      ;   and specify during the query
-     (datomic/pathom-plugin (fn [env] {
-                                       :production (:main datomic-connections)
-                                       :video (:video datomic-connections)}))
+     (datomic/pathom-plugin (fn [env]
+                              {:production (:main datomic-connections)
+                               :video (:video datomic-connections)}))
+     ; (fn [env]
+     ;                              (let [dbs (get-in env [do/databases])]
+     ;                                (println "pathom-plugin: dbs: " dbs)
+     ;                                {:production (:main dbs)
+     ;                                 :video      (:video dbs)}))
+     ;
      ;(datomic/pathom-plugin (fn [env] {:production (:video datomic-connections)}))
      ;(datomic/pathom-plugin (fn [env] {:main (:main datomic-connections)
      ;                                  :video (:video datomic-connections)}))
@@ -55,3 +63,6 @@
      item/resolvers
      sales/resolvers
      timezone/resolvers]))
+
+
+

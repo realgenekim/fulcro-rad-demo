@@ -8,7 +8,7 @@
                                                              :system "fulcro-rad-demo"}
                                             :datomic/prevent-changes? true}
 
-                                     :video {:datomic/schema :production
+                                     :video {:datomic/schema :video
                                              :datomic/client  {:server-type   :ion
                                                                :region        "us-west-2"                        ;; e.g. us-east-1
                                                                :system        "datomic-2"
@@ -16,7 +16,7 @@
                                                                :endpoint      "http://entry.datomic-2.us-west-2.datomic.net:8182/"
                                                                :proxy-port    8182}
                                              :datomic/database "videolibrary"
-                                             :datomic/prevent-changes? true}}
+                                             :datomic/prevent-changes? false}}
 
  :com.fulcrologic.rad.database-adapters.sql/databases
                                     {:main {:flyway/migrate?          false
@@ -54,8 +54,8 @@
                                      :log-responses? true}
 
  :taoensso.timbre/logging-config    {
-                                     ;:level        :debug
-                                     :level        :info
+                                     :level        :debug
+                                     ;:level        :info
                                      :ns-whitelist []
                                      :ns-blacklist ["com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool"
                                                     "com.mchange.v2.c3p0.stmt.GooGooStatementCache"

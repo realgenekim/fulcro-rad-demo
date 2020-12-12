@@ -26,6 +26,9 @@
                            timezone/attributes
                            session/attributes)))
 
+(def all-video-attributes (vec (concat
+                                 session/attributes)))
+
 ;(def all-attributes2 (vec (concat
 ;                            session/attributes)))
 

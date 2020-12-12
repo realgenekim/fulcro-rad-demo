@@ -6,53 +6,55 @@
     #?(:clj [com.example.components.database-queries :as queries])
     [taoensso.timbre :as log]))
 
+; to enable Fulcro Inspector
+
+(pc/defresolver index-explorer [env _]
+  {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
+   ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
+  {:com.wsscode.pathom.viz.index-explorer/index
+   (get env ::pc/indexes)})
+
 ; who cares about the attrs: no one except for you
 ; it's just a map: you use them in reports and forms, to tell the forms/reports what to display
 
 (defattr id :session/uuid :uuid
   {ao/identity? true
-   ao/schema    :production})
+   ao/schema    :video})
 
 (defattr conf-sched-id :session/conf-sched-id :string
   {ao/cardinality :one
    ao/identities #{:session/id}
-   ao/schema      :production})
-
-;(defattr conf-id :session/conf-id :ref
-;  {ao/cardinality :one
-;   ao/identities #{:db/id}
-;   ao/target :session-type
-;   ao/schema      :production})
+   ao/schema      :video})
 
 (defattr venue :session/venue :string
   {ao/cardinality :one
    ao/identities #{:session/uuid}
-   ao/schema      :production})
+   ao/schema      :video})
 
 (defattr title :session/title :string
   {ao/cardinality :one
    ao/identities #{:session/uuid}
-   ao/schema      :production})
+   ao/schema      :video})
 
 (defattr sched-id :session/sched-id :long
   {ao/cardinality :one
    ao/identities #{:session/uuid}
-   ao/schema      :production})
+   ao/schema      :video})
 
 (defattr start-time-utc :session/start-time-utc :instant
   {ao/cardinality :one
    ao/identities #{:session/uuid}
-   ao/schema      :production})
+   ao/schema      :video})
 
 (defattr stype :session/type :ref
   {ao/cardinality :one
    ao/identities #{:session/uuid}
-   ao/schema      :production})
+   ao/schema      :video})
 
 (defattr speakers :session/speakers :string
   {ao/cardinality :one
    ao/identities #{:session/uuid}
-   ao/schema      :production})
+   ao/schema      :video})
 
 (comment
 
@@ -66,39 +68,12 @@
             :db/id 71521032363573428,
             :session/speakers "Gene Kim; Jeff Gallimore"}})
 
-;
-;(defattr category :item/category :ref
-;  {ao/target      :category/id
-;   ao/cardinality :one
-;   ao/identities  #{:item/id}
-;   ao/schema      :production})
-;
-;(defattr item-name :item/name :string
-;  {ao/identities #{:item/id}
-;   ao/schema     :production})
-;
-;(defattr description :item/description :string
-;  {ao/identities #{:item/id}
-;   ao/schema     :production})
-;
-;(defattr price :item/price :decimal
-;  {ao/identities #{:item/id}
-;   ao/schema     :production})
-;
-;(defattr in-stock :item/in-stock :int
-;  {ao/identities #{:item/id}
-;   ao/schema     :production})
-
-;(defattr all-sessions :session/all-sessions :ref
-;  {ao/target    :session/id
-;   ::pc/output  [{:session/all-sessions [:session/id]}]
-;   ::pc/resolve (fn [{:keys [query-params] :as env} _]
-;                  #?(:clj
-;                     {:session/all-session (queries/get-all-sessions env (log/spy :info query-params))}))})
 
 (defattr all-sessions :session/all-sessions :ref
-  {ao/pc-output  [{:session/all-sessions [:session/uuid]}]
+  {ao/target    :session/uuid
+   ao/pc-output  [{:session/all-sessions [:session/uuid]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
+                   (println "defattr all-sessions: " env)
                    #?(:clj
                       {:session/all-sessions (queries/get-all-sessions env query-params)}))})
 

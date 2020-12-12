@@ -134,6 +134,8 @@
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (do
       (log/info "get-session-from-uuid: id: " uuid)
+      ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
+      (log/info "get-session-from-uuid: env: " env)
       (let [session (d/q '[:find (pull ?e [*])
                            :in $ ?uuid
                            ;(let [ids (d/q '[:find ?s
@@ -147,24 +149,6 @@
     ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
-(defn get-session-from-speakers
-  [env speakers]
-  (log/error "get-session-from-speakers: " speakers)
-  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
-    (do
-      (log/info "get-session-from-speakers: id: " speakers)
-      (let [session (d/q '[:find (pull ?id [*])
-                           :in $ ?s
-                           ;(let [ids (d/q '[:find ?s
-                           :where
-                           [_ :session/speakers ?s]] db speakers)]
-        ;(println "db: " db)
-        (println "session: " session)
-        session))
-    ;(->> ids
-    ;     flatten
-    ;     (mapv (fn [id] {:db/id id}))))
-    (log/error "No database atom for production schema!")))
 
 
 

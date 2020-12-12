@@ -12,6 +12,7 @@
     [com.example.model.session :as session]
     [com.fulcrologic.rad.ids :refer [new-uuid]]
     [com.fulcrologic.rad.database-adapters.datomic-cloud :as datomic]
+    [com.fulcrologic.rad.database-adapters.datomic-common :as dc]
     [com.fulcrologic.rad.resolvers :as res]
     [mount.core :as mount]
     [taoensso.timbre :as log]
@@ -94,13 +95,14 @@
                                               [:session/venue :session/speakers :session/start-time-utc]}])
 
   ; ￼12:38PM IT WORKS!!  THANK YOU JAKUB!
-  
 
-  ; was seriously discouraged to not use native Datomic ids
+  (dc/delta->txn com.example.components.config/config #{:video}
+                 {[:session/uuid #uuid "60dd0f5e-7215-40ba-a110-3af30c40b7bf"]
+                  {:session/speakers
+                   {:before "Shaaron A Alvares", :after "Shaaron A Alvares SSS"}}})
 
-  (com.example.components.parser/parser com.example.components.config/config
-                                              [{[:db/id 70368744177664139]
-                                                [:session/venue]}])
+
+
 
   ; :account/all-accounts
 
