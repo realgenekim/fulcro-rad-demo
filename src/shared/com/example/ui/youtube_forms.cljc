@@ -26,7 +26,8 @@
                     ;session/id
                     youtube/title
                     youtube/video-id
-                    youtube/description]
+                    youtube/description
+                    youtube/url]
    ;youtube/playlist-id
    ;session/title
    ;;session/venue
@@ -43,7 +44,7 @@
    ;                                                                                     (sort-by :category/label options)))
    ;                                  ::picker-options/cache-time-ms   30000}}
    fo/route-prefix "youtube"
-   fo/title        "Edit Session"})
+   fo/title        "Edit YouTube Video"})
   ;(dom/div :.ui.container.grid
   ;  "Hello!"))
 
@@ -53,7 +54,8 @@
    ro/source-attribute    :youtube-video/all-videos
    ro/row-pk              youtube/id
    ro/columns             [youtube/position youtube/title
-                           youtube/description youtube/playlist-id  youtube/video-id]
+                           youtube/description youtube/playlist-id  youtube/video-id
+                           youtube/url]
 
    ro/paginate?           true
    ro/page-size           20
