@@ -102,6 +102,7 @@
 (defn get-all-sessions
   [env query-params]
   (println "get-all-sessions...")
+  ;(tap> env)
   ; :com.fulcrologic.rad.database-adapters.datomic/databases
   ;(println "env: ")
   ;(clojure.pprint/pprint env)

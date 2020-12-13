@@ -33,6 +33,7 @@
      ; put both databases into pathom
      ;   and specify during the query
      (datomic/pathom-plugin (fn [env]
+                              ;(tap> env)
                               {:production (:main datomic-connections)
                                :video (:video datomic-connections)}))
      ; (fn [env]

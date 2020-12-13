@@ -138,7 +138,9 @@
 ;     (let [result (parser env [{[:item/id id] [{:item/category [:category/id :category/label]}]}])]
 ;       (get-in (log/spy :info result) [[:item/id id] :item/category]))))
 
-(def attributes [id title all-sessions])
+; WARNING: make sure to add all model attributes here!
+
+(def attributes [id title speakers start-time-utc all-sessions])
                  ;item-name category description price in-stock all-items])
 
 #?(:clj
