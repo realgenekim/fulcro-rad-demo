@@ -10,6 +10,7 @@
     [com.example.ui.item-forms :refer [ItemForm InventoryReport]]
     [com.example.ui.line-item-forms :refer [LineItemForm]]
     [com.example.ui.session-forms :refer [SessionForm SessionReport]]
+    [com.example.ui.youtube-forms :refer [YouTubeReport]]
     [com.example.ui.login-dialog :refer [LoginForm]]
     [com.example.ui.sales-report :as sales-report]
     [com.example.ui.dashboard :as dashboard]
@@ -37,6 +38,7 @@
                          sales-report/SalesReport InventoryReport
                          sales-report/RealSalesReport
                          SessionReport SessionForm
+                         YouTubeReport
                          dashboard/Dashboard]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)
@@ -88,7 +90,8 @@
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this sales-report/RealSalesReport {}))} "Sales Report")))
                (ui-dropdown {:className "item" :text "Sessions"}
                  (ui-dropdown-menu {}
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this SessionReport {}))} "View All"))))))
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this SessionReport {}))} "View Sessions")
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this YouTubeReport {}))} "View YouTube Videos"))))))
                    ;(ui-dropdown-menu {:onClick (fn [] (rroute/route-to! this SessionReport {}))} "Dashboard"))))))
         (div :.right.menu
           (div :.item

@@ -43,10 +43,6 @@
    ao/identities #{:youtube-video/id}
    ao/schema      :video})
 
-(defattr speakers :session/speakers :string
-  {ao/cardinality :one
-   ao/identities #{:session/uuid}
-   ao/schema      :video})
 
 (comment
 
