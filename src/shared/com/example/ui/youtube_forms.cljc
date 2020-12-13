@@ -3,6 +3,8 @@
     ;[com.example.model.item :as item]
     [com.example.model.session :as session]
     [com.fulcrologic.rad.picker-options :as picker-options]
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
+       :cljs [com.fulcrologic.fulcro.dom :as dom])
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.rad.control :as control]
     [com.fulcrologic.rad.form :as form]
@@ -12,34 +14,39 @@
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]))
+    ;[com.fulcrologic.fulcro.dom-server :as dom]))
 
 ;(defsc CategoryQuery [_ _]
 ;  {:query [:category/id :category/label]
 ;   :ident :category/id})
 
-;(form/defsc-form YouTubeForm [this props]
-;  {fo/id            youtube/id
-;   fo/attributes    [
-;                     ;session/id
-;                     youtube/title
-;                     youtube/description
-;                     youtube/playlist-id
-;                     youtube/video-id]
-;                     ;session/title
-;                     ;;session/venue
-;                     ;session/speakers
-;                     ;;session/stype
-;                     ;session/start-time-utc]
-;   ;fo/field-styles  {:item/category :pick-one}
-;   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
-;   ;                                  ::picker-options/query-component CategoryQuery
-;   ;                                  ::picker-options/options-xform   (fn [_ options] (mapv
-;   ;                                                                                     (fn [{:category/keys [id label]}]
-;   ;                                                                                       {:text (str label) :value [:category/id id]})
-;   ;                                                                                     (sort-by :category/label options)))
-;   ;                                  ::picker-options/cache-time-ms   30000}}
-;   fo/route-prefix  "youtube"
-;   fo/title         "Edit Session"})
+(form/defsc-form YouTubeForm [this props]
+  {fo/id           youtube/id
+   fo/attributes   [
+                    ;session/id
+                    youtube/title
+                    youtube/video-id
+                    youtube/description]
+   ;youtube/playlist-id
+   ;session/title
+   ;;session/venue
+   ;session/speakers
+   ;;session/stype
+   ;session/start-time-utc]
+   ;fo/field-style  :pick-one
+   ;fo/field-styles  {:item/category :pick-one}
+   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
+   ;                                  ::picker-options/query-component CategoryQuery
+   ;                                  ::picker-options/options-xform   (fn [_ options] (mapv
+   ;                                                                                     (fn [{:category/keys [id label]}]
+   ;                                                                                       {:text (str label) :value [:category/id id]})
+   ;                                                                                     (sort-by :category/label options)))
+   ;                                  ::picker-options/cache-time-ms   30000}}
+   fo/route-prefix "youtube"
+   fo/title        "Edit Session"})
+  ;(dom/div :.ui.container.grid
+  ;  "Hello!"))
+
 
 (report/defsc-report YouTubeReport [this props]
   {ro/title               "YouTube Report"
@@ -47,6 +54,9 @@
    ro/row-pk              youtube/id
    ro/columns             [youtube/position youtube/title
                            youtube/description youtube/playlist-id  youtube/video-id]
+
+   ro/paginate?           true
+   ro/page-size           20
 
                            ;session/speakers session/stype session/title session/venue session/start-time-utc]
 
@@ -81,7 +91,7 @@
                            :ascending?       true}
 
 
-   ;ro/form-links          {youtube/title YouTubeForm}
+   ro/form-links          {youtube/title YouTubeForm}
 
    ;ro/links               {:category/label (fn [this {:category/keys [label]}]
    ;                                          (control/set-parameter! this ::category label)
@@ -92,5 +102,5 @@
 
 
 (comment
-  (comp/get-query SessionReport)
-  (comp/get-query SessionForm))
+  (comp/get-query YouTubeReport)
+  (comp/get-query YouTubeForm))

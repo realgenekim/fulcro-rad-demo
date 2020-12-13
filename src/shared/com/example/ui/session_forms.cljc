@@ -40,7 +40,7 @@
   {ro/title               "Session Report"
    ro/source-attribute    :session/all-sessions
    ro/row-pk              session/id
-   ro/columns             [session/id session/speakers session/stype session/title session/venue session/start-time-utc]
+   ro/columns             [session/speakers session/stype session/title session/venue session/start-time-utc]
 
    ;ro/row-visible?        (fn [filter-parameters row] (let [{::keys [category]} filter-parameters
    ;                                                         row-category (get row :category/label)]
@@ -70,7 +70,7 @@
                            :ascending?       true}
 
 
-   ro/form-links          {session/id SessionForm}
+   ro/form-links          {session/speakers SessionForm}
 
    ;ro/links               {:category/label (fn [this {:category/keys [label]}]
    ;                                          (control/set-parameter! this ::category label)
