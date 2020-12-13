@@ -115,16 +115,44 @@
                      ;(let [ids (d/q '[:find ?s
                      :where
                      [?s :session/title _]] db)]
-      (println "db: " db)
-      (println "ids: " ids)
+      ;(println "db: " db)
+      ;(println "ids: " ids)
       (->> ids
-           (take 5)
+           ;(take 5)
            flatten
            (#(apply vector %))))
       ;(->> ids
       ;     (take 5)
       ;     flatten
       ;     (mapv (fn [id] {:db/id id}))))
+    (log/error "No database atom for production schema!")))
+
+(defn get-all-youtube-videos
+  [env query-params]
+  (println "get-all-youtube-videos...")
+  ;(tap> env)
+  ; :com.fulcrologic.rad.database-adapters.datomic/databases
+  ;(println "env: ")
+  ;(clojure.pprint/pprint env)
+  ;(println "db production: " (get-in env [do/databases :production]))
+  ;(println "db all: " (get-in env [do/databases]))
+  ;(if-let [db (some-> (get-in env [do/databases :main #_:video]) deref)])
+  ;(if-let [db (some-> (get-in env [do/databases :production]) deref)]
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [ids (d/q '[:find (pull ?s [*])
+                     ;(let [ids (d/q '[:find ?s
+                     :where
+                     [?s :youtube-video/id _]] db)]
+      ;(println "db: " db)
+      ;(println "ids: " ids)
+      (->> ids
+           ;(take 5)
+           flatten
+           (#(apply vector %))))
+    ;(->> ids
+    ;     (take 5)
+    ;     flatten
+    ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
 ; must return a map; Jakub noted that it returned a empty vector

@@ -83,6 +83,13 @@
                                         [{:session/all-sessions
                                           [:session/uuid :session/title :session/speakers]}])
 
+  (restart)
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{:youtube-video/all-videos
+                                          [:youtube-video/id :youtube-video/video-id
+                                           :youtube-video/description :youtube-video/url]}])
+
   ;(com.example.components.parser/parser com.example.components.config/config
   ;                                        [{session/:db/id 70368744177664139
   ;                                          [:session/speakers]}])

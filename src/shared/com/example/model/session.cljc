@@ -73,18 +73,9 @@
   {ao/target    :session/uuid
    ao/pc-output  [{:session/all-sessions [:session/uuid]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
-                   (println "defattr all-sessions: " env)
+                   ;(println "defattr all-sessions: " env)
                    #?(:clj
                       {:session/all-sessions (queries/get-all-sessions env query-params)}))})
-
-;(defattr session-by-uuid :session/uuid :ref
-;  {ao/pc-output [:session/title :session/venue :session/start-time-utc :session/speakers :session/sched-id]
-;   ao/pc-input :session/id
-;   ao/pc-resolve (fn [{:keys [db query-params] :as env} {:keys [db/id]}]
-;                   #?(:clj
-;                      (queries/get-session-from-uuid db id)))})
-;                      ;{:account/all-accounts (queries/get-all-accounts env query-params)}))})
-
 
 
 (pc/defresolver session-by-uuid [{:keys [db] :as env} {:session/keys [uuid] :as input}]
@@ -98,45 +89,6 @@
      ; :session/venue "abc"}))
      (queries/get-session-from-uuid env uuid)))
 
-
- ;(pc/defresolver session-by-speakers [{:keys [db] :as env} input]
- ;  {::pc/input #{:session/speakers}
- ;   ::pc/output [:session/id :session/title
- ;                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
- ;  (queries/get-session-from-speakers db input)))
-
-; #?(:clj
-;   (pc/defresolver item-category-resolver [{:keys [parser] :as env} {:item/keys [id]}]
-;     {::pc/input  #{:item/id}
-;      ::pc/output [:category/id :category/label]}
-;     (let [result (parser env [{[:item/id id] [{:item/category [:category/id :category/label]}]}])]
-;       (get-in (log/spy :info result) [[:item/id id] :item/category]))))
-
-;(pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
-;  {::pc/input #{:session/id}
-;   ::pc/output [:session/id :session/full-name :club/id]}
-;  (let [res (d/pull db [:person/id :person/full-name {:club/_manager [:club/id]}] id)]
-;    (-> res
-;        (assoc :club/id (get-in res [:club/_manager :club/id])))))
-
-;(pc/defresolver session-by-eid [{:keys [db] :as env} {:keys [db/id]}]
-;  {::pc/input #{:db/id}
-;   ::pc/output [:session/title]}
-;  (d/pull db [:session/title] id))
-
-;(pc/defresolver person-by-eid [{:keys [db] :as env} {:keys [db/id]}]
-;  {::pc/input #{:person/id}
-;   ::pc/output [:person/id :person/full-name :club/id]}
-;  (let [res (d/pull db [:person/id :person/full-name {:club/_manager [:club/id]}] id)]
-;    (-> res
-;        (assoc :club/id (get-in res [:club/_manager :club/id])))))
-
-;#?(:clj
-;   (pc/defresolver item-category-resolver [{:keys [parser] :as env} {:item/keys [id]}]
-;     {::pc/input  #{:item/id}
-;      ::pc/output [:category/id :category/label]}
-;     (let [result (parser env [{[:item/id id] [{:item/category [:category/id :category/label]}]}])]
-;       (get-in (log/spy :info result) [[:item/id id] :item/category]))))
 
 ; WARNING: make sure to add all model attributes here!
 

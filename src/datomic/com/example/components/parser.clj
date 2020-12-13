@@ -22,7 +22,8 @@
     [com.example.model.item :as item]
     [com.wsscode.pathom.core :as p]
     [com.fulcrologic.rad.type-support.date-time :as dt]
-    [com.example.model.session :as session]))
+    [com.example.model.session :as session]
+    [com.example.model.youtube-video :as youtube]))
 
 (defstate parser
   :start
@@ -60,6 +61,7 @@
      (blob/resolvers all-attributes)
      account/resolvers
      session/resolvers
+     youtube/resolvers
      invoice/resolvers
      item/resolvers
      sales/resolvers

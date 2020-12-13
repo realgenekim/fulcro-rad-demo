@@ -11,6 +11,7 @@
     [com.example.model.sales :as sales]
     ;
     [com.example.model.session :as session]
+    [com.example.model.youtube-video :as youtube]
     ;
     [com.fulcrologic.rad.attributes :as attr]))
 
@@ -24,10 +25,14 @@
                            m.file/attributes
                            sales/attributes
                            timezone/attributes
-                           session/attributes)))
+                           session/attributes
+                           youtube/attributes)))
 
+; XXX: delete this?  no, we need it
 (def all-video-attributes (vec (concat
-                                 session/attributes)))
+                                 session/attributes
+                                 youtube/attributes)))
+
 
 ;(def all-attributes2 (vec (concat
 ;                            session/attributes)))
