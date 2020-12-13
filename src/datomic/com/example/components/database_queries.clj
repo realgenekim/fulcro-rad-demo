@@ -164,12 +164,33 @@
     (do
       (log/info "get-session-from-uuid: id: " uuid)
       ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
-      (log/info "get-session-from-uuid: env: " env)
+      ;(log/info "get-session-from-uuid: env: " env)
       (let [session (d/q '[:find (pull ?e [*])
                            :in $ ?uuid
                            ;(let [ids (d/q '[:find ?s
                            :where
                            [?e :session/uuid ?uuid]] db uuid)]
+        ;(println "db: " db)
+        (println "session: " session)
+        (ffirst session)))
+    ;(->> ids
+    ;     flatten
+    ;     (mapv (fn [id] {:db/id id}))))
+    (log/error "No database atom for production schema!")))
+
+(defn youtube-video-by-id
+  [env id]
+  (log/error "youtube-video-by-id: " id)
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (do
+      (log/info "youtube-video-by-id: id: " id)
+      ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
+      ;(log/info "youtube-video-by-id: env: " env)
+      (let [session (d/q '[:find (pull ?e [*])
+                           :in $ ?id
+                           ;(let [ids (d/q '[:find ?s
+                           :where
+                           [?e :youtube-video/id ?id]] db id)]
         ;(println "db: " db)
         (println "session: " session)
         (ffirst session)))

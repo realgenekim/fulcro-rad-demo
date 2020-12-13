@@ -101,6 +101,11 @@
                                             [{[:session/uuid #uuid"8a481331-eb1d-4e5b-9d19-759da23cb674"]
                                               [:session/venue :session/speakers :session/start-time-utc]}])
 
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{[:youtube-video/id "UEx2azlZaF9NV1l1d1hDMGlVNUVBQjFyeUk2MllwUEhSOS43MTI1NDIwOTMwQjIxMzNG"]
+                                          [:youtube-video/id :youtube-video/video-id
+                                           :youtube-video/description :youtube-video/url]}])
+
   ; ￼12:38PM IT WORKS!!  THANK YOU JAKUB!
 
   (dc/delta->txn com.example.components.config/config #{:video}

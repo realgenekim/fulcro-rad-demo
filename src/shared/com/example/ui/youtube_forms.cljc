@@ -17,15 +17,19 @@
 ;  {:query [:category/id :category/label]
 ;   :ident :category/id})
 
-;(form/defsc-form SessionForm [this props]
-;  {fo/id            session/id
+;(form/defsc-form YouTubeForm [this props]
+;  {fo/id            youtube/id
 ;   fo/attributes    [
-;                     session/id
-;                     session/title
-;                     ;session/venue
-;                     session/speakers
-;                     ;session/stype
-;                     session/start-time-utc]
+;                     ;session/id
+;                     youtube/title
+;                     youtube/description
+;                     youtube/playlist-id
+;                     youtube/video-id]
+;                     ;session/title
+;                     ;;session/venue
+;                     ;session/speakers
+;                     ;;session/stype
+;                     ;session/start-time-utc]
 ;   ;fo/field-styles  {:item/category :pick-one}
 ;   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
 ;   ;                                  ::picker-options/query-component CategoryQuery
@@ -34,7 +38,7 @@
 ;   ;                                                                                       {:text (str label) :value [:category/id id]})
 ;   ;                                                                                     (sort-by :category/label options)))
 ;   ;                                  ::picker-options/cache-time-ms   30000}}
-;   fo/route-prefix  "session"
+;   fo/route-prefix  "youtube"
 ;   fo/title         "Edit Session"})
 
 (report/defsc-report YouTubeReport [this props]
@@ -77,7 +81,7 @@
                            :ascending?       true}
 
 
-   ;ro/form-links          {session/speakers SessionForm}
+   ;ro/form-links          {youtube/title YouTubeForm}
 
    ;ro/links               {:category/label (fn [this {:category/keys [label]}]
    ;                                          (control/set-parameter! this ::category label)

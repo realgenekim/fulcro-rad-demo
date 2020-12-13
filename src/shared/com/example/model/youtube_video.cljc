@@ -88,16 +88,17 @@
 
 
 
-;(pc/defresolver youtube-video-by-id [{:keys [db] :as env} {:session/keys [id] :as input}]
-;  {::pc/input #{:youtube-video/id}
-;   ::pc/output [:youtube-video/description :youtube-video/playlist-id :youtube-video/title
-;                :youtube-video/position :youtube-video/url :youtube-video/video-id]}
-;  ;(println "defresolver: input: " env input)
-;  (println "defresolver: youtube-video-by-id: id: " id)
-;  #?(:clj
-;     ;{:session/uuid "abc"
-;     ; :session/venue "abc"}))
-;     (queries/youtube-video-by-id env id)))
+(pc/defresolver youtube-video-by-id [{:keys [db] :as env} {:youtube-video/keys [id] :as input}]
+  {::pc/input #{:youtube-video/id}
+   ::pc/output [:youtube-video/description :youtube-video/playlist-id :youtube-video/title
+                :youtube-video/position :youtube-video/url :youtube-video/video-id]}
+  ;(println "defresolver: input: " env input)
+  (println "defresolver: youtube-video-by-id: id: " id)
+  #?(:clj
+     ;{:session/uuid "abc"
+     ; :session/venue "abc"}))
+     ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
+     (queries/youtube-video-by-id env id)))
 
 
 ; WARNING: make sure to add all model attributes here!
@@ -106,5 +107,5 @@
 ;item-name category description price in-stock all-items])
 
 #?(:clj
-   (def resolvers []));youtube-video-by-id]))
+   (def resolvers [youtube-video-by-id]))
 
