@@ -3,8 +3,13 @@
     [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
     [com.fulcrologic.rad.attributes-options :as ao]
     [com.wsscode.pathom.connect :as pc]
+    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     #?(:clj [com.example.components.database-queries :as queries])
     [taoensso.timbre :as log]))
+
+(defsc YouTubePlaylist [_ _]
+  {:query [:youtube-playlist/id :youtube-playlist/title]
+   :ident :youtube-playlist/id})
 
 ; who cares about the attrs: no one except for you
 ; it's just a map: you use them in reports and forms, to tell the forms/reports what to display
@@ -18,10 +23,36 @@
    ao/identities #{:youtube-video/id}
    ao/schema      :video})
 
+;(defattr playlist-id :youtube-video/playlist-id :ref
+;  {ao/cardinality :one
+;   ao/identities #{:youtube-video/id}
+;   ao/schema      :video})
+
 (defattr playlist-id :youtube-video/playlist-id :ref
-  {ao/cardinality :one
-   ao/identities #{:youtube-video/id}
-   ao/schema      :video})
+  {ao/target      :youtube-playlist/id
+   ao/cardinality :one
+   ao/schema      :video
+   ao/pc-input    #{:youtube-video/id}
+   ao/pc-output   [{:youtube-video/playlist-id [:youtube-playlist/title]}]
+   ao/pc-resolve  (fn [env {:youtube-video/keys [id] :as input}]
+                    ;(println "defattr3: id playlist-id: " id)
+                    (tap> (str "defattr6: id playlist-id: " id))
+                    (tap> input)
+                    ;{:youtube-video/playlist-id [{:youtube-playlist/title "abc"}]}
+                    #?(:clj
+                       (when-let [cid (queries/get-video-playlist env id)]
+                         (tap> cid)
+                         {:youtube-video/playlist-id [{:youtube-playlist/title cid}]}))),})
+
+; (defattr playlist :line-item/category :ref
+;  {ao/target      :category/id
+;   ao/pc-input    #{:line-item/id}
+;   ao/pc-output   [{:line-item/category [:category/id]}]
+;   ao/pc-resolve  (fn [env {:line-item/keys [id]}]
+;                    #?(:clj
+;                       (when-let [cid (queries/get-line-item-category env id)]
+;                         {:line-item/category {:category/id cid}})))
+;   ao/cardinality :one})
 
 (defattr title :youtube-video/title :string
   {ao/cardinality :one

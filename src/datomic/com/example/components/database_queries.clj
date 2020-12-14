@@ -192,13 +192,24 @@
                            :where
                            [?e :youtube-video/id ?id]] db id)]
         ;(println "db: " db)
-        (println "session: " session)
+        (println "youtube-video: " session)
         (ffirst session)))
     ;(->> ids
     ;     flatten
     ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
+(defn get-video-playlist [env id]
+  (log/info "get-video-playlist: id, playlist-id: " id)
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (first (d/q '[:find ?playlist-title
+                  :in $ ?id
+                  :where
+                  [?e :youtube-video/id ?id]
+                  [?e :youtube-video/playlist-id ?ep]
+                  [?ep :youtube-playlist/title ?playlist-title]]
+                db id))
+    (log/error "No database atom for production schema!")))
 
 
 

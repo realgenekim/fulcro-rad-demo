@@ -88,7 +88,8 @@
   (com.example.components.parser/parser com.example.components.config/config
                                         [{:youtube-video/all-videos
                                           [:youtube-video/id :youtube-video/video-id
-                                           :youtube-video/description :youtube-video/url]}])
+                                           :youtube-video/description :youtube-video/url
+                                           :youtube-playlist/title]}])
 
   ;(com.example.components.parser/parser com.example.components.config/config
   ;                                        [{session/:db/id 70368744177664139
@@ -103,8 +104,9 @@
 
   (com.example.components.parser/parser com.example.components.config/config
                                         [{[:youtube-video/id "UEx2azlZaF9NV1l1d1hDMGlVNUVBQjFyeUk2MllwUEhSOS43MTI1NDIwOTMwQjIxMzNG"]
-                                          [:youtube-video/id :youtube-video/video-id
+                                          [:youtube-video/id :youtube-video/video-id :youtube-video/playlist-id
                                            :youtube-video/description :youtube-video/url]}])
+
 
   ; ￼12:38PM IT WORKS!!  THANK YOU JAKUB!
 
