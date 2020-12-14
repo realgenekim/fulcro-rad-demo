@@ -139,7 +139,9 @@
   ;(if-let [db (some-> (get-in env [do/databases :main #_:video]) deref)])
   ;(if-let [db (some-> (get-in env [do/databases :production]) deref)]
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
-    (let [ids (d/q '[:find (pull ?s [*])
+    (let [ids (d/q '[:find (pull ?s [* {:youtube-video/playlist-id  [:db/id
+                                                                     :youtube-playlist/id
+                                                                     :youtube-playlist/title]}])
                      ;(let [ids (d/q '[:find ?s
                      :where
                      [?s :youtube-video/id _]] db)]
