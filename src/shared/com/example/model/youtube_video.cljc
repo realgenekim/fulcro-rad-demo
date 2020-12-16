@@ -21,6 +21,7 @@
 (defattr description :youtube-video/description :string
   {ao/cardinality :one
    ao/identities #{:youtube-video/id}
+   ao/style       :multi-line
    ao/schema      :video})
 
 ;(defattr playlist-id :youtube-video/playlist-id :ref
@@ -29,20 +30,20 @@
 ;   ao/schema      :video})
 
 (defattr playlist-id :youtube-video/playlist-id :ref
-  {ao/target      :youtube-playlist/id
+  {;ao/target      :youtube-playlist/id
    ao/cardinality :one
    ao/schema      :video
    ao/pc-input    #{:youtube-video/id}
-   ao/pc-output   [{:youtube-video/playlist-id [:youtube-playlist/title]}]
-   ao/pc-resolve  (fn [env {:youtube-video/keys [id] :as input}]
-                    ;(println "defattr3: id playlist-id: " id)
-                    (tap> (str "defattr6: id playlist-id: " id))
-                    (tap> input)
-                    ;{:youtube-video/playlist-id [{:youtube-playlist/title "abc"}]}
-                    #?(:clj
-                       (when-let [cid (queries/get-video-playlist env id)]
-                         (tap> cid)
-                         {:youtube-video/playlist-id [{:youtube-playlist/title cid}]}))),})
+   ao/pc-output   [{:youtube-video/playlist-id [:youtube-playlist/title]}]})
+   ;ao/pc-resolve  (fn [env {:youtube-video/keys [id] :as input}]
+   ;                 ;(println "defattr3: id playlist-id: " id)
+   ;                 (tap> (str "defattr6: id playlist-id: " id))
+   ;                 (tap> input)
+   ;                 ;{:youtube-video/playlist-id [{:youtube-playlist/title "abc"}]}
+   ;                 #?(:clj
+   ;                    (when-let [cid (queries/get-video-playlist env id)]
+   ;                      (tap> cid)
+   ;                      {:youtube-video/playlist-id [{:youtube-playlist/title cid}]}))),})
 
 ; (defattr playlist :line-item/category :ref
 ;  {ao/target      :category/id

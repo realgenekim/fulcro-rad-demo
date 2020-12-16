@@ -1,5 +1,5 @@
-{:org.immutant.web/config           {:port 3000
-                                     :host "localhost"}
+{:org.httpkit.server/config         {:port 3000
+                                     :ip   "localhost"}
 
  :com.fulcrologic.rad.database-adapters.datomic/databases
                                     {:main {:datomic/schema :production
@@ -54,8 +54,8 @@
                                      :log-responses? true}
 
  :taoensso.timbre/logging-config    {
-                                     :level        :debug
-                                     ;:level        :info
+                                     ;:level        :debug
+                                     :level        :info
                                      :ns-whitelist []
                                      :ns-blacklist ["com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool"
                                                     "com.mchange.v2.c3p0.stmt.GooGooStatementCache"

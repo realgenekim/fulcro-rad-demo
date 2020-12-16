@@ -3,6 +3,7 @@
     ;[com.example.model.item :as item]
     [com.example.model.session :as session]
     [com.fulcrologic.rad.picker-options :as picker-options]
+    #?(:cljs [com.fulcrologic.semantic-ui.collections.form.ui-form-text-area :refer [ui-form-text-area]])
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
        :cljs [com.fulcrologic.fulcro.dom :as dom])
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
@@ -26,7 +27,7 @@
                     ;session/id
                     youtube/title
                     youtube/video-id
-                    youtube/description
+                    youtube/description ; <===
                     youtube/url]
    ;youtube/playlist-id
    ;session/title
