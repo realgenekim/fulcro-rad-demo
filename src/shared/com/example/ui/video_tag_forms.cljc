@@ -18,34 +18,34 @@
     [com.example.model.video-tag :as video-tag]))
 
 
-;(form/defsc-form VideoTagForm [this props]
-;  {fo/id           youtube/id
-;   fo/attributes   [
-;                    ;session/id
-;                    youtube/title
-;                    youtube/video-id
-;                    youtube/description ; <===
-;                    ;youtube/playlist-id
-;                    youtube/url]
-;   ;youtube/playlist-id
-;   ;session/title
-;   ;;session/venue
-;   ;session/speakers
-;   ;;session/stype
-;   ;session/start-time-utc]
-;   ;fo/field-style  :pick-one
-;   ;fo/field-styles  {:item/category :pick-one}
-;   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
-;   ;                                  ::picker-options/query-component CategoryQuery
-;   ;                                  ::picker-options/options-xform   (fn [_ options] (mapv
-;   ;                                                                                     (fn [{:category/keys [id label]}]
-;   ;                                                                                       {:text (str label) :value [:category/id id]})
-;   ;                                                                                     (sort-by :category/label options)))
-;   ;                                  ::picker-options/cache-time-ms   30000}}
-;   fo/route-prefix "youtube"
-;   fo/title        "Edit YouTube Video"})
-;(dom/div :.ui.container.grid
-;  "Hello!"))
+(form/defsc-form VideoTagForm [this props]
+  {fo/id           video-tag/id
+   fo/attributes   [
+                    ;session/id
+                    video-tag/tag-name]
+                    ;youtube/video-id
+                    ;youtube/description ; <===
+                    ;youtube/playlist-id]
+                    ;youtube/url]
+   ;youtube/playlist-id
+   ;session/title
+   ;;session/venue
+   ;session/speakers
+   ;;session/stype
+   ;session/start-time-utc]
+   ;fo/field-style  :pick-one
+   ;fo/field-styles  {:item/category :pick-one}
+   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
+   ;                                  ::picker-options/query-component CategoryQuery
+   ;                                  ::picker-options/options-xform   (fn [_ options] (mapv
+   ;                                                                                     (fn [{:category/keys [id label]}]
+   ;                                                                                       {:text (str label) :value [:category/id id]})
+   ;                                                                                     (sort-by :category/label options)))
+   ;                                  ::picker-options/cache-time-ms   30000}}
+   fo/route-prefix "video-tag"
+   fo/title        "Edit Video Tag"})
+(dom/div :.ui.container.grid
+  "Hello!")
 
 
 (report/defsc-report VideoTagReport [this props]
@@ -88,7 +88,7 @@
                            :ascending?       true}
 
 
-   ;ro/form-links          {youtube/title YouTubeForm}
+   ro/form-links          {video-tag/tag-name VideoTagForm}
 
    ;ro/links               {:category/label (fn [this {:category/keys [label]}]
    ;                                          (control/set-parameter! this ::category label)
