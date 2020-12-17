@@ -33,7 +33,10 @@
 
 (defn setup-RAD [app]
   (rad-app/install-ui-controls! app sui/all-controls)
-  (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))
+  (report/install-formatter! app :boolean :affirmation
+                             (fn [_ value] (if value "yes" "no")))
+  (report/install-formatter! app :ref :youtube-playlist-id
+                             (fn [_ value] (or (:youtube-playlist/title value) "-"))))
 
 (defonce app (rad-app/fulcro-rad-app {}))
 
