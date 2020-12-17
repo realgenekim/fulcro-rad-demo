@@ -89,11 +89,20 @@
                                         [{:youtube-video/all-videos
                                           [:youtube-video/id :youtube-video/video-id
                                            :youtube-video/description :youtube-video/url
-                                           :youtube-playlist/title]}])
+                                           :youtube-playlist/title
+                                           :youtube-video/playlist-id]}])
 
   ;(com.example.components.parser/parser com.example.components.config/config
   ;                                        [{session/:db/id 70368744177664139
   ;                                          [:session/speakers]}])
+
+  ; tags
+
+  (restart)
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{:video-tag/all-tags
+                                          [:video-tag/id :video-tag/name]}])
 
   ; XXX: Jakub: I'm trying to get this to work...
   (restart)
@@ -101,6 +110,18 @@
   (com.example.components.parser/parser com.example.components.config/config
                                             [{[:session/uuid #uuid"8a481331-eb1d-4e5b-9d19-759da23cb674"]
                                               [:session/venue :session/speakers :session/start-time-utc]}])
+
+  ; {:session/conf-sched-id "5348024557502565-140"
+  ;                            :session/conf-id {:db/id 5348024557502565}
+  ;                            :session/venue "Track 2"
+  ;                            :session/title "Fast Product Development in Digital Banking Without Sacrificing Security (Bancolombia)"
+  ;                            :session/sched-id 140
+  ;                            :session/uuid #uuid "1b03d496-ce5e-4da5-baa9-a5b3a92555df"
+  ;                            :session/start-time-utc #inst "2020-10-15T18:40:00.000-00:00"
+  ;                            :session/type {:db/id 15942918602752074
+  ;                                           :db/ident :session-type/track}
+  ;                            :db/id 71683760084484231
+  ;                            :session/speakers "Rafael Alvarez; Camilo Piedrahita"}
 
   (com.example.components.parser/parser com.example.components.config/config
                                         [{[:youtube-video/id "UEx2azlZaF9NV1l1d1hDMGlVNUVBQjFyeUk2MllwUEhSOS43MTI1NDIwOTMwQjIxMzNG"]

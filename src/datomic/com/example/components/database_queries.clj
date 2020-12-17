@@ -213,6 +213,25 @@
                 db id))
     (log/error "No database atom for production schema!")))
 
+;
+; video tags
+;
+
+(defn get-all-video-tags
+  [env query-params]
+  (println "get-all-video-tags...")
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [tags (d/q '[:find (pull ?e [*])
+                      :where
+                      [?e :video-tag/id _]] db)]
+      ;(println "db: " db)
+      ;(println "tags: " tags)
+      ;(tap> tags)
+      (->> tags
+           ;(take 5)
+           flatten
+           (#(apply vector %))))
+    (log/error "No database atom for production schema!")))
 
 
 

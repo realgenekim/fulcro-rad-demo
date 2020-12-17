@@ -1,4 +1,4 @@
-(ns com.example.ui.youtube-forms
+(ns com.example.ui.video-tag-forms
   (:require
     ;[com.example.model.item :as item]
     [com.example.model.session :as session]
@@ -14,55 +14,50 @@
     [com.fulcrologic.rad.report-options :as ro]
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
-    [com.example.model.youtube-video :as youtube]))
-    ;[com.fulcrologic.fulcro.dom-server :as dom]))
-
-;(defsc CategoryQuery [_ _]
-;  {:query [:category/id :category/label]
-;   :ident :category/id})
-
-(form/defsc-form YouTubeForm [this props]
-  {fo/id           youtube/id
-   fo/attributes   [
-                    ;session/id
-                    youtube/title
-                    youtube/video-id
-                    youtube/description ; <===
-                    ;youtube/playlist-id
-                    youtube/url]
-   ;youtube/playlist-id
-   ;session/title
-   ;;session/venue
-   ;session/speakers
-   ;;session/stype
-   ;session/start-time-utc]
-   ;fo/field-style  :pick-one
-   ;fo/field-styles  {:item/category :pick-one}
-   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
-   ;                                  ::picker-options/query-component CategoryQuery
-   ;                                  ::picker-options/options-xform   (fn [_ options] (mapv
-   ;                                                                                     (fn [{:category/keys [id label]}]
-   ;                                                                                       {:text (str label) :value [:category/id id]})
-   ;                                                                                     (sort-by :category/label options)))
-   ;                                  ::picker-options/cache-time-ms   30000}}
-   fo/route-prefix "youtube"
-   fo/title        "Edit YouTube Video"})
-  ;(dom/div :.ui.container.grid
-  ;  "Hello!"))
+    [com.example.model.youtube-video :as youtube]
+    [com.example.model.video-tag :as video-tag]))
 
 
-(report/defsc-report YouTubeReport [this props]
-  {ro/title               "YouTube Report"
-   ro/source-attribute    :youtube-video/all-videos
-   ro/row-pk              youtube/id
-   ro/columns             [youtube/position youtube/title
-                           youtube/description youtube/playlist-id  youtube/video-id
-                           youtube/url]
+;(form/defsc-form VideoTagForm [this props]
+;  {fo/id           youtube/id
+;   fo/attributes   [
+;                    ;session/id
+;                    youtube/title
+;                    youtube/video-id
+;                    youtube/description ; <===
+;                    ;youtube/playlist-id
+;                    youtube/url]
+;   ;youtube/playlist-id
+;   ;session/title
+;   ;;session/venue
+;   ;session/speakers
+;   ;;session/stype
+;   ;session/start-time-utc]
+;   ;fo/field-style  :pick-one
+;   ;fo/field-styles  {:item/category :pick-one}
+;   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
+;   ;                                  ::picker-options/query-component CategoryQuery
+;   ;                                  ::picker-options/options-xform   (fn [_ options] (mapv
+;   ;                                                                                     (fn [{:category/keys [id label]}]
+;   ;                                                                                       {:text (str label) :value [:category/id id]})
+;   ;                                                                                     (sort-by :category/label options)))
+;   ;                                  ::picker-options/cache-time-ms   30000}}
+;   fo/route-prefix "youtube"
+;   fo/title        "Edit YouTube Video"})
+;(dom/div :.ui.container.grid
+;  "Hello!"))
+
+
+(report/defsc-report VideoTagReport [this props]
+  {ro/title               "Tags Report"
+   ro/source-attribute    :video-tag/all-tags
+   ro/row-pk              video-tag/id
+   ro/columns             [video-tag/tag-name]
 
    ro/paginate?           true
    ro/page-size           20
 
-                           ;session/speakers session/stype session/title session/venue session/start-time-utc]
+   ;session/speakers session/stype session/title session/venue session/start-time-utc]
 
    ;ro/row-visible?        (fn [filter-parameters row] (let [{::keys [category]} filter-parameters
    ;                                                         row-category (get row :category/label)]
@@ -86,25 +81,24 @@
    ;                                                                           categories))}}
 
    ; If defined: sort is applied to rows after filtering (client-side)
-   ro/initial-sort-params {:sort-by          :youtube-video/position
-                           :sortable-columns #{:youtube-video/playlist-id
-                                               :youtube-video/title
-                                               :youtube-video/position}
-                                               ;:session/title :session/speakers :session/venue}
+   ro/initial-sort-params {:sort-by          :video-tag/name
+                           ;:sortable-columns #{}
+                           ;:session/title :session/speakers :session/venue}
                            ; :session/stype
                            :ascending?       true}
 
 
-   ro/form-links          {youtube/title YouTubeForm}
+   ;ro/form-links          {youtube/title YouTubeForm}
 
    ;ro/links               {:category/label (fn [this {:category/keys [label]}]
    ;                                          (control/set-parameter! this ::category label)
    ;                                          (report/filter-rows! this))}
 
    ro/run-on-mount?       true
-   ro/route               "youtube-report"})
+   ro/route               "video-tag"})
 
 
 (comment
-  (comp/get-query YouTubeReport)
+  (comp/get-query VideoTagReport)
   (comp/get-query YouTubeForm))
+
