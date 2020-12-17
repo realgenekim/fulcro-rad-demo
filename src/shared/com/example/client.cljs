@@ -36,7 +36,9 @@
   (report/install-formatter! app :boolean :affirmation
                              (fn [_ value] (if value "yes" "no")))
   (report/install-formatter! app :ref :youtube-playlist-id
-                             (fn [_ value] (or (:youtube-playlist/title value) "-"))))
+                             (fn [_ value] (or (:youtube-playlist/title value) "-")))
+
+  ,)
 
 (defonce app (rad-app/fulcro-rad-app {}))
 

@@ -53,8 +53,7 @@
                                      :log-requests?  true
                                      :log-responses? true}
 
- :taoensso.timbre/logging-config    {
-                                     ;:level        :debug
+ :taoensso.timbre/logging-config    {;:level        :debug
                                      :level        :info
                                      :ns-whitelist []
                                      :ns-blacklist ["com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool"
@@ -90,3 +89,4 @@
                                                     "org.quartz.plugins.history.LoggingTriggerHistoryPlugin"
                                                     "org.quartz.utils.UpdateChecker"
                                                     "shadow.cljs.devtools.server.worker.impl"]}}
+

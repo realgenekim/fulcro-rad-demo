@@ -87,6 +87,11 @@
                            ; :session/stype
                            :ascending?       true}
 
+   ro/controls            {::new-tag   {:type   :button
+                                        :local? true
+                                        :label  "New Tag"
+                                        :action (fn [this _] (form/create! this VideoTagForm))}}
+
 
    ro/form-links          {video-tag/tag-name VideoTagForm}
 

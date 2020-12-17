@@ -25,6 +25,8 @@
     [com.fulcrologic.rad.routing :as rroute]
     [taoensso.timbre :as log]))
 
+; (com.fulcrologic.fulcro.routing.dynamic-routing/current-route com.example.client/app)
+
 (defsc LandingPage [this props]
   {:query         ['*]
    :ident         (fn [] [:component/id ::LandingPage])

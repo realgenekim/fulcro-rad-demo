@@ -2,8 +2,11 @@
   (:require
     [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
     [com.fulcrologic.rad.attributes-options :as ao]
+    [com.fulcrologic.rad.report-options :as ro]
     [com.wsscode.pathom.connect :as pc]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
+       :cljs [com.fulcrologic.fulcro.dom :as dom])
     #?(:clj [com.example.components.database-queries :as queries])
     [taoensso.timbre :as log]))
 
@@ -30,9 +33,11 @@
 ;   ao/schema      :video})
 
 (defattr playlist-id :youtube-video/playlist-id :ref
-  {;ao/target      :youtube-playlist/id
+  {ao/target      :youtube-playlist/id
    ao/cardinality :one
+   ao/style       :youtube-playlist-id
    ao/schema      :video
+   ; these below are ignored when there is no resolver?
    ao/pc-input    #{:youtube-video/id}
    ao/pc-output   [{:youtube-video/playlist-id [:youtube-playlist/title]}]})
    ;ao/pc-resolve  (fn [env {:youtube-video/keys [id] :as input}]
@@ -63,7 +68,14 @@
 (defattr url :youtube-video/url :string
   {ao/cardinality :one
    ao/identities #{:youtube-video/id}
-   ao/schema      :video})
+   ao/style       :url
+   ao/schema      :video
+   ro/field-formatter (fn [this v] (dom/a
+                                     {:href v :target "_blank"}
+                                     (str v)))})
+
+
+; (fn [this v] (dom/a {:onClick #(form/edit! this AccountForm (-> this comp/props :account/id)} (str v)))}
 
 (defattr video-id :youtube-video/video-id :string
   {ao/cardinality :one
