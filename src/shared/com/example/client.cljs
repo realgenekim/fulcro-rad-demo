@@ -3,6 +3,7 @@
     [com.example.ui :as ui :refer [Root]]
     [com.example.ui.login-dialog :refer [LoginForm]]
     [com.fulcrologic.fulcro.application :as app]
+    [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.fulcro.mutations :as m]
     [com.fulcrologic.rad.application :as rad-app]
     [com.fulcrologic.rad.report :as report]
@@ -12,43 +13,55 @@
     [taoensso.timbre :as log]
     [taoensso.tufte :as tufte :refer [profile]]
     [com.fulcrologic.rad.type-support.date-time :as datetime]
+    [com.fulcrologic.fulcro.algorithms.tx-processing.synchronous-tx-processing :as stx]
     [com.fulcrologic.rad.routing.html5-history :as hist5 :refer [html5-history]]
     [com.fulcrologic.rad.routing.history :as history]
-    [com.fulcrologic.rad.routing :as routing]))
+    [com.fulcrologic.rad.routing :as routing]
+    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
 
 (defonce stats-accumulator
-  (tufte/add-accumulating-handler! {:ns-pattern "*"}))
+         (tufte/add-accumulating-handler! {:ns-pattern "*"}))
 
 (m/defmutation fix-route
   "Mutation. Called after auth startup. Looks at the session. If the user is not logged in, it triggers authentication"
   [_]
   (action [{:keys [app]}]
-    (let [logged-in (auth/verified-authorities app)]
-      (if (empty? logged-in)
-        (routing/route-to! app ui/LandingPage {})
-        (hist5/restore-route! app ui/LandingPage {})))))
+          (let [logged-in (auth/verified-authorities app)]
+            (if (empty? logged-in)
+              (routing/route-to! app ui/LandingPage {})
+              (hist5/restore-route! app ui/LandingPage {})))))
 
-(defonce app (rad-app/fulcro-rad-app
-               {:client-did-mount (fn [app]
-                                    (auth/start! app [LoginForm] {:after-session-check `fix-route}))}))
+(defn setup-RAD [app]
+  (rad-app/install-ui-controls! app sui/all-controls)
+  (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))
+
+(defonce app (rad-app/fulcro-rad-app {}))
 
 (defn refresh []
   ;; hot code reload of installed controls
   (log/info "Reinstalling controls")
-  (rad-app/install-ui-controls! app sui/all-controls)
-  (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no")))
+  (setup-RAD app)
+  (comp/refresh-dynamic-queries! app)
   (app/mount! app Root "app"))
 
 (defn init []
-  (log/info "Starting App")
   (log/merge-config! {:output-fn prefix-output-fn
                       :appenders {:console (console-appender)}})
-  ;; a default tz until they log in
+  (log/info "Starting App")
+  ;; default time zone (should be changed at login for given user)
   (datetime/set-timezone! "America/Los_Angeles")
+  ;; Avoid startup async timing issues by pre-initializing things before mount
+  (app/set-root! app Root {:initialize-state? true})
+  (dr/initialize! app)
+  (setup-RAD app)
+  (dr/change-route! app ["landing-page"])
   (history/install-route-history! app (html5-history))
-  (rad-app/install-ui-controls! app sui/all-controls)
-  (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no")))
-  (app/mount! app Root "app"))
+  (auth/start! app [LoginForm] {:after-session-check `fix-route})
+  (app/mount! app Root "app" {:initialize-state? false}))
+
+(comment)
+
+
 
 (defonce performance-stats (tufte/add-accumulating-handler! {}))
 
