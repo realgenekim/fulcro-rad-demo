@@ -24,7 +24,8 @@
     [com.fulcrologic.rad.type-support.date-time :as dt]
     [com.example.model.session :as session]
     [com.example.model.youtube-video :as youtube]
-    [com.example.model.video-tag :as video-tag]))
+    [com.example.model.video-tag :as video-tag]
+    [com.example.model.mutations :as mymutations]))
 
 (defstate parser
   :start
@@ -67,7 +68,8 @@
      invoice/resolvers
      item/resolvers
      sales/resolvers
-     timezone/resolvers]))
+     timezone/resolvers
+     mymutations/resolvers]))
 
 
 
