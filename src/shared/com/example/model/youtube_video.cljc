@@ -70,9 +70,9 @@
    ao/identities #{:youtube-video/id}
    ao/style       :url
    ao/schema      :video
-   ro/field-formatter (fn [this v] (dom/a
-                                     {:href v :target "_blank"}
-                                     (str v)))})
+   ro/column-formatter (fn [this v] (dom/a
+                                      {:href v :target "_blank"}
+                                      (str v)))})
 
 
 ; (fn [this v] (dom/a {:onClick #(form/edit! this AccountForm (-> this comp/props :account/id)} (str v)))}

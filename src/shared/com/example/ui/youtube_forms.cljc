@@ -14,7 +14,8 @@
     [com.fulcrologic.rad.report-options :as ro]
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
-    [com.example.model.youtube-video :as youtube]))
+    [com.example.model.youtube-video :as youtube]
+    [com.example.model.mutations :as mymutations]))
     ;[com.fulcrologic.fulcro.dom-server :as dom]))
 
 ;(defsc CategoryQuery [_ _]
@@ -56,13 +57,13 @@
    ro/source-attribute    :youtube-video/all-videos
    ro/row-pk              youtube/id
    ro/columns             [youtube/position youtube/title
-                           youtube/description youtube/playlist-id  youtube/video-id
+                           youtube/description youtube/playlist-id youtube/video-id
                            youtube/url]
 
    ro/paginate?           true
    ro/page-size           20
 
-                           ;session/speakers session/stype session/title session/venue session/start-time-utc]
+   ;session/speakers session/stype session/title session/venue session/start-time-utc]
 
    ;ro/row-visible?        (fn [filter-parameters row] (let [{::keys [category]} filter-parameters
    ;                                                         row-category (get row :category/label)]
@@ -90,9 +91,21 @@
                            :sortable-columns #{:youtube-video/playlist-id
                                                :youtube-video/title
                                                :youtube-video/position}
-                                               ;:session/title :session/speakers :session/venue}
+                           ;:session/title :session/speakers :session/venue}
                            ; :session/stype
                            :ascending?       true}
+
+   ro/row-actions         [{:label  "Select"
+                            :action (fn [report-instance row]
+                                      (println "from youtube-row-actions: " row)
+                                      ;#?{:cljs (js/console.log row)}
+                                      (comp/transact!
+                                        report-instance
+                                        [(mymutations/fetch-vimeo-entry (select-keys row
+                                                                                     [:youtube-video/id]))]))}]
+   ;(comp/transact!
+   ;  report-instance
+   ;  '[(mutations/set-selected-org {:orgnr organization-number})]))}]
 
 
    ro/form-links          {youtube/title YouTubeForm}
