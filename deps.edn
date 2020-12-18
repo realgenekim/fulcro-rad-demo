@@ -20,7 +20,7 @@
            http-kit/http-kit                      {:mvn/version "2.5.0"}
 
            ;; Unified logging for server
-           com.taoensso/timbre                    {:mvn/version "5.0.0"}
+           com.taoensso/timbre                    {:mvn/version "4.10.0"}
            org.slf4j/log4j-over-slf4j             {:mvn/version "1.7.30"} ; auto sends log4j to slf4j
            org.slf4j/jul-to-slf4j                 {:mvn/version "1.7.30"} ; auto sends java.util.logging to slf4j
            org.slf4j/jcl-over-slf4j               {:mvn/version "1.7.30"} ; auto-sends java.common.logging to slf4j
