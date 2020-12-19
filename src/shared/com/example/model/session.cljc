@@ -56,6 +56,12 @@
    ao/identities #{:session/uuid}
    ao/schema      :video})
 
+(defattr tags :session/tags :ref
+  {ao/target      :video-tag/id
+   ao/cardinality :many
+   ao/identities #{:session/uuid}
+   ao/schema      :video})
+
 (comment
 
   #:db{:id {:session/conf-sched-id "5348024557502565-30",
@@ -92,7 +98,7 @@
 
 ; WARNING: make sure to add all model attributes here!
 
-(def attributes [id title speakers start-time-utc all-sessions])
+(def attributes [id title speakers start-time-utc all-sessions tags])
                  ;item-name category description price in-stock all-items])
 
 #?(:clj
