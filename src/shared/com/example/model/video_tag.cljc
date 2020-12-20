@@ -2,9 +2,12 @@
   (:require
     [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
     [com.fulcrologic.rad.attributes-options :as ao]
+    [com.fulcrologic.rad.report-options :as ro]
     [com.wsscode.pathom.connect :as pc]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     #?(:clj [com.example.components.database-queries :as queries])
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
+       :cljs [com.fulcrologic.fulcro.dom :as dom])
     [taoensso.timbre :as log]))
 
 ; who cares about the attrs: no one except for you
@@ -13,6 +16,8 @@
 (defattr id :video-tag/id :uuid
   {ao/identity? true
    ao/schema    :video})
+   ;ro/column-formatter (fn [this v]
+   ;                      (str v))})
 
 (defattr tag-name :video-tag/name :string
   {ao/cardinality :one
@@ -29,7 +34,7 @@
 
 (defattr all-tags :video-tag/all-tags :ref
   {ao/target     :video-tag/id
-   ao/pc-output  [{:video-tag/all-tags [:video-tag/id]}]
+   ao/pc-output  [{:video-tag/all-tags [:video-tag/id :video-tag/name]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    (println "defattr all-tags2: " env)
                    #?(:clj
