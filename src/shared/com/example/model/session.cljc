@@ -2,8 +2,11 @@
   (:require
     [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
     [com.fulcrologic.rad.attributes-options :as ao]
+    [com.fulcrologic.rad.report-options :as ro]
     [com.wsscode.pathom.connect :as pc]
     #?(:clj [com.example.components.database-queries :as queries])
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
+       :cljs [com.fulcrologic.fulcro.dom :as dom])
     [taoensso.timbre :as log]))
 
 ; to enable Fulcro Inspector
@@ -57,22 +60,34 @@
    ao/schema      :video})
 
 (defattr tags :session/tags :ref
-  {ao/target      :video-tag/id
-   ao/cardinality :many
-   ao/identities #{:session/uuid}
-   ao/schema      :video})
+  {ao/target           :video-tag/id
+   ao/cardinality      :many
+   ao/identities       #{:session/uuid}
+   ao/schema           :video
+   ro/column-formatter (fn [this tags]
+                         (println "session/tags: column-formatter: " tags)
+                         (clojure.string/join ", "
+                                              (for [t tags]
+                                                (str (:video-tag/name t)))))})
 
 (comment
 
-  #:db{:id {:session/conf-sched-id "5348024557502565-30",
-            :session/conf-id #:db{:id 5348024557502565},
-            :session/venue "All Tracks",
-            :session/title "Closing Remarks",
-            :session/sched-id 30,
-            :session/start-time-utc #inst"2020-10-15T00:15:00.000-00:00",
-            :session/type #:db{:id 9649314045362249, :ident :session-type/plenary},
-            :db/id 71521032363573428,
-            :session/speakers "Gene Kim; Jeff Gallimore"}})
+  {:session/conf-sched-id "5348024557502565-119",
+   :session/conf-id {:db/id 5348024557502565, :conference/name "Vegas-Virtual 2020"},
+   :session/venue "Track 3",
+   :session/title "#Culture Stole My OKR's! (Nationwide Building Society)",
+   :session/sched-id 119,
+   :session/tags [{:db/id 12947848929677702
+                   :video-tag/id #uuid "febb25e2-f270-46e7-8355-03f552e84962"
+                   :video-tag/name "Leadership"}
+                  {:db/id 55111920831631254
+                   :video-tag/id #uuid "5c2fed3a-a649-4b0f-ae02-bf2764c96df8"
+                   :video-tag/name "Experience Report"}]
+   :session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2",
+   :session/start-time-utc #inst"2020-10-14T18:35:00.000-00:00",
+   :session/type #:db{:id 15942918602752074, :ident :session-type/track},
+   :db/id 2291382232285303,
+   :session/speakers "Peter Lear; Kimberley Wilson"})
 
 
 (defattr all-sessions :session/all-sessions :ref
