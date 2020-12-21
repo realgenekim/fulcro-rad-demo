@@ -50,9 +50,14 @@
    ao/schema      :video})
 
 (defattr stype :session/type :ref
-  {ao/cardinality :one
-   ao/identities #{:session/uuid}
-   ao/schema      :video})
+  {ao/cardinality      :one
+   ao/identities       #{:session/uuid}
+   ao/schema           :video
+   ro/column-formatter (fn [_ value]
+                         (println value)
+                         (or (str (:db/ident value))
+                             "-"))})
+
 
 (defattr speakers :session/speakers :string
   {ao/cardinality :one
