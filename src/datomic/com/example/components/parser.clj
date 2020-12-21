@@ -25,6 +25,7 @@
     [com.example.model.session :as session]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.video-tag :as video-tag]
+    [com.example.model.session-tag :as session-tag]
     [com.example.model.mutations :as mymutations]))
 
 (defstate parser
@@ -65,6 +66,7 @@
      session/resolvers
      youtube/resolvers
      video-tag/resolvers
+     session-tag/resolvers
      invoice/resolvers
      item/resolvers
      sales/resolvers

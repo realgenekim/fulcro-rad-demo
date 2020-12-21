@@ -129,6 +129,13 @@
                                           [:youtube-video/id :youtube-video/video-id :youtube-video/playlist-id
                                            :youtube-video/description :youtube-video/url]}])
 
+  (restart)
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{:session-tag/all-session-tags
+                                          [:session-tag/id
+                                           :session-tag/session-id-2
+                                           :session-tag/tag-id-2]}])
+
 
   ; ￼12:38PM IT WORKS!!  THANK YOU JAKUB!
 

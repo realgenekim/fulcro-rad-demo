@@ -13,6 +13,7 @@
     [com.example.model.session :as session]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.video-tag :as vtag]
+    [com.example.model.session-tag :as session-tag]
     ;
     [com.fulcrologic.rad.attributes :as attr]))
 
@@ -28,17 +29,16 @@
                            timezone/attributes
                            session/attributes
                            youtube/attributes
-                           vtag/attributes)))
+                           vtag/attributes
+                           session-tag/attributes)))
 
 ; XXX: delete this?  no, we need it
 (def all-video-attributes (vec (concat
                                  session/attributes
                                  youtube/attributes
-                                 vtag/attributes)))
+                                 vtag/attributes
+                                 session-tag/attributes)))
 
-
-;(def all-attributes2 (vec (concat
-;                            session/attributes)))
 
 
 (def all-attribute-validator (attr/make-attribute-validator all-attributes))
