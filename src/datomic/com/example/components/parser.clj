@@ -26,7 +26,16 @@
     [com.example.model.youtube-video :as youtube]
     [com.example.model.video-tag :as video-tag]
     [com.example.model.session-tag :as session-tag]
-    [com.example.model.mutations :as mymutations]))
+    [com.example.model.mutations :as mymutations]
+    [com.wsscode.pathom.connect :as pc]))
+
+(pc/defresolver index-explorer [{::pc/keys [indexes]} _]
+                {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
+                 ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
+                {:com.wsscode.pathom.viz.index-explorer/index
+                 (p/transduce-maps
+                   (remove (comp #{::pc/resolve ::pc/mutate} key))
+                   indexes)})
 
 (defstate parser
   :start
@@ -71,6 +80,7 @@
      item/resolvers
      sales/resolvers
      timezone/resolvers
+     index-explorer
      mymutations/resolvers]))
 
 
