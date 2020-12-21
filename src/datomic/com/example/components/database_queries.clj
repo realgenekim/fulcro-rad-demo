@@ -111,7 +111,9 @@
   ;(if-let [db (some-> (get-in env [do/databases :main #_:video]) deref)])
   ;(if-let [db (some-> (get-in env [do/databases :production]) deref)]
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
-    (let [ids (d/q '[:find (pull ?s [*])
+    (let [ids (d/q '[:find (pull ?s [* {:session/tags  [:db/id
+                                                        :video-tag/id
+                                                        :video-tag/name]}])
                      ;(let [ids (d/q '[:find ?s
                      :where
                      [?s :session/title _]] db)]
@@ -167,7 +169,9 @@
       (log/info "get-session-from-uuid: id: " uuid)
       ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
       ;(log/info "get-session-from-uuid: env: " env)
-      (let [session (d/q '[:find (pull ?e [*])
+      (let [session (d/q '[:find (pull ?e [* {:session/tags  [:db/id
+                                                              :video-tag/id
+                                                              :video-tag/name]}])
                            :in $ ?uuid
                            ;(let [ids (d/q '[:find ?s
                            :where
@@ -226,7 +230,7 @@
                       [?e :video-tag/id _]] db)]
       ;(println "db: " db)
       ;(println "tags: " tags)
-      ;(tap> tags)
+      (tap> tags)
       (->> tags
            ;(take 5)
            flatten

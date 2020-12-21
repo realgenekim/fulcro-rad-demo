@@ -17,35 +17,45 @@
     [com.example.model.youtube-video :as youtube]
     [com.example.model.video-tag :as video-tag]))
 
+(defsc TagsQuery [_ _]
+  {:query [:video-tag/id :video-tag/name]
+   :ident :video-tag/id})
 
+
+; this is to edit the video tags
 (form/defsc-form VideoTagForm [this props]
   {fo/id           video-tag/id
-   fo/attributes   [
-                    ;session/id
-                    video-tag/tag-name]
-                    ;youtube/video-id
-                    ;youtube/description ; <===
-                    ;youtube/playlist-id]
-                    ;youtube/url]
-   ;youtube/playlist-id
-   ;session/title
-   ;;session/venue
-   ;session/speakers
-   ;;session/stype
-   ;session/start-time-utc]
-   ;fo/field-style  :pick-one
-   ;fo/field-styles  {:item/category :pick-one}
-   ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
-   ;                                  ::picker-options/query-component CategoryQuery
-   ;                                  ::picker-options/options-xform   (fn [_ options] (mapv
-   ;                                                                                     (fn [{:category/keys [id label]}]
-   ;                                                                                       {:text (str label) :value [:category/id id]})
-   ;                                                                                     (sort-by :category/label options)))
-   ;                                  ::picker-options/cache-time-ms   30000}}
+   fo/attributes   [video-tag/tag-name]
    fo/route-prefix "video-tag"
    fo/title        "Edit Video Tag"})
-(dom/div :.ui.container.grid
-  "Hello!")
+
+;(dom/div :.ui.container.grid
+;  "Hello!")
+
+; this is to associate tags with sessions
+(form/defsc-form VideoTagsSubForm [this props]
+  {fo/id           video-tag/id
+   fo/attributes   [video-tag/tag-name]
+   fo/field-styles  {:video-tag/id :pick-one}
+   fo/field-options {:video-tag/id
+                     {::picker-options/query-key       :video-tag/all-tags
+                      ::picker-options/query-component TagsQuery
+                                                      ;(fn [_ options]
+                                                      ;  (mapv
+                                                      ;    (fn [{:category/keys [id label]}]
+                                                      ;      {:text (str label) :value [:category/id id]}
+                                                      ;      (sort-by :category/label options))))
+                      ::picker-options/options-xform
+                          (fn [_ options]
+                            (println "video-tag: ::picker-options/options-xform: " options)
+                            (mapv
+                              (fn [{:video-tag/keys [id name]}]
+                                (println "video-tag: ::picker-options/options-xform: " id name)
+                                {:text (str name) :value [:video-tag/id id]})
+                              (sort-by :video-tag/name options)))
+                      ::picker-options/cache-time-ms   30000}}
+   fo/route-prefix "session-video-tag"
+   fo/title        "Edit Session Video Tags"})
 
 
 (report/defsc-report VideoTagReport [this props]

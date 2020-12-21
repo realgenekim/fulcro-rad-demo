@@ -37,9 +37,9 @@
    ao/cardinality :one
    ao/style       :youtube-playlist-id
    ao/schema      :video
-   ; these below are ignored when there is no resolver?
-   ao/pc-input    #{:youtube-video/id}
-   ao/pc-output   [{:youtube-video/playlist-id [:youtube-playlist/title]}]})
+   ro/column-formatter (fn [_ value]
+                         (or (:youtube-playlist/title value) "-"))})
+
    ;ao/pc-resolve  (fn [env {:youtube-video/keys [id] :as input}]
    ;                 ;(println "defattr3: id playlist-id: " id)
    ;                 (tap> (str "defattr6: id playlist-id: " id))

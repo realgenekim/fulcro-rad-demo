@@ -35,8 +35,11 @@
   (rad-app/install-ui-controls! app sui/all-controls)
   (report/install-formatter! app :boolean :affirmation
                              (fn [_ value] (if value "yes" "no")))
-  (report/install-formatter! app :ref :youtube-playlist-id
-                             (fn [_ value] (or (:youtube-playlist/title value) "-")))
+  ; instead of here, we use ro/column-formatter in the model files
+  ;(report/install-formatter! app :ref :youtube-playlist-id
+  ;                           (fn [_ value] (or (:youtube-playlist/title value) "-")))
+  ;(report/install-formatter! app :ref :video-tag/id
+  ;                           (fn [_ value] (or (:video-tag/name value) "-")))
 
   ,)
 

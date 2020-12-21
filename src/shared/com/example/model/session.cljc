@@ -65,7 +65,7 @@
    ao/identities       #{:session/uuid}
    ao/schema           :video
    ro/column-formatter (fn [this tags]
-                         (println "session/tags: column-formatter: " tags)
+                         ;(println "session/tags: column-formatter: " tags)
                          (clojure.string/join ", "
                                               (for [t tags]
                                                 (str (:video-tag/name t)))))})
