@@ -29,8 +29,8 @@
 
    fo/subforms     {:session/tags {fo/ui          video-tag-form/SessionTagsSubForm
                                    fo/can-delete? (fn [_ _] true)
-                                   fo/can-add?    (fn [_ v]
-                                                    (println "can add? " (clojure.pprint/pprint v))
+                                   fo/can-add?    (fn [this v]
+                                                    (println "can add? v: " (clojure.pprint/pprint v))
                                                     true)}}
    ;fo/field-styles  {:item/category :pick-one}
    ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories

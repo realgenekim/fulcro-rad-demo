@@ -20,7 +20,8 @@
     [cljs.pprint :as pp]))
 
 (defsc TagsQuery [_ _]
-  {:query [:session-tag/id :session-tag/session :session-tag/session-id-2 :session-tag/tag-id-2]
+  {:query [:session-tag/id :session-tag/session :session-tag/session-id-2 :session-tag/tag-id-2
+           :video-tag/id :video-tag/name]
    :ident :session-tag/id})
 
 
@@ -41,7 +42,8 @@
 ; this is to associate tags with sessions
 (form/defsc-form SessionTagsSubForm [this props]
   {fo/id           session-tag/id
-   fo/attributes   [session-tag/tag-id-2]
+   fo/query-inclusion [:video-tag/id :video-tag/name]
+   fo/attributes   [video-tag/tag-name]
    fo/triggers     {:derive-fields (fn [new-form-tree]
                                      (println "derived")
                                      (create-tag-names new-form-tree))}
