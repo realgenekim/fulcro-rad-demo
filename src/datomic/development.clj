@@ -242,6 +242,56 @@
   ;                                                                  {{:session/tags [:session-tag/id :session-tag/tag-id-2 :video-tag/id]} nil}}}
 
 
+  (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+             [:session/speakers
+              :session/tags]}])
+
+  ; => {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] {:session/speakers "Peter Lear; Kimberley Wilson"
+  ;                                                                  :session/tags [{:db/id 2713594698338703
+  ;                                                                                  :session-tag/id #uuid "a6d956fb-a6c7-4922-9e8b-2a05d000dc1a"
+  ;                                                                                  :session-tag/tag-id-2 #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                                  :session-tag/session-eid-2 {:db/id 2291382232285303
+  ;                                                                                                              :session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"
+  ;                                                                                                              :session/title "#Culture Stole My OKR's! (Nationwide Building Society)"}
+  ;                                                                                  :session-tag/tag-eid-2 {:db/id 34199209671332235
+  ;                                                                                                          :video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                                                          :video-tag/name "Leadership"}}
+  ;                                                                                 {:db/id 42282819158741392
+  ;                                                                                  :session-tag/id #uuid "8f916b65-9346-4119-9dc7-8239f83f8597"
+  ;                                                                                  :session-tag/tag-id-2 #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
+  ;                                                                                  :session-tag/session-eid-2 {:db/id 2291382232285303
+  ;                                                                                                              :session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"
+  ;                                                                                                              :session/title "#Culture Stole My OKR's! (Nationwide Building Society)"}
+  ;                                                                                  :session-tag/tag-eid-2 {:db/id 42282819158741389
+  ;                                                                                                          :video-tag/id #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
+  ;                                                                                                          :video-tag/name "Structure and Dynamics"}}]}}
+
+  ; query 3c: query just session and its tags
+
+  (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+             [:session/tags]}])
+
+  ; => {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] {:session/tags [{:session-tag/id #uuid "a6d956fb-a6c7-4922-9e8b-2a05d000dc1a"}
+  ;                                                                                 {:session-tag/id #uuid "8f916b65-9346-4119-9dc7-8239f83f8597"}]}}
+
+
+  ; query 3d: OMG, it works!
+
+  (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+             [:session/speakers
+              {:session/tags
+               [:session-tag/id :session-tag/tag-id-2
+                :video-tag/id :video-tag/name]}]}])
+
+  ; => {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] {:session/speakers "Peter Lear; Kimberley Wilson"
+  ;                                                                  :session/tags [{:session-tag/id #uuid "a6d956fb-a6c7-4922-9e8b-2a05d000dc1a"
+  ;                                                                                  :session-tag/tag-id-2 #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                                  :video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                                  :video-tag/name "Leadership"}
+  ;                                                                                 {:session-tag/id #uuid "8f916b65-9346-4119-9dc7-8239f83f8597"
+  ;                                                                                  :session-tag/tag-id-2 #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
+  ;                                                                                  :video-tag/id #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
+  ;                                                                                  :video-tag/name "Structure and Dynamics"}]}}
 
   (myparse [:session-tag/all-session-tags])
 

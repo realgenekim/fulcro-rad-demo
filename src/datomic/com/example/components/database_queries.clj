@@ -139,7 +139,7 @@
 ; can return a nil, but not a vector
 (defn get-session-from-uuid
   [env uuid]
-  (log/error "get-session-from-uuid: " uuid)
+  (log/error "db-query: get-session-from-uuid: " uuid)
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (do
       ;(tap> uuid)
@@ -159,8 +159,8 @@
                            :where
                            [?e :session/uuid ?uuid]] db uuid)]
         ;(println "db: " db)
-        (println "session: " session)
-        (tap> session)
+        ;(println "session: " session)
+        ;(tap> session)
         (ffirst session)))
     ;(->> ids
     ;     flatten
@@ -281,7 +281,7 @@
 
 (defn get-all-session-tags
   [env query-params]
-  (println "query: get-all-session-tags...")
+  (println "dbquery: get-all-session-tags...")
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (let [tags (d/q '[:find (pull ?e [*
                                       :session-tag/id

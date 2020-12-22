@@ -26,7 +26,7 @@
 
 (defattr conf-sched-id :session/conf-sched-id :string
   {ao/cardinality :one
-   ao/identities #{:session/id}
+   ao/identities #{:session/uuid}
    ao/schema      :video})
 
 (defattr venue :session/venue :string
@@ -65,7 +65,7 @@
    ao/schema      :video})
 
 (defattr tags :session/tags :ref
-  {ao/target           :session-tag/tag
+  {ao/target           :session-tag/id
    ao/cardinality      :many
    ao/identities       #{:session/uuid}
    ao/schema           :video
@@ -113,7 +113,7 @@
                 :session/venue :session/start-time-utc :session/speakers :session/sched-id
                 :session/tags]}
   ;(println "defresolver: input: " env input)
-  (println "defresolver: uuid: " uuid)
+  (println "defresolver: session-by-uuid: " uuid)
   #?(:clj
      ;{:session/uuid "abc"
      ; :session/venue "abc"}))
