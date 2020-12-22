@@ -11,6 +11,7 @@
 
 (defattr id :session-tag/id :uuid
   {ao/identity? true
+   ao/identities #{:session-tag/tag-id-2}
    ao/schema    :video})
 
 (defattr session :session-tag/session-id-2 :uuid
@@ -20,10 +21,18 @@
    ao/identities  #{:session-tag/id}
    ao/schema     :video})
 
-(defattr tag :session-tag/tag-id-2 :uuid
-  {ao/target      :video-tag/id
+(defattr tag-id-2 :session-tag/tag-id-2 :uuid
+  {
+   ao/identity? true
+   ;ao/target      :video-tag/id
    ao/cardinality :one
    ao/required?   true
+   ao/identities  #{:session-tag/id}
+   ao/schema     :video})
+
+; computed in subform
+(defattr tag-name :session-tag/tag-name :string
+  {ao/read-only? true
    ao/identities  #{:session-tag/id}
    ao/schema     :video})
 
@@ -42,10 +51,57 @@
                        ;  :session-tag/tag-id-2 #uuid"63827c18-5960-408f-8421-66d121a175b2"}]}))})
                         (queries/get-all-session-tags env query-params)}))})
 
-(def attributes [id session tag all-session-tags])
+
+; {::pc/input #{:video-tag/id}
+; ::pc/output [:session-tag/tag-id-2]}
+
+;(pc/defresolver session-tag-to-video-tag [{:keys [db] :as env} {:session-tag/keys [tag-id-2] :as input}]
+;  {::pc/input #{:session-tag/tag-id-2}
+;   ::pc/output [:video-tag/id]}
+;  ;(println "defresolver: input: " env input)
+;  (println "defresolver: session-tag-to-video-tag: tag-id-2: " tag-id-2)
+;  (tap> ["defresolver: session-tag-to-video-tag: tag-id-2: " tag-id-2])
+;  #?(:clj
+;     {;:session-tag/tag-id-2 tag-id-2
+;      :video-tag/id tag-id-2}))
+     ;{:session/uuid "abc"
+     ; :session/venue "abc"}))
+     ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
+
+;(pc/defresolver session-tag-to-video-tag [env {:session-tag/keys [tag-id-2] :as input}]
+;  {::pc/input #{:session-tag/tag-id-2}
+;   ::pc/output [:video-tag/id]}
+;  ;(println "defresolver: input: " env input)
+;  (println "defresolver: session-tag-to-video-tag: tag-id-2: " tag-id-2)
+;  (tap> ["defresolver: session-tag-to-video-tag: tag-id-2: " tag-id-2])
+;  #?(:clj
+;     {;:session-tag/tag-id-2 tag-id-2
+;      :video-tag/id tag-id-2}))
+
+(def alias-video-tag (pc/alias-resolver :session-tag/tag-id-2 :video-tag/id))
+
+
+(pc/defresolver session-tag-by-id [{:keys [db] :as env} {:session-tag/keys [id] :as input}]
+  {::pc/input #{:session-tag/id}
+   ::pc/output [:session-tag/id :session-tag/tag-id-2]}
+  ;(println "defresolver: input: " env input)
+  (println "defresolver: session-tag-by-id: id: " id)
+  (tap> "in defresolver: session-tag-by-id")
+  #?(:clj
+     ;{:session/uuid "abc"
+     ; :session/venue "abc"}))
+     ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
+     (do
+       ;{:session-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+       ; :session-tag/tag-id-2 #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"})))
+       (queries/fetch-video-tag-by-uuid env id))))
+
+
+
+(def attributes [id session tag-id-2 tag-name all-session-tags])
 
 #?(:clj
-   (def resolvers []))
+   (def resolvers [session-tag-by-id alias-video-tag]))
 
 ; (defattr id :category/id :uuid
 ;  {ao/identity? true

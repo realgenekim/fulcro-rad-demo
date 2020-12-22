@@ -65,12 +65,12 @@
    ao/schema      :video})
 
 (defattr tags :session/tags :ref
-  {ao/target           :video-tag/id
+  {ao/target           :session-tag/tag
    ao/cardinality      :many
    ao/identities       #{:session/uuid}
    ao/schema           :video
    ro/column-formatter (fn [this tags]
-                         (println "session/tags: column-formatter: " tags)
+                         ;(println "session/tags: column-formatter: " tags)
                          (clojure.string/join ", "
                                               (for [t tags]
                                                 (str (-> t
@@ -99,7 +99,8 @@
 
 (defattr all-sessions :session/all-sessions :ref
   {ao/target    :session/uuid
-   ao/pc-output  [{:session/all-sessions [:session/uuid]}]
+   ao/pc-output  [{:session/all-sessions [:session/uuid :session/title :session/venue :session/start-time-utc :session/speakers :session/sched-id
+                                          :session/tags]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    ;(println "defattr all-sessions: " env)
                    #?(:clj
@@ -109,7 +110,8 @@
 (pc/defresolver session-by-uuid [{:keys [db] :as env} {:session/keys [uuid] :as input}]
   {::pc/input #{:session/uuid}
    ::pc/output [:session/title
-                :session/venue :session/start-time-utc :session/speakers :session/sched-id]}
+                :session/venue :session/start-time-utc :session/speakers :session/sched-id
+                :session/tags]}
   ;(println "defresolver: input: " env input)
   (println "defresolver: uuid: " uuid)
   #?(:clj

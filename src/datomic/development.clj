@@ -24,6 +24,8 @@
 
 (set-refresh-dirs "src/main" "src/datomic" "src/dev" "src/shared")
 
+(def myparse (partial com.example.components.parser/parser com.example.components.config/config))
+
 (comment
   (clojure.core/require 'development)
   (development/go)
@@ -109,8 +111,9 @@
   (restart)
 
   (com.example.components.parser/parser com.example.components.config/config
-                                            [{[:session/uuid #uuid"8a481331-eb1d-4e5b-9d19-759da23cb674"]
-                                              [:session/venue :session/speakers :session/start-time-utc]}])
+                                            [{[:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"]
+                                              [:session/venue :session/speakers :session/start-time-utc
+                                               :session/tags]}])
 
   ; {:session/conf-sched-id "5348024557502565-140"
   ;                            :session/conf-id {:db/id 5348024557502565}
@@ -135,6 +138,153 @@
                                           [:session-tag/id
                                            :session-tag/session-id-2
                                            :session-tag/tag-id-2]}])
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{:session-tag/all-session-tags
+                                          [:session-tag/id
+                                           :session-tag/session-id-2
+                                           {:session-tag/tag-id-2
+                                            [:video-tag/id]}]}])
+
+  (myparse [{[:session-tag/tag-id-2 123]
+             [:video-tag/id]}]))
+
+;
+; Jakub: I'm this is me trying to walk through what works, and what still doessn't work...
+;
+; taking the suggestion of Fulcro RAD docs: working from the bottom up
+;   so, in my case, the order is:
+;   - :session-tag/tag-id-2 => :video-tag
+;   - :session/tags => [ :session-tag/tag-id-2 ... ]
+;
+
+(comment
+
+  (def myparse (partial com.example.components.parser/parser com.example.components.config/config))
+
+  ; query 1. query session-tag -- WORKS
+
+  (myparse [{[:session-tag/tag-id-2 #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777"]
+             [:video-tag/id :video-tag/name]}])
+
+  ; works ^^^
+  ; => {[:session-tag/tag-id-2 #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"] {:video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                           :video-tag/name "Leadership"}}
+
+  (myparse [:video-tag/all-tags])
+
+  ; query 2.  query session tag, along with its video-tag/name (WOOT!)
+
+  (myparse [{[:session-tag/tag-id-2 #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777"]
+             [:session-tag/tag-id-2 :session-tag/id :session-tag/session-id-2
+              :video-tag/id :video-tag/name]}])
+
+  ; works ^^^
+  ; => {[:session-tag/tag-id-2 #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"] {:session-tag/id #uuid "a6d956fb-a6c7-4922-9e8b-2a05d000dc1a"
+  ;                                                                          :session-tag/session-id-2 #uuid "63827c18-5960-408f-8421-66d121a175b2"
+  ;                                                                          :session-tag/tag-id-2 #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                          :video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                          :video-tag/name "Leadership"}}
+
+
+  ; query 3. query the session, along with its tags... let's do in multiple stesps
+
+  (def leartalk-uuid #uuid"63827c18-5960-408f-8421-66d121a175b2")
+  (def leadership-uuid #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777")
+  (restart)
+
+  ; query 3a. query the session -- this works... even the :session/tags looks good.  (I have the db-query pull it all...)
+
+  (myparse [{[:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"]
+             [:session/venue :session/speakers :session/start-time-utc :session/title
+              :session/tags]}])
+
+  ; works
+  ; => {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] {:session/venue "Track 3"
+  ;                                                                  :session/speakers "Peter Lear; Kimberley Wilson"
+  ;                                                                  :session/start-time-utc #inst "2020-10-14T18:35:00.000-00:00"
+  ;                                                                  :session/title "#Culture Stole My OKR's! (Nationwide Building Society)"
+  ;                                                                  :session/tags [{:db/id 2713594698338703
+  ;                                                                                  :session-tag/id #uuid "a6d956fb-a6c7-4922-9e8b-2a05d000dc1a"
+  ;                                                                                  :session-tag/tag-id-2 #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                                  :session-tag/session-eid-2 {:db/id 2291382232285303
+  ;                                                                                                              :session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"
+  ;                                                                                                              :session/title "#Culture Stole My OKR's! (Nationwide Building Society)"}
+  ;                                                                                  :session-tag/tag-eid-2 {:db/id 34199209671332235
+  ;                                                                                                          :video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+  ;                                                                                                          :video-tag/name "Leadership"}}
+  ;                                                                                 {:db/id 42282819158741392
+  ;                                                                                  :session-tag/id #uuid "8f916b65-9346-4119-9dc7-8239f83f8597"
+  ;                                                                                  :session-tag/tag-id-2 #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
+  ;                                                                                  :session-tag/session-eid-2 {:db/id 2291382232285303
+  ;                                                                                                              :session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"
+  ;                                                                                                              :session/title "#Culture Stole My OKR's! (Nationwide Building Society)"}
+  ;                                                                                  :session-tag/tag-eid-2 {:db/id 42282819158741389
+  ;                                                                                                          :video-tag/id #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
+  ;                                                                                                          :video-tag/name "Structure and Dynamics"}}]}}
+
+  ; query 3a: ...but when join on the tags, it doesn't work...
+
+  (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+             [:session/venue :session/speakers :session/start-time-utc :session/title
+              [{:session/tags [;:session-tag/id
+                               :session-tag/tag-id-2]}]]}])
+                               ;:video-tag/id
+                               ;:video-tag/name]}]]}])
+
+
+  ; nope -- something very wrong
+  ; => {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] {:session/venue "Track 3"
+  ;                                                                  :session/speakers "Peter Lear; Kimberley Wilson"
+  ;                                                                  :session/start-time-utc #inst "2020-10-14T18:35:00.000-00:00"
+  ;                                                                  :session/title "#Culture Stole My OKR's! (Nationwide Building Society)"
+  ;                                                                  [{:session/tags [:session-tag/tag-id-2]}] {{:session/tags [:session-tag/tag-id-2]} nil}}}
+
+
+
+  (myparse [:session-tag/all-session-tags])
+
+  (myparse [{:session-tag/all-session-tags
+             [:session-tag/id
+              :session-tag/tag-id-2]}])
+
+  (myparse [{[:session-tag/tag-id-2 123]
+             [:video-tag/id]}])
+
+  ; query 4. all sessions, with all video tagss
+
+  (myparse [{:session-tag/all-session-tags
+             [:session-tag/id
+              {:session-tag/tag-id-2 [:video-tag/id]}]}])
+
+
+
+
+  (restart)
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{:video-tag/all-tags
+                                          [:video-tag/id :video-tag/name]}])
+
+  (com.example.components.parser/parser com.example.components.config/config
+                                        [{[:video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"]
+                                          [:video-tag/name]}])
+
+  (comment
+    ; EQL query
+    [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+      [:session/speakers]}]
+
+    [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+      [:session/speakers
+       {:session/tags [:session-tag/tag-id-2]}]}]
+
+    [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+      [:session/speakers
+       {:session/tags {:session-tag/tag-id-2
+                       [:video-tag/name]}}]}]
+
+    ,)
 
 
   ; ￼12:38PM IT WORKS!!  THANK YOU JAKUB!

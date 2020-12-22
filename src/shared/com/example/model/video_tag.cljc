@@ -43,19 +43,20 @@
                       {:video-tag/all-tags
                        (queries/get-all-video-tags env query-params)}))})
 
-
-
-;(pc/defresolver youtube-video-by-id [{:keys [db] :as env} {:youtube-video/keys [id] :as input}]
-;  {::pc/input #{:youtube-video/id}
-;   ::pc/output [:youtube-video/description :youtube-video/playlist-id :youtube-video/title
-;                :youtube-video/position :youtube-video/url :youtube-video/video-id]}
-;  ;(println "defresolver: input: " env input)
-;  (println "defresolver: youtube-video-by-id: id: " id)
-;  #?(:clj
-;     ;{:session/uuid "abc"
-;     ; :session/venue "abc"}))
-;     ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
-;     (queries/youtube-video-by-id env id)))
+(pc/defresolver video-tag-by-id [{:keys [db] :as env} {:video-tag/keys [id] :as input}]
+  {::pc/input #{:video-tag/id}
+   ::pc/output [:video-tag/id :video-tag/name]}
+  ;(println "defresolver: input: " env input)
+  (println "defresolver: video-tag-by-id: id: " id)
+  (tap> "in defresolver: video-tag-by-id")
+  #?(:clj
+     ;{:session/uuid "abc"
+     ; :session/venue "abc"}))
+     ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
+     (do
+       ;{:video-tag/id 123
+       ; :video-tag/name "abc"}
+       (queries/fetch-video-tag-by-uuid env id))))
 
 
 ; WARNING: make sure to add all model attributes here!
@@ -65,5 +66,5 @@
 ;item-name category description price in-stock all-items])
 
 #?(:clj
-   (def resolvers []));youtube-video-by-id]))
+   (def resolvers [video-tag-by-id]))
 

@@ -19,7 +19,7 @@
 (form/defsc-form SessionForm [this props]
   {fo/id           session/id
    fo/attributes   [
-                    session/id
+                    ;session/id
                     session/title
                     ;session/venue
                     session/speakers
@@ -27,7 +27,7 @@
                     session/start-time-utc
                     session/tags]
 
-   fo/subforms     {:session/tags {fo/ui          video-tag-form/VideoTagsSubForm
+   fo/subforms     {:session/tags {fo/ui          video-tag-form/SessionTagsSubForm
                                    fo/can-delete? (fn [_ _] true)
                                    fo/can-add?    (fn [_ v]
                                                     (println "can add? " (clojure.pprint/pprint v))

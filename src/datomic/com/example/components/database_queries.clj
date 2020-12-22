@@ -111,9 +111,15 @@
   ;(if-let [db (some-> (get-in env [do/databases :main #_:video]) deref)])
   ;(if-let [db (some-> (get-in env [do/databases :production]) deref)]
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
-    (let [ids (d/q '[:find (pull ?s [* {:session/tags  [:db/id
-                                                        :video-tag/id
-                                                        :video-tag/name]}])
+    (let [ids (d/q '[:find (pull ?s [* {:session/conf-id [:db/id :conference/name]
+                                        :session/tags [:db/id
+                                                       :session-tag/id
+                                                       :session-tag/tag-id-2
+                                                       :session-tag/session-id
+                                                       {:session-tag/session-eid-2 [:db/id :session/uuid
+                                                                                    :session/title]}
+                                                       {:session-tag/tag-eid-2 [:db/id :video-tag/id
+                                                                                :video-tag/name]}]}])
                      ;(let [ids (d/q '[:find ?s
                      :where
                      [?s :session/title _]] db)]
@@ -127,6 +133,38 @@
       ;     (take 5)
       ;     flatten
       ;     (mapv (fn [id] {:db/id id}))))
+    (log/error "No database atom for production schema!")))
+
+; must return a map; Jakub noted that it returned a empty vector
+; can return a nil, but not a vector
+(defn get-session-from-uuid
+  [env uuid]
+  (log/error "get-session-from-uuid: " uuid)
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (do
+      ;(tap> uuid)
+      ;(log/info "get-session-from-uuid: id: " uuid)
+      ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
+      ;(log/info "get-session-from-uuid: env: " env)
+      (let [session (d/q '[:find (pull ?e [* {:session/tags  [:db/id
+                                                              :session-tag/id
+                                                              :session-tag/tag-id-2
+                                                              :session-tag/session-id
+                                                              {:session-tag/session-eid-2 [:db/id :session/uuid
+                                                                                           :session/title]}
+                                                              {:session-tag/tag-eid-2 [:db/id :video-tag/id
+                                                                                       :video-tag/name]}]}])
+                           :in $ ?uuid
+                           ;(let [ids (d/q '[:find ?s
+                           :where
+                           [?e :session/uuid ?uuid]] db uuid)]
+        ;(println "db: " db)
+        (println "session: " session)
+        (tap> session)
+        (ffirst session)))
+    ;(->> ids
+    ;     flatten
+    ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
 (defn get-all-youtube-videos
@@ -159,30 +197,7 @@
     ;     (mapv (fn [id] {:db/id id}))))
     (log/error "No database atom for production schema!")))
 
-; must return a map; Jakub noted that it returned a empty vector
-; can return a nil, but not a vector
-(defn get-session-from-uuid
-  [env uuid]
-  (log/error "get-session-from-uuid: " uuid)
-  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
-    (do
-      (log/info "get-session-from-uuid: id: " uuid)
-      ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
-      ;(log/info "get-session-from-uuid: env: " env)
-      (let [session (d/q '[:find (pull ?e [* {:session/tags  [:db/id
-                                                              :video-tag/id
-                                                              :video-tag/name]}])
-                           :in $ ?uuid
-                           ;(let [ids (d/q '[:find ?s
-                           :where
-                           [?e :session/uuid ?uuid]] db uuid)]
-        ;(println "db: " db)
-        (println "session: " session)
-        (ffirst session)))
-    ;(->> ids
-    ;     flatten
-    ;     (mapv (fn [id] {:db/id id}))))
-    (log/error "No database atom for production schema!")))
+
 
 (defn youtube-video-by-id
   [env id]
@@ -228,6 +243,54 @@
     (let [tags (d/q '[:find (pull ?e [*])
                       :where
                       [?e :video-tag/id _]] db)]
+      ;(println "db: " db)
+      ;(println "tags: " tags)
+      (tap> tags)
+      (->> tags
+           ;(take 5)
+           flatten
+           (#(apply vector %))))
+    (log/error "No database atom for production schema!")))
+
+(defn fetch-video-tag-by-uuid
+  [env uuid]
+  (log/error "fetch-video-tag-by-uuid: " uuid)
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (do
+      ;(tap> uuid)
+      ;(log/info "get-session-from-uuid: id: " uuid)
+      ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
+      ;(log/info "get-session-from-uuid: env: " env)
+      (let [tags (d/q '[:find (pull ?e [*])
+                        :in $ ?uuid
+                        ;(let [ids (d/q '[:find ?s
+                        :where
+                        [?e :video-tag/id ?uuid]] db uuid)]
+        ;(println "db: " db)
+        (println "session: " tags)
+        (tap> tags)
+        (ffirst tags)))
+    ;(->> ids
+    ;     flatten
+    ;     (mapv (fn [id] {:db/id id}))))
+    (log/error "No database atom for production schema!")))
+
+;
+; session video tags
+;
+
+(defn get-all-session-tags
+  [env query-params]
+  (println "query: get-all-session-tags...")
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [tags (d/q '[:find (pull ?e [*
+                                      :session-tag/id
+                                      {:session-tag/session-eid-2 [:db/id :session/uuid
+                                                                   :session/title]}
+                                      {:session-tag/tag-eid-2 [:db/id :video-tag/id
+                                                               :video-tag/name]}])
+                      :where
+                      [?e :session-tag/id _]] db)]
       ;(println "db: " db)
       ;(println "tags: " tags)
       (tap> tags)

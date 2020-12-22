@@ -15,11 +15,13 @@
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
-    [com.example.model.video-tag :as video-tag]))
+    [com.example.model.video-tag :as video-tag]
+    [com.example.model.session-tag :as session-tag]
+    [cljs.pprint :as pp]))
 
 (defsc TagsQuery [_ _]
-  {:query [:video-tag/id :video-tag/name]
-   :ident :video-tag/id})
+  {:query [:session-tag/id :session-tag/session :session-tag/session-id-2 :session-tag/tag-id-2]
+   :ident :session-tag/id})
 
 
 ; this is to edit the video tags
@@ -32,30 +34,46 @@
 ;(dom/div :.ui.container.grid
 ;  "Hello!")
 
+(defn create-tag-names [{:session-tag/keys [session] :as tags}]
+  (println "create-tag-names: " tags)
+  (assoc tags :session/tag-name "abc"))
+
 ; this is to associate tags with sessions
-(form/defsc-form VideoTagsSubForm [this props]
-  {fo/id           video-tag/id
-   fo/attributes   [video-tag/tag-name]
-   fo/field-styles  {:video-tag/id :pick-one}
-   fo/field-options {:video-tag/id
-                     {::picker-options/query-key       :video-tag/all-tags
-                      ::picker-options/query-component TagsQuery
-                                                      ;(fn [_ options]
-                                                      ;  (mapv
-                                                      ;    (fn [{:category/keys [id label]}]
-                                                      ;      {:text (str label) :value [:category/id id]}
-                                                      ;      (sort-by :category/label options))))
-                      ::picker-options/options-xform
-                          (fn [_ options]
-                            (println "video-tag: ::picker-options/options-xform: " options)
-                            (mapv
-                              (fn [{:video-tag/keys [id name]}]
-                                (println "video-tag: ::picker-options/options-xform: " id name)
-                                {:text (str name) :value [:video-tag/id id]})
-                              (sort-by :video-tag/name options)))
-                      ::picker-options/cache-time-ms   30000}}
+(form/defsc-form SessionTagsSubForm [this props]
+  {fo/id           session-tag/id
+   fo/attributes   [session-tag/tag-id-2]
+   fo/triggers     {:derive-fields (fn [new-form-tree]
+                                     (println "derived")
+                                     (create-tag-names new-form-tree))}
+   ;fo/field-styles  {:session-tag/tag-name :pick-one}
+   ;fo/field-options {:session-tag/tag-name
+   ;                  {::picker-options/query-key       :session-tag/all-session-tags
+   ;                   ::picker-options/query-component TagsQuery
+   ;                                                   ;(fn [_ options]
+   ;                                                   ;  (mapv
+   ;                                                   ;    (fn [{:category/keys [id label]}]
+   ;                                                   ;      {:text (str label) :value [:category/id id]}
+   ;                                                   ;      (sort-by :category/label options))))
+   ;                   ::picker-options/options-xform
+   ;                       (fn [_ options]
+   ;                         (println "SessionTagsSubForm: ::picker-options/options-xform: " options)
+   ;                         (mapv
+   ;                           (fn [{:video-tag/keys [id name]}]
+   ;                             (println "video-tag: ::picker-options/options-xform: " id name)
+   ;                             {:text (str name) :value [:video-tag/id id]})
+   ;                           (sort-by :video-tag/name options)))
+   ;                   ::picker-options/cache-time-ms   30000}}
    fo/route-prefix "session-video-tag"
-   fo/title        "Edit Session Video Tags"})
+   fo/title        "Edit Session Tags"})
+  ;(do
+  ;  ;(println this)
+  ;  (js/console.log "this")
+  ;  (pp/pprint this)
+  ;  (js/console.log "props")
+  ;  (pp/pprint props)))
+
+      ;(js/console.log this)
+      ;(js/console.log props)))
 
 
 (report/defsc-report VideoTagReport [this props]
