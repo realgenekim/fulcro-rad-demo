@@ -6,3 +6,6 @@ report:
 
 release:
 	TIMBRE_LEVEL=:warn npx shadow-cljs release main
+
+run-tests:
+	bin/kaocha --plugin notifier --watch
