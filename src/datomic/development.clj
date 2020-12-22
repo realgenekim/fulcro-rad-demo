@@ -227,9 +227,9 @@
 
   (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
              [:session/venue :session/speakers :session/start-time-utc :session/title
-              [{:session/tags [;:session-tag/id
-                               :session-tag/tag-id-2]}]]}])
-                               ;:video-tag/id
+              [{:session/tags [:session-tag/id
+                               :session-tag/tag-id-2
+                               :video-tag/id]}]]}])
                                ;:video-tag/name]}]]}])
 
 
@@ -238,7 +238,8 @@
   ;                                                                  :session/speakers "Peter Lear; Kimberley Wilson"
   ;                                                                  :session/start-time-utc #inst "2020-10-14T18:35:00.000-00:00"
   ;                                                                  :session/title "#Culture Stole My OKR's! (Nationwide Building Society)"
-  ;                                                                  [{:session/tags [:session-tag/tag-id-2]}] {{:session/tags [:session-tag/tag-id-2]} nil}}}
+  ;                                                                  [{:session/tags [:session-tag/id :session-tag/tag-id-2 :video-tag/id]}]
+  ;                                                                  {{:session/tags [:session-tag/id :session-tag/tag-id-2 :video-tag/id]} nil}}}
 
 
 
