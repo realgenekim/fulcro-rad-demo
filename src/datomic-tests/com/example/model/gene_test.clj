@@ -55,6 +55,56 @@
                  first
                  :session/speakers)))))
 
+  (def leartalk-uuid #uuid"63827c18-5960-408f-8421-66d121a175b2")
+  (def leadership-uuid #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777")
+
+  (testing "lookup lear talk tag by uuid; return two session-tags"
+    (let [r (myparse [{[:session/uuid leartalk-uuid]
+                       [:session/tags-2]}])]
+      ; should return two session-tag/ids
+      (is (= [[:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"]
+              [:session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"]]
+             (-> r
+                 (get [:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"])
+                 :session/tags-2
+                 (#(map (fn [x] (-> x
+                                    first)) %)))))))
+
+  (testing "get lear talk by uuid: get video-tag/name "
+    (let [r (myparse [{[:session/uuid leartalk-uuid]
+                       [:session/speakers :session/tags-2]}])]
+
+      ; should return speaker
+      (is (= "Peter Lear; Kimberley Wilson"
+             (-> r
+                 (get [:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"])
+                 :session/speakers)))
+      ; should return two session-tag/ids
+      (is (= [[:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"]
+              [:session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"]]
+             (-> r
+                 (get [:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"])
+                 :session/tags-2
+                 (#(map (fn [x] (-> x
+                                    first)) %)))))))
+
+  (testing "get lear by uuid: get all the video-tags"
+    (let [r (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+                       [:session/speakers
+                        {:session/tags-2
+                         [:db/id
+                          :session-tag-2/id
+                          :session-tag-2/video-tag]}]}])]
+      (is (= {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+              {:session/speakers "Peter Lear; Kimberley Wilson"
+               :session/tags-2 [{:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"
+                                 :session-tag-2/video-tag {:db/id 34199209671332235}}
+                                {:session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"
+                                 :session-tag-2/video-tag {:db/id 42282819158741389}}]}}
+             r))))
+
+
+
 
 
 
