@@ -3,6 +3,9 @@
                  :ns-patterns  ["-test$" "-spec$"]
                  :test-paths   ["src/test" "src/shared-tests" "src/datomic-tests"]
                  :skip-meta    [:integration]
-                 :source-paths ["src"]}]
+                 :source-paths ["src/datomic" "src/datomic-tests"]}]
      ;:reporter [fulcro-spec.reporters.terminal/fulcro-report]
-     :plugins  []}
+     :plugins [:kaocha.plugin/hooks]
+     :kaocha.hooks/pre-run [com.example.components.kaocha-hooks/mount-hook]
+     :kaocha.hooks/post-run [com.example.components.kaocha-hooks/unmount-hook]}
+
