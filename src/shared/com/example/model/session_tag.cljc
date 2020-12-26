@@ -7,8 +7,6 @@
     [com.wsscode.pathom.connect :as pc]
     #?(:clj [com.example.components.database-queries :as queries])))
 
-
-
 (defattr id :session-tag/id :uuid
   {ao/identity? true
    ao/schema    :video})

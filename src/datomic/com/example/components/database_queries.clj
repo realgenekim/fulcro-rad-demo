@@ -112,14 +112,18 @@
   ;(if-let [db (some-> (get-in env [do/databases :production]) deref)]
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (let [ids (d/q '[:find (pull ?s [* {:session/conf-id [:db/id :conference/name]
-                                        :session/tags [:db/id
-                                                       :session-tag/id
-                                                       :session-tag/tag-id-2
-                                                       :session-tag/session-id
-                                                       {:session-tag/session-eid-2 [:db/id :session/uuid
-                                                                                    :session/title]}
-                                                       {:session-tag/tag-eid-2 [:db/id :video-tag/id
-                                                                                :video-tag/name]}]}])
+                                        :session/tags-2  [:session-tag-2/id
+                                                          {:session-tag-2/video-tag
+                                                           [:video-tag/id
+                                                            :video-tag/name]}]
+                                        :session/tags    [:db/id
+                                                          :session-tag/id
+                                                          :session-tag/tag-id-2
+                                                          :session-tag/session-id
+                                                          {:session-tag/session-eid-2 [:db/id :session/uuid
+                                                                                       :session/title]}
+                                                          {:session-tag/tag-eid-2 [:db/id :video-tag/id
+                                                                                   :video-tag/name]}]}])
                      ;(let [ids (d/q '[:find ?s
                      :where
                      [?s :session/title _]] db)]
@@ -146,14 +150,19 @@
       ;(log/info "get-session-from-uuid: id: " uuid)
       ;(log/info "get-session-from-uuid: dbs: " (get-in env [do/databases]))
       ;(log/info "get-session-from-uuid: env: " env)
-      (let [session (d/q '[:find (pull ?e [* {:session/tags  [:db/id
-                                                              :session-tag/id
-                                                              :session-tag/tag-id-2
-                                                              :session-tag/session-id
-                                                              {:session-tag/session-eid-2 [:db/id :session/uuid
-                                                                                           :session/title]}
-                                                              {:session-tag/tag-eid-2 [:db/id :video-tag/id
-                                                                                       :video-tag/name]}]}])
+      (let [session (d/q '[:find (pull ?e [* {:session/conf-id [:db/id :conference/name]
+                                              :session/tags-2  [:session-tag-2/id
+                                                                {:session-tag-2/video-tag
+                                                                 [:video-tag/id
+                                                                  :video-tag/name]}]
+                                              :session/tags    [:db/id
+                                                                :session-tag/id
+                                                                :session-tag/tag-id-2
+                                                                :session-tag/session-id
+                                                                {:session-tag/session-eid-2 [:db/id :session/uuid
+                                                                                             :session/title]}
+                                                                {:session-tag/tag-eid-2 [:db/id :video-tag/id
+                                                                                               :video-tag/name]}]}])
                            :in $ ?uuid
                            ;(let [ids (d/q '[:find ?s
                            :where
@@ -162,6 +171,7 @@
         ;(println "session: " session)
         ;(tap> session)
         (ffirst session)))
+
     ;(->> ids
     ;     flatten
     ;     (mapv (fn [id] {:db/id id}))))
@@ -291,6 +301,24 @@
                                                                :video-tag/name]}])
                       :where
                       [?e :session-tag/id _]] db)]
+      ;(println "db: " db)
+      ;(println "tags: " tags)
+      (tap> tags)
+      (->> tags
+           ;(take 5)
+           flatten
+           (#(apply vector %))))
+    (log/error "No database atom for production schema!")))
+
+(defn get-all-session-tags-2
+  [env query-params]
+  (println "dbquery: get-all-session-tags...")
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [tags (d/q '[:find (pull ?e [* {:session-tag-2/video-tag
+                                         [:video-tag/id
+                                          :video-tag/name]}])
+                      :where
+                      [?e :session-tag-2/id _]] db)]
       ;(println "db: " db)
       ;(println "tags: " tags)
       (tap> tags)

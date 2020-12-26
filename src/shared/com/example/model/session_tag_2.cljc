@@ -45,16 +45,18 @@
 
 (defattr all-session-tags :session-tag-2/all-session-tags :ref
   {ao/target     :session-tag-2/id
+   ; [{:video-tag/all-tags [:video-tag/id :video-tag/name]}]
    ao/pc-output  [{:session-tag-2/all-session-tags [:session-tag-2/id
-                                                    {:session-tag-2/video-tag
-                                                     [:db/id
-                                                      :video-tag/id
-                                                      :video-tag/name]}]}]
+                                                    :session-tag-2/video-tag]}]
+                                                    ;{:session-tag-2/video-tag
+                                                    ; [:db/id
+                                                    ;  :video-tag/id
+                                                    ;  :video-tag/name]}]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    (println ":session-tag-2/all-session-tags: here!" query-params)
                    (tap> query-params)
                    #?(:clj
-                      {:session-tag/all-session-tags
+                      {:session-tag-2/all-session-tags
                        ;[{:session-tag/id #uuid"63827c18-5960-408f-8421-66d121a175b2"
                        ;  :session-tag/session-id-2 #uuid"63827c18-5960-408f-8421-66d121a175b2"
                        ;  :session-tag/tag-id-2 #uuid"63827c18-5960-408f-8421-66d121a175b2"}]}))})
@@ -65,7 +67,7 @@
 
 
 
-(def attributes [id all-session-tags])
+(def attributes [id video-tag all-session-tags])
 
 #?(:clj
    (def resolvers [alias-video-tag]))

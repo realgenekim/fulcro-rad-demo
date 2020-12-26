@@ -1,6 +1,7 @@
 (ns com.example.model.gene-test
   (:require
     [clojure.test :refer :all]
+    [clojure.tools.namespace.repl :as tools-ns :refer [disable-reload! refresh clear set-refresh-dirs]]
     [datomic.client.api :as d]
     [mount.core :as mount]
     [com.example.components.datomic :refer [datomic-connections]]
@@ -13,7 +14,7 @@
 
 
 (println "hello!")
-(println (mount/find-all-states))
+
 
 (defn start []
   (mount/start-with-args {:config "config/test.edn"})
@@ -24,6 +25,14 @@
   "Stop the server."
   []
   (mount/stop))
+
+;(defn restart
+;  "Stop, refresh, and restart the server."
+;  []
+;  (stop)
+;  (tools-ns/refresh :after 'com.example.model.gene-test/start))
+;
+;(def reset #'restart)
 
 
 
@@ -36,12 +45,14 @@
 ;           :where
 ;           [?e :session/title _]] db 70368744177664139)))
 
+;(restart)
+
 (deftest reset-tests
   (do
     (println "*** stop")
-    (stop)
     (println "*** start")
-    (start))
+    (start)
+    (println (mount/find-all-states)))
   (is (= 1 1)))
 
 (deftest a-test
@@ -70,6 +81,28 @@
                  :session/all-sessions
                  first
                  :session/speakers)))))
+
+  (testing "get all session-tags-2"
+    (let [r (myparse [:session-tag-2/all-session-tags])
+          expected {:session-tag-2/all-session-tags
+                    [{:db/id 7630610697752980
+                      :session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"
+                      :session-tag-2/video-tag {:video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+                                                :video-tag/name "Leadership"}}
+                     {:db/id 10440962418348437
+                      :session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"
+                      :session-tag-2/video-tag {:video-tag/id #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
+                                                :video-tag/name "Structure and Dynamics"}}
+                     {:db/id 62848084644663699
+                      :session-tag-2/id #uuid "e78b6479-abf5-45b4-9eff-74a908792917"
+                      :session-tag-2/video-tag {:video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
+                                                :video-tag/name "Leadership"}}]}]
+      ;(println "actual")
+      ;(pp/pprint r)
+      ;(println "expected")
+      ;(pp/pprint expected)
+      (is (= expected
+             r))))
 
   (def leartalk-uuid #uuid"63827c18-5960-408f-8421-66d121a175b2")
   (def leadership-uuid #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777")
@@ -183,3 +216,6 @@
 
   ,)
 
+(deftest stopping
+  (stop)
+  (is (= 1 1)))

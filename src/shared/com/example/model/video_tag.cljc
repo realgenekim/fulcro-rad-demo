@@ -36,7 +36,7 @@
   {ao/target     :video-tag/id
    ao/pc-output  [{:video-tag/all-tags [:video-tag/id :video-tag/name]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
-                   (println "defattr all-tags2: " env)
+                   ;(println "defattr all-tags2: " env)
                    #?(:clj
                       ;{:video-tag/all-videos [{:video-tag/id #uuid"13dffbc7-7f3f-49c5-919f-854369c700fe"
                       ;                         :video-tag/name "abc123"}]}

@@ -26,6 +26,9 @@
 
 (def myparse (partial com.example.components.parser/parser com.example.components.config/config))
 
+(def leartalk-uuid #uuid"63827c18-5960-408f-8421-66d121a175b2")
+(def leadership-uuid #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777")
+
 (comment
   (clojure.core/require 'development)
   (development/go)
@@ -48,6 +51,30 @@
 
 
 (comment
+
+  (myparse [:session-tag-2/all-session-tags])
+
+  (myparse [{[:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"]
+             [:session-tag-2/id
+              :session-tag-2/video-tag]}])
+
+  (myparse [{[:session/uuid leartalk-uuid]
+             [:session/speakers
+              {:session/tags-2 [:db/id
+                                :session-tag-2/id
+                                {:session-tag-2/video-tag
+                                 [:db/id
+                                  :video-tag/id
+                                  :video-tag/name]}]}]}])
+
+
+
+  ,)
+
+
+
+
+(comment
   (let [db (d/db (:main datomic-connections))]
     (d/pull db '[*] [:account/id (new-uuid 100)]))
 
@@ -63,7 +90,7 @@
              :where
              [?e :session/title _]] db 70368744177664139))
 
-      
+
 
   (com.example.components.parser/parser com.example.components.config/config
                                         {:address/id 1})
@@ -80,7 +107,7 @@
 
   (com.example.components.parser/parser com.example.components.config/config
                                         [:session/all-sessions])
-  
+
   (com.example.components.parser/parser com.example.components.config/config
                                         [{:session/all-sessions
                                           [:session/uuid :session/title :session/speakers
@@ -189,15 +216,13 @@
 
   ; query 3. query the session, along with its tags... let's do in multiple stesps
 
-  (def leartalk-uuid #uuid"63827c18-5960-408f-8421-66d121a175b2")
-  (def leadership-uuid #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777")
+
   (restart)
 
   ; query 3a. query the session -- this works... even the :session/tags looks good.  (I have the db-query pull it all...)
 
   (myparse [{[:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"]
-             [:session/venue :session/speakers :session/start-time-utc :session/title
-              :session/tags]}])
+             [:session/tags]}])
 
   ; works
   ; => {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] {:session/venue "Track 3"
@@ -307,6 +332,53 @@
   (myparse [{:session-tag/all-session-tags
              [:session-tag/id
               {:session-tag/tag-id-2 [:video-tag/id]}]}])
+
+
+  ;
+  ;
+  ; query 1:
+  ;
+
+  (myparse [:session-tag-2/all-session-tags])
+
+  ; in automated test
+
+  ; works
+  ; => [[{:db/id 7630610697752980
+  ;        :session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"
+  ;        :session-tag-2/video-tag {:video-tag/name "Leadership"}}]
+  ;      [{:db/id 10440962418348437
+  ;        :session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"
+  ;        :session-tag-2/video-tag {:video-tag/name "Structure and Dynamics"}}]
+  ;      [{:db/id 62848084644663699
+  ;        :session-tag-2/id #uuid "e78b6479-abf5-45b4-9eff-74a908792917"
+  ;        :session-tag-2/video-tag {:video-tag/name "Leadership"}}]]
+
+  (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+             [:session/speakers :session/tags-2]}])
+
+  ; in automated test
+
+  ; works
+  ; => {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] {:session/speakers "Peter Lear; Kimberley Wilson"
+  ;                                                                  :session/tags-2 [{:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"}
+  ;                                                                                   {:session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"}]}
+
+  (myparse [{[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
+             [:session/speakers
+              {:session/tags-2
+               [:db/id
+                :session-tag-2/id
+                :session-tag-2/video-tag]}]}])
+
+  ; works
+  ; in automated test
+
+
+  ;expected:
+  {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] #:session{:speakers "Peter Lear; Kimberley Wilson", :tags-2 [#:session-tag-2{:id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388", :video-tag #:db{:id 34199209671332235}} #:session-tag-2{:id #uuid "be1f1687-4700-4143-9274-001d3cfd506e", :video-tag #:db{:id 42282819158741389}}]}}
+  ; actual:
+  {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"] #:session{:speakers "Peter Lear; Kimberley Wilson", :tags-2 [#:session-tag-2{:id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"} #:session-tag-2{:id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"}]}}
 
 
 
