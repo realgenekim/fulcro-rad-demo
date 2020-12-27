@@ -17,12 +17,16 @@
     [com.example.model.youtube-video :as youtube]
     [com.example.model.video-tag :as video-tag]
     [com.example.model.session-tag :as session-tag]
-    [cljs.pprint :as pp]))
+    [com.example.model.session-tag-2 :as session-tag-2]
+    [com.example.model.account :as account]
+    ;[com.example.ui.session-forms :as session-forms]
+    [clojure.pprint :as pp]))
 
-(defsc TagsQuery [_ _]
-  {:query [:session-tag/id :session-tag/session :session-tag/session-id-2 :session-tag/tag-id-2
-           :video-tag/id :video-tag/name]
-   :ident :session-tag/id})
+(defsc TagsQuery [_ v]
+  (do
+    (println "TagsQuery: " v)
+    {:query [:video-tag/id :video-tag/name]
+     :ident :video-tag/id}))
 
 
 ; this is to edit the video tags
@@ -41,32 +45,37 @@
 
 ; this is to associate tags with sessions
 (form/defsc-form SessionTagsSubForm [this props]
-  {fo/id           session-tag/id
-   fo/query-inclusion [:video-tag/id :video-tag/name]
-   fo/attributes   [video-tag/tag-name]
-   fo/triggers     {:derive-fields (fn [new-form-tree]
-                                     (println "derived")
-                                     (create-tag-names new-form-tree))}
-   ;fo/field-styles  {:session-tag/tag-name :pick-one}
-   ;fo/field-options {:session-tag/tag-name
-   ;                  {::picker-options/query-key       :session-tag/all-session-tags
-   ;                   ::picker-options/query-component TagsQuery
-   ;                                                   ;(fn [_ options]
-   ;                                                   ;  (mapv
-   ;                                                   ;    (fn [{:category/keys [id label]}]
-   ;                                                   ;      {:text (str label) :value [:category/id id]}
-   ;                                                   ;      (sort-by :category/label options))))
-   ;                   ::picker-options/options-xform
-   ;                       (fn [_ options]
-   ;                         (println "SessionTagsSubForm: ::picker-options/options-xform: " options)
-   ;                         (mapv
-   ;                           (fn [{:video-tag/keys [id name]}]
-   ;                             (println "video-tag: ::picker-options/options-xform: " id name)
-   ;                             {:text (str name) :value [:video-tag/id id]})
-   ;                           (sort-by :video-tag/name options)))
-   ;                   ::picker-options/cache-time-ms   30000}}
-   fo/route-prefix "session-video-tag"
-   fo/title        "Edit Session Tags"})
+  {fo/id            session-tag-2/id
+   fo/attributes    [session-tag-2/video-tag]
+   fo/field-styles  {:session-tag-2/video-tag :pick-one}
+   fo/field-options {:session-tag-2/video-tag
+                     {::picker-options/query-key     :video-tag/all-tags
+                      ;::picker-options/query-component TagsQuery
+                      ;(fn [_ options]
+                      ;  (mapv
+                      ;    (fn [{:category/keys [id label]}]
+                      ;      {:text (str label) :value [:category/id id]}
+                      ;      (sort-by :category/label options))))
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (println "SessionTagsSubForm: ::picker-options/options-xform: " options)
+                        ;["abc" "def"])
+                        (let [r (mapv
+                                  (fn [{:video-tag/keys [id name]}]
+                                    (println "video-tag: ::picker-options/options-xform: " id name)
+                                    {:text (str name) :value [:video-tag/id id]})
+                                  (sort-by :video-tag/name options))]
+                          (println r)
+                          r))
+                      ::picker-options/cache-time-ms 30000}}
+   fo/route-prefix  "session-video-tag"
+   fo/title         "Edit Session Tags"})
+  ;(dom/div
+  ;  (dom/h2 "Video Tags Form!")
+  ;  (dom/p "this: " (str this))
+  ;  (dom/pre "props: \n" (with-out-str
+  ;                         (pp/pprint props)))))
+
   ;(do
   ;  ;(println this)
   ;  (js/console.log "this")
@@ -135,5 +144,7 @@
 
 (comment
   (comp/get-query VideoTagReport)
-  (comp/get-query YouTubeForm))
+  (comp/get-query YouTubeForm)
+  (comp/get-query SessionTagsSubForm)
+  ,)
 

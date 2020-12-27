@@ -1,6 +1,8 @@
 (ns com.example.ui.session-forms
   (:require
     ;[com.example.model.item :as item]
+    #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
+       :cljs [com.fulcrologic.fulcro.dom :as dom])
     [com.example.model.session :as session]
     [com.example.model.video-tag :as video-tag]
     [com.example.ui.video-tag-forms :as video-tag-form]
@@ -13,6 +15,7 @@
     [com.fulcrologic.rad.report-options :as ro]
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
+    [com.example.model.account :as account]
     [clojure.pprint :as pp]))
 
 
@@ -25,13 +28,13 @@
                     session/speakers
                     ;session/stype
                     session/start-time-utc
-                    session/tags]
+                    session/tags-2]
 
-   fo/subforms     {:session/tags {fo/ui          video-tag-form/SessionTagsSubForm
-                                   fo/can-delete? (fn [_ _] true)
-                                   fo/can-add?    (fn [this v]
-                                                    (println "can add? v: " (clojure.pprint/pprint v))
-                                                    true)}}
+   fo/subforms     {:session/tags-2 {fo/ui          video-tag-form/SessionTagsSubForm
+                                     fo/can-delete? (fn [_ _] true)
+                                     fo/can-add?    (fn [this v]
+                                                      (println "can add? v: " (clojure.pprint/pprint v))
+                                                      true)}}
    ;fo/field-styles  {:item/category :pick-one}
    ;fo/field-options {:item/category {::picker-options/query-key       :category/all-categories
    ;                                  ::picker-options/query-component CategoryQuery
@@ -53,8 +56,9 @@
   {ro/title               "Session Report"
    ro/source-attribute    :session/all-sessions
    ro/row-pk              session/id
+   fo/query-inclusion     [:session-tag=2/video-tag]
    ro/columns             [session/speakers session/title session/stype session/venue
-                           session/start-time-utc session/tags]
+                           session/start-time-utc session/tags-2] ;session/tags]
 
 
    ;ro/row-visible?        (fn [filter-parameters row] (let [{::keys [category]} filter-parameters
@@ -107,6 +111,11 @@
 
    ro/run-on-mount?       true
    ro/route               "session-report"})
+  ;(dom/div
+  ;  (dom/h2 "Session Report!")
+  ;  (dom/p "this: " (str this))
+  ;  (dom/pre "props: " (with-out-str
+  ;                       (pp/pprint props)))))
 
 
 (comment

@@ -47,11 +47,11 @@
   {ao/target     :session-tag-2/id
    ; [{:video-tag/all-tags [:video-tag/id :video-tag/name]}]
    ao/pc-output  [{:session-tag-2/all-session-tags [:session-tag-2/id
-                                                    :session-tag-2/video-tag]}]
-                                                    ;{:session-tag-2/video-tag
-                                                    ; [:db/id
-                                                    ;  :video-tag/id
-                                                    ;  :video-tag/name]}]}]
+                                                    ;:session-tag-2/video-tag]}]
+                                                    {:session-tag-2/video-tag
+                                                     [:db/id
+                                                      :video-tag/id
+                                                      :video-tag/name]}]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    (println ":session-tag-2/all-session-tags: here!" query-params)
                    (tap> query-params)
@@ -63,14 +63,14 @@
                        (queries/get-all-session-tags-2 env query-params)}))})
 
 
-(def alias-video-tag (pc/alias-resolver :session-tag-2/video-tag :video-tag/id))
+;(def alias-video-tag (pc/alias-resolver :session-tag-2/video-tag :video-tag/id))
 
 
 
 (def attributes [id video-tag all-session-tags])
 
 #?(:clj
-   (def resolvers [alias-video-tag]))
+   (def resolvers [])) ;alias-video-tag
 
 ; session-tag-by-id
 
