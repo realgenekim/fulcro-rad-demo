@@ -13,7 +13,6 @@
     [com.example.model.session :as session]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.video-tag :as vtag]
-    [com.example.model.session-tag :as session-tag]
     [com.example.model.session-tag-2 :as session-tag-2]
     ;
     [com.fulcrologic.rad.attributes :as attr]))
@@ -31,7 +30,6 @@
                            session/attributes
                            youtube/attributes
                            vtag/attributes
-                           session-tag/attributes
                            session-tag-2/attributes)))
 
 ; XXX: delete this?  no, we need it
@@ -39,7 +37,6 @@
                                  session/attributes
                                  youtube/attributes
                                  vtag/attributes
-                                 session-tag/attributes
                                  session-tag-2/attributes)))
 
 

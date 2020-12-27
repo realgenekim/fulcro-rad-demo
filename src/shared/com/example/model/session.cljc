@@ -65,18 +65,18 @@
    ao/identities #{:session/uuid}
    ao/schema      :video})
 
-(defattr tags :session/tags :ref
-  {ao/target           :session-tag/id
-   ao/cardinality      :many
-   ao/identities       #{:session/uuid}
-   ao/schema           :video
-   ro/column-formatter (fn [this tags]
-                         ;(println "session/tags: column-formatter: " tags)
-                         (clojure.string/join ", "
-                                              (for [t tags]
-                                                (str (-> t
-                                                         :session-tag/tag-eid-2
-                                                         :video-tag/name)))))})
+;(defattr tags :session/tags :ref
+;  {ao/target           :session-tag/id
+;   ao/cardinality      :many
+;   ao/identities       #{:session/uuid}
+;   ao/schema           :video
+;   ro/column-formatter (fn [this tags]
+;                         ;(println "session/tags: column-formatter: " tags)
+;                         (clojure.string/join ", "
+;                                              (for [t tags]
+;                                                (str (-> t
+;                                                         :session-tag/tag-eid-2
+;                                                         :video-tag/name)))))})
 
 ; session/tags: column-formatter:
 ; [{:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388",
@@ -179,7 +179,7 @@
 ; WARNING: make sure to add all model attributes here!
 
 (def attributes [id title speakers start-time-utc all-sessions
-                  tags tags-2])
+                  tags-2])
                  ;item-name category description price in-stock all-items])
 
 #?(:clj

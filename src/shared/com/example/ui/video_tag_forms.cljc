@@ -16,7 +16,6 @@
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.video-tag :as video-tag]
-    [com.example.model.session-tag :as session-tag]
     [com.example.model.session-tag-2 :as session-tag-2]
     [com.example.model.account :as account]
     ;[com.example.ui.session-forms :as session-forms]
