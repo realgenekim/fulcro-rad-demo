@@ -5,6 +5,7 @@
     [com.fulcrologic.rad.report-options :as ro]
     [com.wsscode.pathom.connect :as pc]
     #?(:clj [com.example.components.database-queries :as queries])
+    #?(:clj [com.fulcrologic.rad.database-adapters.datomic-cloud :as datomic])
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
        :cljs [com.fulcrologic.fulcro.dom :as dom])
     [taoensso.timbre :as log]))
@@ -86,18 +87,19 @@
 ;                             :video-tag/name Structure and Dynamics}}]
 
 (defattr tags-2 :session/tags-2 :ref
-  {ao/target           :session-tag-2/id
-   ao/cardinality      :many
-   ao/identities       #{:session/uuid}
-   ao/schema           :video
-   ro/column-formatter (fn [this tags]
-                         (println "session/tags: column-formatter: " tags)
-                         ;"---")})
-                         (clojure.string/join ", "
-                                              (for [t tags]
-                                                (str (-> t
-                                                         :session-tag-2/video-tag
-                                                         :video-tag/name)))))})
+  {ao/target            :session-tag-2/id
+   ao/cardinality       :many
+   ao/identities        #{:session/uuid}
+   :com.fulcrologic.rad.database-adapters.datomic/entity-ids #{:session/uuid}
+   ao/schema            :video
+   ro/column-formatter  (fn [this tags]
+                          (println "session/tags: column-formatter: " tags)
+                          ;"---")})
+                          (clojure.string/join ", "
+                                               (for [t tags]
+                                                 (str (-> t
+                                                          :session-tag-2/video-tag
+                                                          :video-tag/name)))))})
 
 ;(defattr tagrefs :sessino/tagrefs :ref
 ;  {ao/target})

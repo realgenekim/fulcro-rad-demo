@@ -22,11 +22,10 @@
     ;[com.example.ui.session-forms :as session-forms]
     [clojure.pprint :as pp]))
 
-(defsc TagsQuery [_ v]
-  (do
-    (println "TagsQuery: " v)
-    {:query [:video-tag/id :video-tag/name]
-     :ident :video-tag/id}))
+
+(defsc TagsQuery [_ _]
+  {:query [:video-tag/id :video-tag/name]
+   :ident :video-tag/id})
 
 
 ; this is to edit the video tags
@@ -50,7 +49,7 @@
    fo/field-styles  {:session-tag-2/video-tag :pick-one}
    fo/field-options {:session-tag-2/video-tag
                      {::picker-options/query-key     :video-tag/all-tags
-                      ;::picker-options/query-component TagsQuery
+                      ::picker-options/query-component TagsQuery
                       ;(fn [_ options]
                       ;  (mapv
                       ;    (fn [{:category/keys [id label]}]
