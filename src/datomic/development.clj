@@ -54,6 +54,9 @@
 
   (myparse [:session-tag-2/all-session-tags])
 
+  (myparse [{[:session/uuid leartalk-uuid]
+             [:session/tags-2]}])
+
   (myparse [{[:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"]
              [:session-tag-2/id
               :session-tag-2/video-tag]}])

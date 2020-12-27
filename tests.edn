@@ -1,10 +1,11 @@
 #kaocha/v1
     {:tests    [{:id           :unit
                  :ns-patterns  ["-test$" "-spec$"]
-                 :test-paths   ["src/test" "src/shared-tests" "src/datomic-tests"]
+                 :test-paths   ["src/datomic-tests"]
                  :skip-meta    [:integration]
                  :source-paths ["src/datomic" "src/shared" "src/dev"]}]
      ;:reporter [fulcro-spec.reporters.terminal/fulcro-report]
+     :color?      true
      :plugins [:kaocha.plugin/hooks]
      :kaocha.hooks/pre-run [com.example.components.kaocha-hooks/mount-hook]
      :kaocha.hooks/post-run [com.example.components.kaocha-hooks/unmount-hook]}

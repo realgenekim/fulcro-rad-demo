@@ -1,7 +1,7 @@
 (ns com.example.model.gene-test
   (:require
     [clojure.test :refer :all]
-    [clojure.tools.namespace.repl :as tools-ns :refer [disable-reload! refresh clear set-refresh-dirs]]
+    ;[clojure.tools.namespace.repl :as tools-ns :refer [disable-reload! refresh clear set-refresh-dirs]]
     [datomic.client.api :as d]
     [mount.core :as mount]
     [com.example.components.datomic :refer [datomic-connections]]
@@ -16,15 +16,15 @@
 (println "hello!")
 
 
-(defn start []
-  (mount/start-with-args {:config "config/test.edn"})
-  ;(seed!)
-  :ok)
-
-(defn stop
-  "Stop the server."
-  []
-  (mount/stop))
+;(defn start []
+;  (mount/start-with-args {:config "config/test.edn"})
+;  ;(seed!)
+;  :ok)
+;
+;(defn stop
+;  "Stop the server."
+;  []
+;  (mount/stop))
 
 ;(defn restart
 ;  "Stop, refresh, and restart the server."
@@ -47,11 +47,13 @@
 
 ;(restart)
 
+(println (mount/find-all-states))
+
 (deftest reset-tests
   (do
     (println "*** stop")
-    (println "*** start")
-    (start)
+    (println "*** start: mount/find-all-states")
+    ;(start)
     (println (mount/find-all-states)))
   (is (= 1 1)))
 
@@ -92,11 +94,7 @@
                      {:db/id 10440962418348437
                       :session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"
                       :session-tag-2/video-tag {:video-tag/id #uuid "1993c94e-5fe6-4aea-8eec-51c046a98b47"
-                                                :video-tag/name "Structure and Dynamics"}}
-                     {:db/id 62848084644663699
-                      :session-tag-2/id #uuid "e78b6479-abf5-45b4-9eff-74a908792917"
-                      :session-tag-2/video-tag {:video-tag/id #uuid "5d81f6f7-a5a8-4196-aef6-4ba3ae125777"
-                                                :video-tag/name "Leadership"}}]}]
+                                                :video-tag/name "Structure and Dynamics"}}]}]
       ;(println "actual")
       ;(pp/pprint r)
       ;(println "expected")
@@ -113,15 +111,16 @@
       (is (= {[:session/uuid #uuid "63827c18-5960-408f-8421-66d121a175b2"]
               {:session/tags-2 [{:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"}
                                 {:session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"}]}}
-             r))
+             r))))
       ; should return two session-tag/ids
-      (is (= [[:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"]
-              [:session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"]]
-             (-> r
-                 (get [:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"])
-                 :session/tags-2
-                 (#(map (fn [x] (-> x
-                                    first)) %)))))))
+      ;(is (= [[:session-tag-2/id #uuid "95ec4b65-a7e1-4a94-91d5-5a3196b0b388"]
+      ;        [:session-tag-2/id #uuid "be1f1687-4700-4143-9274-001d3cfd506e"]
+      ;        [:session-tag-2/id #uuid "0d4d5691-04f1-44e8-87f6-a0c2d03f90f4"]]
+      ;       (-> r
+      ;           (get [:session/uuid #uuid"63827c18-5960-408f-8421-66d121a175b2"])
+      ;           :session/tags-2
+      ;           (#(map (fn [x] (-> x
+      ;                              first)) %)))))))
 
   (testing "get lear talk by uuid: get video-tag/name "
     (let [r (myparse [{[:session/uuid leartalk-uuid]
@@ -216,6 +215,6 @@
 
   ,)
 
-(deftest stopping
-  (stop)
-  (is (= 1 1)))
+;(deftest stopping
+;  (stop)
+;  (is (= 1 1)))
