@@ -3,6 +3,7 @@
     ;[com.example.model.item :as item]
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
        :cljs [com.fulcrologic.fulcro.dom :as dom])
+    [com.fulcrologic.rad.routing :as rroute]
     [com.example.model.session :as session]
     [com.example.model.video-tag :as video-tag]
     [com.example.ui.video-tag-forms :as video-tag-form]
@@ -16,7 +17,8 @@
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
     [com.example.model.account :as account]
-    [clojure.pprint :as pp]))
+    [clojure.pprint :as pp]
+    [com.fulcrologic.fulcro.data-fetch :as df]))
 
 
 (form/defsc-form SessionForm [this props]
@@ -50,13 +52,234 @@
    ;                   [:session/tags]]
 
    fo/route-prefix "session"
-   fo/title        "Edit Session"})
+   fo/title        "Edit Session"}
+  (dom/div
+    (dom/pre (with-out-str (pp/pprint props)))))
+
+;
+; right pane
+;
+
+(defsc SessionDetails [this {:session/keys [uuid speakers venue] :as props}]
+  {:query [:session/uuid :session/speakers :session/venue]
+   :ident :session/uuid}
+  (dom/div
+    #?(:cljs (js/console.log props))
+    (dom/p "Hello!")
+    (dom/p "speakers: " speakers)
+    (dom/p "venue: " venue)))
+
+(def ui-session-details (comp/factory SessionDetails {:keyfn :session/uuid}))
+
+;
+; left pane
+;
+
+(defsc SessionListItem [this {:session/keys [uuid speakers venue] :as props}]
+  {:query [:session/uuid :session/speakers :session/venue]
+   :ident :session/uuid}
+  (dom/tr
+    (dom/td
+      (dom/a {:href "#"
+              :onClick (fn []
+                         (println "click: " props)
+                         (df/load! this [:session/uuid uuid] SessionDetails
+                            {:target [:component/id :session-picker :session-picker/selected-session]}))}
+        speakers))
+    (dom/td venue)))
+  ;(dom/li :.item
+  ;    (dom/a {:href    "#"}
+  ;        ;:onClick (fn []
+  ;        ;           (df/load! this [:person/id id] PersonDetail
+  ;        ;                       {:target ([:component/id :session-picker] :person-picker/selected-person)}))}
+  ;      speakers)))
+
+(def ui-session-list-item (comp/factory SessionListItem))
+
+
+;(defsc SessionTagsSC [this {:session/keys [uuid]}]
+;  {:query [:session/uuid]}
+;  (dom/div
+;    (dom/ul
+;      (dom/li uuid))))
+;"All: " (dom/input {:checked all-checked? ...})
+;(dom/ul ...)))
+
+(defsc SessionList2 [this {:session-list/keys [sessions]}]
+  {:query         [{:session-list/sessions (comp/get-query SessionListItem)}]
+   :ident         (fn [] [:component/id :session-list])
+   :initial-state {:session-list/sessions []}}
+  (dom/div
+      ;(dom/pre (with-out-str (pp/pprint sessions)))
+      (dom/h3 "Session List:")
+      (dom/table
+        (dom/thead
+          (dom/tr
+            (dom/th "Speakers")
+            (dom/th "Venue")))
+        (dom/tbody
+          (map ui-session-list-item sessions)))))
+       ;(dom/h3 :.ui.header "Session")
+       ;(dom/ul
+       ;  (map ui-session-list-item sessions)))
+
+(def ui-session-list (comp/factory SessionList2))
+
+;(defsc SessionListManual [this props])
+(defsc SessionListManual [this {:session-picker/keys [list selected-session]
+                                ;:session/keys [uuid speakers venue]
+                                :as props}]
+  {:query         [{:session-picker/list (comp/get-query SessionList2)}
+                   {:session-picker/selected-session (comp/get-query SessionDetails)}]
+   :initial-state {:session-picker/list {}}
+   :ident         (fn [] [:component/id :session-picker])
+   :route-segment ["session-list22"]}
+  (let [rows (-> props)]
+    (dom/div :.ui.container
+             (dom/h2 "Hello")
+             ;(dom/p "props:" props)
+             ;(dom/pre (-> (with-out-str (pp/pprint list))))
+             (dom/div :.ui.two.column.container.grid
+                      ;#?(:cljs (js/console.log rows))
+                      (dom/div :.column.segment.ui
+                        ;(dom/h3 "Sessions")
+                        (ui-session-list list))
+
+                      (dom/div :.column.segment.ui
+                        (dom/h3 "Session Details:")
+                        (ui-session-details selected-session)))
+             ;{:session-list/selected-session #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df",}
+             ;                  {[:session/uuid #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df"]
+             ;                   [:session/speakers :session/venue]})))
+             ;(comp/get-query SessionDetails)})))
+             (dom/pre "SessionListManual: rows: \n"
+               (with-out-str (pp/pprint rows))))))
+
+(report/defsc-report SessionList [this props]
+  {ro/title            "Session Report"
+   ro/source-attribute :session/all-sessions
+   ro/row-pk           session/id
+   ;ro/query-inclusions [{:component/id :session-picker}]
+   ;{:person-picker/selected-person (comp/get-query PersonDetail)}
+   ;fo/query-inclusion     [:session-tag-2/video-tag]
+   ro/columns          [session/speakers session/title session/stype session/venue
+                        session/start-time-utc session/tags-2]
+   ro/route            "session-custom-report22"}
+  (let [rows (-> props
+                 :ui/current-rows)]
+    (dom/div :.ui.container
+             (dom/h2 "Hello")
+             (dom/p "props:")
+             (dom/pre (-> (with-out-str (pp/pprint props))))
+             (dom/div :.ui.two.column.container.grid
+                      ;#?(:cljs (js/console.log rows))
+                      (dom/div :.column.segment.ui
+                        (dom/h3 "Session List:")
+                        (dom/table
+                          (dom/thead
+                            (dom/tr
+                              (dom/th "Speakers")
+                              (dom/th "Venue")))
+                          (dom/tbody
+                            (map ui-session-list-item rows))))
+                      (dom/div :.column.segment.ui
+                        (dom/h3 "Session Details:")
+                        (ui-session-details (comp/get-query SessionDetails))))
+                          ;{:session-list/selected-session #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df",}
+                          ;                  {[:session/uuid #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df"]
+                          ;                   [:session/speakers :session/venue]})))
+                                             ;(comp/get-query SessionDetails)})))
+             (dom/pre
+               (with-out-str (pp/pprint rows))))))          ;session/tags]
+
+(comment
+  (comp/get-query SessionDetails))
+
+;(defsc SessionList [this {:session-list/keys [all-sessions] :as props}]
+;  {:query         [:session-list/all-sessions]
+;   ;(comp/get-query PersonList)}
+;   ;{:session-picker/selected-session (comp/get-query PersonDetail)}
+;   ;:initial-state ()
+;   :initial-state (fn [params]
+;                   (df/load! SessionList [:session/all-sessions] SessionList
+;                             {:target [:component/id :session-list]}))
+;   :ident         (fn [] [:component/id :session-list/all-sessions])
+;   :route-segment ["session-list"]}
+;  (dom/div :.ui.two.column.container.grid
+;           #?(:cljs (js/console.log all-sessions))
+;           (dom/div :.column
+;               (dom/h1 "Column 1"))
+;           (dom/div :.column
+;               (dom/h2 "Column 2"))))
+
+;(defsc PersonList [this {:person-list/keys [people]}]
+;  {:query         [{:person-list/people (comp/get-query PersonListItem)}]
+;   :ident         (fn [] [:component/id :person-list])
+;   :initial-state {:person-list/people []}}
+;  (div :.ui.segment
+;       (h3 :.ui.header "People")
+;       (ul
+;         (map ui-person-list-item people))))
+
+;(def ui-session-list (comp/factory SessionList))
+                                     ;{:keyfn :person-picker/people}))
+
+;(defsc PersonPicker [this {:person-picker/keys [list selected-person]}]
+;  {:query         [{:person-picker/list (comp/get-query PersonList)}
+;                   {:person-picker/selected-person (comp/get-query PersonDetail)}]
+;   :initial-state {:person-picker/list {}}
+;   :ident         (fn [] [:component/id :person-picker])}
+;  (div :.ui.two.column.container.grid
+;       (div :.column
+;               (ui-person-list list))
+;       (div :.column
+;               (ui-person-detail selected-person))))
+
+
+(report/defsc-report CustomTopReport [this props]
+  {ro/title               "Session Report"
+   ro/source-attribute    :session/all-sessions
+   ro/row-pk              session/id
+   fo/query-inclusion     [:session-tag-2/video-tag]
+   ro/columns             [session/speakers session/title session/stype session/venue
+                           session/start-time-utc session/tags-2] ;session/tags]
+   ro/initial-sort-params {:sort-by          :session/title
+                           :sortable-columns #{:session/title :session/speakers :session/venue}
+                           ; :session/stype
+                           :ascending?       true}
+
+   ro/form-links          {session/speakers SessionForm}
+
+   ro/run-on-mount?       true
+   ro/route               "session-custom-report"}
+  (let [rows (-> props
+                 :ui/current-rows)]
+    #?(:cljs (js/console.log rows))
+    (dom/div
+      (dom/h3 "Hello!")
+
+      (dom/ul
+        (map (fn [x] (dom/li {:onClick (fn []
+                                         (println "click: " (:session/uuid x))
+                                         ;[app-or-component RouteTarget route-params]
+                                         (rroute/route-to! this SessionForm
+                                                           {:session/id #uuid "63827c18-5960-408f-8421-66d121a175b2"}))}
+                                                           ;{:session/id (:session/uuid x)}))}
+                       (:session/speakers x)))
+             rows))
+
+      (dom/pre (with-out-str (pp/pprint rows)))
+      (dom/ul "List"))))
+
+(comment
+  (comp/get-query CustomTopReport))
+
 
 (report/defsc-report SessionReport [this props]
   {ro/title               "Session Report"
    ro/source-attribute    :session/all-sessions
    ro/row-pk              session/id
-   fo/query-inclusion     [:session-tag=2/video-tag]
+   fo/query-inclusion     [:session-tag-2/video-tag]
    ro/columns             [session/speakers session/title session/stype session/venue
                            session/start-time-utc session/tags-2] ;session/tags]
 

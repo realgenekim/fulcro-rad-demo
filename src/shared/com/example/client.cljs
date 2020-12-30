@@ -2,6 +2,7 @@
   (:require
     [com.example.ui :as ui :refer [Root]]
     [com.example.ui.login-dialog :refer [LoginForm]]
+    [com.example.ui.session-forms :refer [SessionListManual SessionList SessionListItem]]
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.fulcro.mutations :as m]
@@ -17,7 +18,8 @@
     [com.fulcrologic.rad.routing.html5-history :as hist5 :refer [html5-history]]
     [com.fulcrologic.rad.routing.history :as history]
     [com.fulcrologic.rad.routing :as routing]
-    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
+    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+    [com.fulcrologic.fulcro.data-fetch :as df]))
 
 (defonce stats-accumulator
          (tufte/add-accumulating-handler! {:ns-pattern "*"}))
@@ -43,7 +45,10 @@
 
   ,)
 
-(defonce app (rad-app/fulcro-rad-app {}))
+(defonce app (rad-app/fulcro-rad-app
+               {:client-did-mount (fn [app]
+                                    (df/load! app :session/all-sessions SessionListItem
+                                                      {:target [:component/id :session-list :session-list/sessions]}))}))
 
 (defn refresh []
   ;; hot code reload of installed controls
