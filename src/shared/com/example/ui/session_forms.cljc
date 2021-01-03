@@ -19,6 +19,7 @@
     [com.example.model.account :as account]
     [clojure.pprint :as pp]
     [com.fulcrologic.fulcro.data-fetch :as df]))
+    ;[com.example.client :as client]))
 
 
 (form/defsc-form SessionForm [this props]
@@ -31,6 +32,9 @@
                     ;session/stype
                     session/start-time-utc
                     session/tags-2]
+   ;:componentDidMount (fn [this]
+   ;                     (println "SessionForm: componentDidMount"))
+
 
    fo/subforms     {:session/tags-2 {fo/ui          video-tag-form/SessionTagsSubForm
                                      fo/can-delete? (fn [_ _] true)
@@ -62,8 +66,10 @@
 ; right pane
 ;
 
-(defsc SessionDetails [this {:session/keys [uuid speakers venue tags-2] :as props}]
-  {:query [:session/uuid :session/speakers :session/venue :session/tags-2]
+(defsc SessionDetails [this {:session/keys [uuid speakers venue title start-time-utc
+                                            tags-2] :as props}]
+  {:query [:session/uuid :session/speakers :session/venue :session/title :session/tags-2
+           :session/start-time-utc]
    :ident :session/uuid}
 
   (let [tags (->> tags-2
@@ -74,7 +80,7 @@
     #?(:cljs (js/console.log props))
     (dom/div
       (dom/p "Hello!")
-      (dom/p "speakers: " speakers)
+      (dom/p "speakers: " (str ">>> " speakers "<<<"))
       (dom/p "venue: " venue)
 
       #?(:cljs (js/console.log "tags-2: " tags))
@@ -97,7 +103,11 @@
                          (println "click: " props)
                          ;(form/edit! this SessionForm uuid))}
                          (df/load! this [:session/uuid uuid] SessionDetails
-                            {:target [:component/id :session-picker :session-picker/selected-session]}))}
+                            {:target [:component/id :session-picker :session-picker/selected-session]})
+                         (form/start-form! (comp/any->app this)
+                                           ;nil
+                                           ;(str (:uuid (:session-picker/selected-session params)))
+                                           uuid SessionForm))}
         speakers))
     (dom/td venue)))
   ;(dom/li :.item
@@ -138,16 +148,43 @@
 
 (def ui-session-list (comp/factory SessionList2))
 
+(comment
+
+  (comp/component-options SessionForm :com.fulcrologic.rad.form/id)
+
+  ,)
+
 ;(defsc SessionListManual [this props])
 (defsc SessionListManual [this {:session-picker/keys [list selected-session]
                                 ;:session/keys [uuid speakers venue]
                                 :as props}]
-  {:query         [{:session-picker/list (comp/get-query SessionList2)}
-                   {:session-picker/selected-session (comp/get-query SessionDetails)}]
-   :initial-state {:session-picker/list {}}
-   :ident         (fn [] [:component/id :session-picker])
-   :route-segment ["session-list22"]}
-  (let [rows (-> props)]
+  {:query                      [{:session-picker/list (comp/get-query SessionList2)}
+                                {:session-picker/selected-session (comp/get-query SessionDetails)}]
+   :initial-state              {:session-picker/list {}}
+   :ident                      (fn [] [:component/id :session-picker])
+   ;:componentDidMount (fn [this params]
+   ;                     (println "XXX componentDidMount: " this
+   ;                              ;params
+   ;                              (keys params)
+   ;                              (:uuid (:session-picker/selected-session params)))
+   ;                     (let [_ (form/start-form! (comp/any->app this)
+   ;                                               ;nil
+   ;                                               (:uuid (:session-picker/selected-session params))
+   ;                                               SessionForm)]))
+   :route-segment              ["session-list22"]}
+  (let [rows (-> props)
+        ;(form/form-will-enter app {:keys [action id] :as route-params} form-class)
+        ;_ (rroute/route-to! this SessionForm selected-session)
+        ; app id form-class
+        _ (println "selected-session id: " selected-session
+                   (:session/uuid selected-session))]
+        ;_ (form/start-form! (comp/any->app this)
+        ;                    (:session/uuid selected-session)
+        ;                    SessionForm)]
+        ;                    ;ui-session-form)]
+        ;form (form/form-will-enter com.example.client/app
+        ;                           {:action})]
+
     (dom/div :.ui.container
              (dom/h2 "Hello")
              ;(dom/p "props:" props)
@@ -159,8 +196,14 @@
                         (ui-session-list list))
 
                       (dom/div :.column.segment.ui
+                        ; how to manually call (form-will-enter)
                         (dom/h3 "Session Details:")
                         (ui-session-form selected-session)
+
+                        ;(form/start-form! this
+                        ;                  (:uuid selected-session)
+                        ;                  SessionForm)
+
                         (dom/h3 "Session Details:")
                         (ui-session-details selected-session)))
              ;{:session-list/selected-session #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df",}

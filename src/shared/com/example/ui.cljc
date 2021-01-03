@@ -19,7 +19,8 @@
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.dom.html-entities :as ent]
-    [com.fulcrologic.fulcro.routing.dynamic-routing :refer [defrouter]]
+    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter change-route-relative!
+                                                                   change-route!]]
     [com.fulcrologic.rad.authorization :as auth]
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.ids :refer [new-uuid]]
@@ -101,7 +102,11 @@
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this VideoTagReport {}))} "View Tags")
                    (ui-dropdown-item {:onClick (fn [] (form/create! this VideoTagForm))} "New Tag 2")
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this SessionList {}))} "Custom")
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this SessionListManual {}))} "Custom Manual"))))))
+                   (ui-dropdown-item {:onClick (fn []
+                                                 ; rroute/route-to! [app-or-component RouteTarget route-params]
+                                                 (rroute/route-to! this SessionListManual {}))
+                                                 ;(dr/change-route! this SessionListManual))
+                                      ,} "Custom Manual"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})
