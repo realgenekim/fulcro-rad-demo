@@ -24,6 +24,7 @@
     [com.fulcrologic.rad.type-support.date-time :as dt]
     [com.example.model.session :as session]
     [com.example.model.youtube-video :as youtube]
+    [com.example.model.youtube-playlist :as youtube-playlist]
     [com.example.model.video-tag :as video-tag]
     [com.example.model.session-tag-2 :as session-tag-2]
     [com.example.model.mutations :as mymutations]
@@ -74,6 +75,7 @@
      account/resolvers
      session/resolvers
      youtube/resolvers
+     youtube-playlist/resolvers
      video-tag/resolvers
      session-tag-2/resolvers
      invoice/resolvers

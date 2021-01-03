@@ -12,6 +12,7 @@
     ;
     [com.example.model.session :as session]
     [com.example.model.youtube-video :as youtube]
+    [com.example.model.youtube-playlist :as youtube-playlist]
     [com.example.model.video-tag :as vtag]
     [com.example.model.session-tag-2 :as session-tag-2]
     ;
@@ -29,6 +30,7 @@
                            timezone/attributes
                            session/attributes
                            youtube/attributes
+                           youtube-playlist/attributes
                            vtag/attributes
                            session-tag-2/attributes)))
 
@@ -36,6 +38,7 @@
 (def all-video-attributes (vec (concat
                                  session/attributes
                                  youtube/attributes
+                                 youtube-playlist/attributes
                                  vtag/attributes
                                  session-tag-2/attributes)))
 

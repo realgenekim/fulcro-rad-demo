@@ -20,7 +20,10 @@
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.type-support.date-time :as dt]
     [com.fulcrologic.rad.database-adapters.datomic-options :as do]
-    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]))
+    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
+
+    ; my google-analytics-video library
+    [datomic.datomic :as mydatomic]))
 
 (set-refresh-dirs "src/main" "src/datomic" "src/dev" "src/shared")
 
@@ -28,6 +31,9 @@
 
 (def leartalk-uuid #uuid"63827c18-5960-408f-8421-66d121a175b2")
 (def leadership-uuid #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777")
+
+(comment
+  (mydatomic/get-all-confs))
 
 (comment
   (clojure.core/require 'development)
@@ -51,6 +57,8 @@
 
 
 (comment
+
+  (myparse [:youtube-playlist/all-playlists])
 
   (myparse [:session-tag-2/all-session-tags])
 
