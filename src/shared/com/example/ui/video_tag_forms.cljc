@@ -37,9 +37,9 @@
 ;(dom/div :.ui.container.grid
 ;  "Hello!")
 
-(defn create-tag-names [{:session-tag/keys [session] :as tags}]
-  (println "create-tag-names: " tags)
-  (assoc tags :session/tag-name "abc"))
+;(defn create-tag-names [{:session-tag/keys [session] :as tags}]
+;  (println "create-tag-names: " tags)
+;  (assoc tags :session/tag-name "abc"))
 
 ; this is to associate tags with sessions
 (form/defsc-form SessionTagsSubForm [this props]
@@ -145,4 +145,10 @@
   (comp/get-query YouTubeForm)
   (comp/get-query SessionTagsSubForm)
   ,)
+
+(defn item-checked? [item] (:checked? item))
+
+(defsc Session [_ _]
+  {:query [:session/id :session/tags-2 :session/speakers]
+   :ident :session/id})
 

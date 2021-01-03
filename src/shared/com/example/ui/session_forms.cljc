@@ -52,22 +52,34 @@
    ;                   [:session/tags]]
 
    fo/route-prefix "session"
-   fo/title        "Edit Session"}
-  (dom/div
-    (dom/pre (with-out-str (pp/pprint props)))))
+   fo/title        "Edit Session"})
+  ;(dom/div
+  ;  (dom/pre (with-out-str (pp/pprint props)))))
+
+(def ui-session-form (comp/factory SessionForm))
 
 ;
 ; right pane
 ;
 
-(defsc SessionDetails [this {:session/keys [uuid speakers venue] :as props}]
-  {:query [:session/uuid :session/speakers :session/venue]
+(defsc SessionDetails [this {:session/keys [uuid speakers venue tags-2] :as props}]
+  {:query [:session/uuid :session/speakers :session/venue :session/tags-2]
    :ident :session/uuid}
-  (dom/div
+
+  (let [tags (->> tags-2
+                  (map (fn [x]
+                         (-> x
+                             :session-tag-2/video-tag
+                             :video-tag/name))))]
     #?(:cljs (js/console.log props))
-    (dom/p "Hello!")
-    (dom/p "speakers: " speakers)
-    (dom/p "venue: " venue)))
+    (dom/div
+      (dom/p "Hello!")
+      (dom/p "speakers: " speakers)
+      (dom/p "venue: " venue)
+
+      #?(:cljs (js/console.log "tags-2: " tags))
+
+      (dom/p "tags: " tags))))
 
 (def ui-session-details (comp/factory SessionDetails {:keyfn :session/uuid}))
 
@@ -83,6 +95,7 @@
       (dom/a {:href "#"
               :onClick (fn []
                          (println "click: " props)
+                         ;(form/edit! this SessionForm uuid))}
                          (df/load! this [:session/uuid uuid] SessionDetails
                             {:target [:component/id :session-picker :session-picker/selected-session]}))}
         speakers))
@@ -147,6 +160,8 @@
 
                       (dom/div :.column.segment.ui
                         (dom/h3 "Session Details:")
+                        (ui-session-form selected-session)
+                        (dom/h3 "Session Details:")
                         (ui-session-details selected-session)))
              ;{:session-list/selected-session #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df",}
              ;                  {[:session/uuid #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df"]
@@ -184,6 +199,7 @@
                             (map ui-session-list-item rows))))
                       (dom/div :.column.segment.ui
                         (dom/h3 "Session Details:")
+                        (ui-session-form (comp/get-query SessionForm))
                         (ui-session-details (comp/get-query SessionDetails))))
                           ;{:session-list/selected-session #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df",}
                           ;                  {[:session/uuid #uuid"1b03d496-ce5e-4da5-baa9-a5b3a92555df"]
