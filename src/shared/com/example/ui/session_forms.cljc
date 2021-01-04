@@ -18,7 +18,9 @@
     [com.example.model.category :as category]
     [com.example.model.account :as account]
     [clojure.pprint :as pp]
-    [com.fulcrologic.fulcro.data-fetch :as df]))
+    [com.fulcrologic.fulcro.data-fetch :as df]
+    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+    [com.fulcrologic.rad.routing.history :as history]))
     ;[com.example.client :as client]))
 
 
@@ -93,24 +95,52 @@
 ; left pane
 ;
 
+(comment
+  (dr/resolve-path com.example.ui/Root SessionForm {:action form/edit-action
+                                                    :id     "entity-id"})
+  ; => ["session-list22" "session" "edit" "entity-id"]
+  ; => ["session" "edit" "entity-id"]
+
+  (dr/resolve-path SessionListManual SessionForm {:action form/edit-action
+                                                  :id     "entity-id"})
+
+  (dr/change)
+  (dr/change-route! com.example.client/app
+                    (dr/resolve-path SessionListManual SessionForm {:action form/edit-action
+                                                                    :id     #uuid "8a481331-eb1d-4e5b-9d19-759da23cb674"}))
+  ,)
+
+(declare SessionListManual)
+
 (defsc SessionListItem [this {:session/keys [uuid speakers venue] :as props}]
   {:query [:session/uuid :session/speakers :session/venue]
    :ident :session/uuid}
   (dom/tr
     (dom/td
-      (dom/a {:href "#"
+      (dom/a {:href    "#"
               :onClick (fn []
                          (println "click: " props)
                          ;(form/edit! this SessionForm uuid))}
-                         (df/load! this [:session/uuid uuid] SessionDetails
-                            {:target [:component/id :session-picker :session-picker/selected-session]})
-                         ; [this form-class entity-id]
-                         ;(form/edit! this SessionForm uuid))}
-                         (form/start-form! (comp/any->app this)
-                                           ;nil
-                                           ;(str (:uuid (:session-picker/selected-session params)))
-                                           uuid SessionForm))}
-        speakers))
+                         ; TODO: copy code from rad/routing: history
+                         (let [route-params {:action form/edit-action :id     uuid}
+                               path  (dr/resolve-path SessionListManual SessionForm route-params)]
+                           (dr/change-route! this path)
+                           ;(history/push-route! app-or-component path route-params)
+                           (history/push-route! this path route-params)))}
+             ;(form/edit! this SessionForm uuid))}
+             ;(dr/change-route! app-or-component path route-params)
+             ;(dr/change-route! this path {:action form/edit-action
+             ;                             :id     uuid}))}
+             ;(dr/change-route! this ["todo" "session" "edit" uuid])
+             ;(df/load! this [:session/uuid uuid] SessionDetails
+             ;   {:target [:component/id :session-picker :session-picker/selected-session]})}
+             ; [this form-class entity-id]
+             ;(form/edit! this SessionForm uuid))}
+             ;(form/start-form! (comp/any->app this)
+             ;                  ;nil
+             ;                  ;(str (:uuid (:session-picker/selected-session params)))
+             ;                  uuid SessionForm))}
+             speakers))
     (dom/td venue)))
   ;(dom/li :.item
   ;    (dom/a {:href    "#"}
@@ -156,13 +186,25 @@
 
   ,)
 
+(defsc EmptySC [_ _]
+  {:query ['*]
+   :route-segment [""]})
+
+(defrouter SessionDetailsRouter [this props]
+  {:router-targets [EmptySC SessionForm]})
+
+(def ui-sess-det-router (comp/factory SessionDetailsRouter))
+
 ;(defsc SessionListManual [this props])
-(defsc SessionListManual [this {:session-picker/keys [list selected-session]
+(defsc SessionListManual [this {:session-picker/keys [list selected-session router]
                                 ;:session/keys [uuid speakers venue]
                                 :as props}]
   {:query                      [{:session-picker/list (comp/get-query SessionList2)}
-                                {:session-picker/selected-session (comp/get-query SessionDetails)}]
-   :initial-state              {:session-picker/list {}}
+                                {:session-picker/selected-session (comp/get-query SessionDetails)}
+                                {:session-picker/router (comp/get-query SessionDetailsRouter)}]
+   :initial-state              {:session-picker/list {}
+                                :session-picker/router {}}
+
    :ident                      (fn [] [:component/id :session-picker])
    ;:componentDidMount (fn [this params]
    ;                     (println "XXX componentDidMount: " this
@@ -188,7 +230,7 @@
         ;                           {:action})]
 
     (dom/div :.ui.container
-             (dom/h2 "Hello")
+             (dom/h2 "SessionListManual")
              ;(dom/p "props:" props)
              ;(dom/pre (-> (with-out-str (pp/pprint list))))
              (dom/div :.ui.two.column.container.grid
@@ -200,7 +242,7 @@
                       (dom/div :.column.segment.ui
                         ; how to manually call (form-will-enter)
                         (dom/h3 "Session Details:")
-                        (ui-session-form selected-session)
+                        (ui-sess-det-router router)
 
                         ;(form/start-form! this
                         ;                  (:uuid selected-session)
@@ -323,6 +365,7 @@
         (map (fn [x] (dom/li {:onClick (fn []
                                          (println "click: " (:session/uuid x))
                                          ;[app-or-component RouteTarget route-params]
+
                                          (rroute/route-to! this SessionForm
                                                            {:session/id #uuid "63827c18-5960-408f-8421-66d121a175b2"}))}
                                                            ;{:session/id (:session/uuid x)}))}
