@@ -58,7 +58,12 @@
 
 (comment
 
+  (myparse [:conference/all-conferences])
+
   (myparse [:youtube-playlist/all-playlists])
+  (myparse [:youtube-video/all-videos])
+  (myparse [{[:youtube-video/playlist-id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"]
+             [:youtube-video/by-playlist]}])
 
   (myparse [:session-tag-2/all-session-tags])
 

@@ -10,9 +10,6 @@
     #?(:clj [com.example.components.database-queries :as queries])
     [taoensso.timbre :as log]))
 
-(defsc YouTubePlaylist [_ _]
-  {:query [:youtube-playlist/id :youtube-playlist/title]
-   :ident :youtube-playlist/id})
 
 ; who cares about the attrs: no one except for you
 ; it's just a map: you use them in reports and forms, to tell the forms/reports what to display
@@ -130,6 +127,21 @@
                       ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))})
                       {:youtube-video/all-videos (queries/get-all-youtube-videos env query-params)}))})
 
+; (defattr account-invoices :account/invoices :ref
+;  {ao/target     :account/id
+;   ao/pc-output  [{:account/invoices [:invoice/id]}]
+;   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
+;                   #?(:clj
+;                      {:account/invoices (queries/get-customer-invoices env query-params)}))})
+
+;(defattr all-videos-by-playlist :youtube-video/by-playlist :ref
+;  {ao/target     :youtube-video/id
+;   ao/pc-output  [{:youtube-video/by-playlist [:youtube-video/id]}]
+;   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
+;                   (println "defattr all-videos-by-playlist: " query-params)
+;                   #?(:clj
+;                      {:youtube-video/by-playlist [{:youtube-video/id "123 "}]}))})
+;                      ;{:youtube-video/all-videos (queries/get-all-youtube-videos env query-params)}))})
 
 
 (pc/defresolver youtube-video-by-id [{:keys [db] :as env} {:youtube-video/keys [id] :as input}]
@@ -144,12 +156,28 @@
      ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
      (queries/youtube-video-by-id env id)))
 
+(pc/defresolver youtube-video-by-playlist-id [{:keys [db] :as env} {:youtube-video/keys [playlist-id] :as input}]
+  {::pc/input #{:youtube-video/playlist-id}
+   ::pc/output [{:youtube-video/by-playlist [:youtube-video/id]}]}
+              ;[:youtube-video/description :youtube-video/playlist-id :youtube-video/title
+              ; :youtube-video/position :youtube-video/url :youtube-video/video-id]}
+  ;(println "defresolver: input: " env input)
+  (println "defresolver: youtube-video-by-playlist-id: playlist-id: " playlist-id)
+  #?(:clj
+     ;{:session/uuid "abc"
+     ; :session/venue "abc"}))
+     ;{:youtube-video/by-playlist [{:youtube-video/id "123 "}]}))
+     (let [r (queries/youtube-video-by-playlist-id env playlist-id)]
+       ;(println "retval: " r)
+       {:youtube-video/by-playlist r})))
+
+
 
 ; WARNING: make sure to add all model attributes here!
 
 (def attributes [id description title playlist-id position url video-id all-videos])
-;item-name category description price in-stock all-items])
+;item-name category description price in-stock all-items]) all-videos-by-playlist
 
 #?(:clj
-   (def resolvers [youtube-video-by-id]))
+   (def resolvers [youtube-video-by-id youtube-video-by-playlist-id]))
 

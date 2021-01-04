@@ -242,6 +242,24 @@
                 db id))
     (log/error "No database atom for production schema!")))
 
+(defn youtube-video-by-playlist-id [env playlist-id]
+  (log/info "youtube-video-by-playlist-id: playlist-id: " playlist-id)
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [retval (d/q '[:find (pull ?e [*])
+                        :in $ ?playlist-id
+                        :where
+                        [?e :youtube-video/id ?id]
+                        [?e :youtube-video/playlist-id ?ep]
+                        [?ep :youtube-playlist/id ?playlist-id]]
+                      db playlist-id)]
+      (println "youtube-video-by-playlist-id: " retval)
+      ;retval
+      (->> retval
+           ;(take 5)
+           flatten
+           (#(apply vector %))))
+    (log/error "No database atom for production schema!")))
+
 ;
 ; video tags
 ;
@@ -328,7 +346,47 @@
            (#(apply vector %))))
     (log/error "No database atom for production schema!")))
 
+;
+; video playlists
+;
 
+(defn get-all-youtube-playlists
+  [env query-params]
+  (println "dbquery: get-all-youtube-playlists...")
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [playlists (d/q '[:find (pull ?s [*])
+                           :where
+                           [?s :youtube-playlist/id _]] db)]
+      (tap> playlists)
+      (->> playlists
+           ;(take 5)
+           flatten
+           (#(apply vector %))))
+    (log/error "No database atom for production schema!")))
+
+;
+; conferences
+;
+
+(defn get-all-conferences
+  [env query-params]
+  (println "dbquery: get-all-conferences...")
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [confs (d/q '[:find (pull ?e [* {:conference/youtube-playlists
+                                          [:youtube-playlist/id :youtube-playlist/title]}])
+                       :where
+                       [?e :conference/name _]] db)]
+      (tap> confs)
+      (->> confs
+           ;(take 5)
+           flatten
+           (#(apply vector %))))
+    (log/error "No database atom for production schema!")))
+
+
+;
+;
+;
 
 (defn get-login-info
   "Get the account name, time zone, and password info via a username (email)."
@@ -340,3 +398,4 @@
                 :password/salt
                 :password/iterations]
       [:account/email username])))
+

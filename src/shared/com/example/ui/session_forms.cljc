@@ -104,6 +104,8 @@
                          ;(form/edit! this SessionForm uuid))}
                          (df/load! this [:session/uuid uuid] SessionDetails
                             {:target [:component/id :session-picker :session-picker/selected-session]})
+                         ; [this form-class entity-id]
+                         ;(form/edit! this SessionForm uuid))}
                          (form/start-form! (comp/any->app this)
                                            ;nil
                                            ;(str (:uuid (:session-picker/selected-session params)))
