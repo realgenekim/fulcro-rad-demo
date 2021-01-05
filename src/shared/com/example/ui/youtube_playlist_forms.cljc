@@ -15,10 +15,12 @@
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
+    [com.example.model.conference :as conference]
     [com.example.ui.youtube-forms :as youtube-forms]
     [com.example.model.youtube-playlist :as youtube-playlist]
     [com.example.model.mutations :as mymutations]
-    [com.fulcrologic.rad.routing :as rroute]))
+    [com.fulcrologic.rad.routing :as rroute]
+    [clojure.pprint :as pp]))
 
 (form/defsc-form YouTubePlaylistForm [this props]
   {fo/id           youtube-playlist/id
@@ -32,12 +34,17 @@
 
 
 (report/defsc-report YouTubePlaylistReport [this props]
-  {ro/title            "YouTube Playlist Report"
+  {ro/title            "YouTube Playlist Report 2"
    ro/source-attribute :youtube-playlist/all-playlists
    ro/row-pk           youtube-playlist/id
    ro/columns          [youtube-playlist/id
                         youtube-playlist/title
-                        youtube-playlist/description]
+                        youtube-playlist/description
+                        youtube-playlist/conf-uuid]
+
+   :com.fulcrologic.rad.control/controls {:youtube-playlist/conf-uuid {:type   :uuid
+                                                                       :local? true
+                                                                       :label  "Conference"}}
 
    ;session/speakers session/stype session/title session/venue session/start-time-utc]
 
@@ -46,6 +53,8 @@
    ;                                                     (or (= "" category) (= category row-category))))
    ;
    ;;; A sample server-query based picker that sets a local parameter that we use to filter rows.
+
+   ;ro/controls {:conference/id}
    ;ro/controls            {::category {:type                          :picker
    ;                                    :local?                        true
    ;                                    :label                         "Category"
@@ -106,6 +115,9 @@
 
    ro/run-on-mount?    true
    ro/route            "youtube-playlist-report"})
+  ;(dom/div
+  ;  (dom/pre
+  ;    (with-out-str (pp/pprint props)))))
 
 
 (comment

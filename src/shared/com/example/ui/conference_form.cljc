@@ -18,8 +18,11 @@
     [com.example.ui.youtube-forms :as youtube-forms]
     [com.example.model.conference :as conference]
     [com.example.model.youtube-playlist :as youtube-playlist]
+    [com.example.ui.youtube-playlist-forms :as youtube-playlist-forms]
     [com.example.model.mutations :as mymutations]
-    [com.fulcrologic.rad.routing :as rroute]))
+    [com.fulcrologic.rad.routing :as rroute]
+    [clojure.pprint :as pp]
+    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
 
 ;(form/defsc-form YouTubePlaylistForm [this props]
 ;  {fo/id           youtube-playlist/id
@@ -32,6 +35,13 @@
 ;;  "Hello!"))
 
 
+(comment
+  (dr/resolve-path com.example.ui/Root youtube-playlist-forms/YouTubePlaylistReport
+                   {:action form/edit-action
+                      :id     #uuid "8a481331-eb1d-4e5b-9d19-759da23cb674"})
+  ,)
+
+
 (report/defsc-report ConferenceReport [this props]
   {ro/title            "Conference Report"
    ro/source-attribute :conference/all-conferences
@@ -41,12 +51,51 @@
 
    ;ro/form-links       {youtube-playlist/title YouTubePlaylistForm}
 
-   ;ro/links               {:category/label (fn [this {:category/keys [label]}]
-   ;                                          (control/set-parameter! this ::category label)
-   ;                                          (report/filter-rows! this))}
+   ro/links            {:conference/uuid (fn [this {:conference/keys [uuid]}]
+                                           (println "ConferenceReport: click: " uuid)
+                                           ; [app-or-component RouteTarget route-params]
+                                           (rroute/route-to! this youtube-playlist-forms/YouTubePlaylistReport
+                                                             {:youtube-playlist/conf-uuid uuid}))}
+   ;:category/label (fn [this {:category/keys [label]}]
+   ;                  (control/set-parameter! this ::category label)
+   ;                  (report/filter-rows! this))}
 
    ro/run-on-mount?    true
    ro/route            "conferences"})
+
+;(report/defsc-report AccountInvoices [this props]
+;  {ro/title                              "Customer Invoices"
+;   ro/source-attribute                   :account/invoices
+;   ro/row-pk                             invoice/id
+;   ro/columns                            [invoice/id invoice/date invoice/total]
+;   ro/column-headings                    {:invoice/id "Invoice Number"}
+;
+;   ro/form-links                         {:invoice/id InvoiceForm}
+;   :com.fulcrologic.rad.control/controls {:account/id {:type   :uuid
+;                                                       :local? true
+;                                                       :label  "Account"}}
+;   ;; No control layout...we don't actually let the user control it
+;
+;   ro/run-on-mount?                      true
+;   ro/route                              "account-invoices"})
+
+(report/defsc-report ConferencePlaylists [this props]
+  {ro/title                              "Conference Playlists"
+   ro/source-attribute                   :conference/youtube-playlists
+   ro/row-pk                             conference/id
+   ro/columns                            [conference/id conference/nm]
+   ;ro/column-headings                    {:invoice/id "Invoice Number"}
+
+   ;ro/form-links                         {:invoice/id InvoiceForm}
+   ;:com.fulcrologic.rad.control/controls {:account/id {:type   :uuid
+   ;                                                    :local? true
+   ;                                                    :label  "Account"}}
+   ;; No control layout...we don't actually let the user control it
+
+   ro/run-on-mount?                      true
+   ro/route                              "conference-playlists"}
+  (dom/div
+    (dom/pre (with-out-str (pp/pprint props)))))
 
 
 (comment

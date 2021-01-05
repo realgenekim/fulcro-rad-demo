@@ -59,6 +59,18 @@
 (comment
 
   (myparse [:conference/all-conferences])
+  ;(myparse [])
+  (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
+             [:conference/name]}])
+  ; vvv why is query-params empty?
+  (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
+             [:conference/name :conference/youtube-playlists]}])
+
+  (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
+             [:conference/name :conference/youtube-playlists]}])
+  (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
+             [:conference/name {:conference/youtube-playlists
+                                [:youtube-playlist/id :youtube-playlist/title]}]}])
 
   (myparse [:youtube-playlist/all-playlists])
   (myparse [:youtube-video/all-videos])

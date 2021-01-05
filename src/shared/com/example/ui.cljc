@@ -11,8 +11,10 @@
     [com.example.ui.line-item-forms :refer [LineItemForm]]
     [com.example.ui.session-forms :refer [SessionForm SessionReport CustomTopReport ui-session-list SessionList
                                           SessionListManual]]
-    [com.example.ui.youtube-forms :refer [YouTubeReport YouTubeForm]]
+    [com.example.ui.youtube-forms :refer [YouTubeReportAll YouTubeForm YouTubeReportByPlaylist]]
+    [com.example.ui.youtube-playlist-forms :refer [YouTubePlaylistReport YouTubePlaylistForm]]
     [com.example.ui.video-tag-forms :refer [VideoTagReport VideoTagForm]]
+    [com.example.ui.conference-form :refer [ConferenceReport ConferencePlaylists]]
     [com.example.ui.login-dialog :refer [LoginForm]]
     [com.example.ui.sales-report :as sales-report]
     [com.example.ui.dashboard :as dashboard]
@@ -43,8 +45,10 @@
                          sales-report/SalesReport InventoryReport
                          sales-report/RealSalesReport
                          SessionReport SessionForm  SessionList SessionListManual
-                         YouTubeReport YouTubeForm
+                         YouTubeReportAll YouTubeForm YouTubeReportByPlaylist
+                         YouTubePlaylistReport YouTubePlaylistForm
                          VideoTagReport VideoTagForm CustomTopReport
+                         ConferenceReport ConferencePlaylists
                          dashboard/Dashboard]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)
@@ -98,7 +102,6 @@
                (ui-dropdown {:className "item" :text "Sessions"}
                  (ui-dropdown-menu {}
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this SessionReport {}))} "View Sessions")
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this YouTubeReport {}))} "View YouTube Videos")
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this VideoTagReport {}))} "View Tags")
                    (ui-dropdown-item {:onClick (fn [] (form/create! this VideoTagForm))} "New Tag 2")
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this SessionList {}))} "Custom")
@@ -106,7 +109,15 @@
                                                  ; rroute/route-to! [app-or-component RouteTarget route-params]
                                                  (rroute/route-to! this SessionListManual {}))
                                                  ;(dr/change-route! this SessionListManual))
-                                      ,} "Custom Manual"))))))
+                                      ,} "Custom Manual")))
+               (ui-dropdown {:className "item" :text "Conferences"}
+                 (ui-dropdown-menu {}
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this ConferenceReport {}))} "Conferences")
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this YouTubePlaylistReport {}))} "View YouTube Playlists")
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this YouTubeReportAll {}))} "View YouTube Videos"),
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101")
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this ConferencePlaylists {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
+                                     "Playlists for Vegas 2019"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})

@@ -25,6 +25,11 @@
    ao/identities #{:youtube-playlist/id}
    ao/schema      :video})
 
+(defattr conf-uuid :youtube-playlist/conf-uuid :uuid
+  {ao/cardinality :one
+   ao/identities #{:youtube-playlist/id}
+   ao/schema      :video})
+
 
 ;(defsc YouTubePlaylist [_ _]
 ;  {:query [:youtube-playlist/id :youtube-playlist/title]
@@ -59,7 +64,7 @@
 
 ; WARNING: make sure to add all model attributes here!
 
-(def attributes [id description title  all-playlists])
+(def attributes [id description title conf-uuid all-playlists])
 ;item-name category description price in-stock all-items])
 
 #?(:clj
