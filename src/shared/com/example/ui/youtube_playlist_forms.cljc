@@ -40,7 +40,7 @@
    ro/columns          [youtube-playlist/id
                         youtube-playlist/title
                         youtube-playlist/description
-                        youtube-playlist/conf-uuid]
+                        ; youtube-playlist/conf-uuid]
 
    :com.fulcrologic.rad.control/controls {:youtube-playlist/conf-uuid {:type   :uuid
                                                                        :local? true
