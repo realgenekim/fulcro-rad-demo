@@ -30,24 +30,26 @@
    ao/identities #{:conference/uuid}
    ao/schema      :video})
 
-(defattr youtube-playlists :conference/youtube-playlists :ref
-  {ao/target      :conference/uuid
-   ao/cardinality :many
-   ;ao/identities #{:conference/uuid}
-   ao/schema      :video
-   ao/pc-output   [{:conference/youtube-playlists [:youtube-playlist/id]}]
-   ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
-                    ;(println "defattr conference/youtube-playlists: " env)
-                    (println "defattr conference/youtube-playlists: " query-params)
-                    #?(:clj
-                       {:account/invoices (queries/get-conference-playlists env query-params)}))})
-
 ; (defattr account-invoices :account/invoices :ref
 ;  {ao/target     :account/id
 ;   ao/pc-output  [{:account/invoices [:invoice/id]}]
 ;   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
 ;                   #?(:clj
 ;                      {:account/invoices (queries/get-customer-invoices env query-params)}))})
+
+(defattr youtube-playlists :conference/youtube-playlists :ref
+  {ao/target      :conference/uuid
+   ao/cardinality :many
+   ;ao/identities #{:conference/uuid}
+   ao/schema      :video
+
+   ao/pc-output   [{:conference/youtube-playlists [:youtube-playlist/id]}]
+   ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
+                    ;(println "defattr conference/youtube-playlists: " env)
+                    (println "defattr conference/youtube-playlists: " query-params)
+                    #?(:clj
+                       {:conference/youtube-playlists (queries/get-conference-playlists env query-params)}))})
+
 
 
 ;(defsc YouTubePlaylist [_ _]

@@ -354,7 +354,7 @@
   [env query-params]
   (println "dbquery: get-all-youtube-playlists...")
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
-    (let [playlists (d/q '[:find (pull ?s [*])
+    (let [playlists (d/q '[:find (pull ?s [* {:youtube-playlist/conf-id [:conference/uuid]}])
                            :where
                            [?s :youtube-playlist/id _]] db)]
       (tap> playlists)
@@ -373,7 +373,8 @@
   (println "dbquery: get-all-conferences...")
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (let [confs (d/q '[:find (pull ?e [* {:conference/youtube-playlists
-                                          [:youtube-playlist/id :youtube-playlist/title]}])
+                                          [:youtube-playlist/id :youtube-playlist/title
+                                           :db/id]}])
                        :where
                        [?e :conference/name _]] db)]
       (tap> confs)
@@ -382,6 +383,35 @@
            flatten
            (#(apply vector %))))
     (log/error "No database atom for production schema!")))
+
+;(defn get-conference-playlists [env {:conference/keys [id]}]
+;  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+;    (let [ids (d/q '[:find ?uuid
+;                     :in $ ?cid
+;                     :where
+;                     [?dbid :invoice/id ?uuid]
+;                     [?dbid :invoice/customer ?c]
+;                     [?c :account/id ?cid]] db id)]
+;      (->> ids
+;           flatten
+;           (mapv (fn [id] {:invoice/id id}))))
+;    (log/error "No database atom for production schema!")))
+
+(defn get-conference-playlists [env {:conference/keys [uuid]}]
+  (println "get-conference-playlists: id: " uuid)
+  (if-let [db (some-> (get-in env [do/databases :video]) deref)]
+    (let [ids (d/q '[:find ?playlistid
+                     :in $ ?confuuid
+                     :where
+                     [?playlisteid :youtube-playlist/id ?playlistid]
+                     [?confeid :conference/youtube-playlists ?playlisteid]
+                     [?confeid :conference/uuid ?confuuid]] db uuid)]
+      (println "retval: " ids)
+      (->> ids
+           flatten
+           (mapv (fn [id] {:youtube-playlist/id id}))))
+    (log/error "No database atom for production schema!")))
+
 
 
 ;

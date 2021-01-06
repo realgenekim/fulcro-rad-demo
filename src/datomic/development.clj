@@ -62,17 +62,111 @@
   ;(myparse [])
   (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
              [:conference/name]}])
+  ; ok
   ; vvv why is query-params empty?
-  (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
-             [:conference/name :conference/youtube-playlists]}])
+  ; oh, special eql form for the query!
+  (myparse ['({:conference/youtube-playlists [:youtube-playlist/id :youtube-playlist/conf-uuid]}
+              {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"})])
+
 
   (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
              [:conference/name :conference/youtube-playlists]}])
+
   (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
              [:conference/name {:conference/youtube-playlists
                                 [:youtube-playlist/id :youtube-playlist/title]}]}])
+  ; empty query params
+
+  ;
+  ; start
+  ;
+
+  ; goal is to get playlists query running
+  ;
 
   (myparse [:youtube-playlist/all-playlists])
+
+  ; this works in eql explorer —- '( indicates query with argument to pathom?
+  (myparse ['({:account/invoices [:invoice/id :invoice/date :invoice/total]}
+              {:account/id #uuid "ffffffff-ffff-ffff-ffff-000000000102"})])
+  ; works!
+  ; #:account{:invoices [#:invoice{:id #uuid"0aac97d8-3016-4d06-9d38-ff89b4270ed1",
+  ;                               :date #inst"2020-03-10T19:00:00.000-00:00",
+  ;                               :total 539.94M}
+  ;                     #:invoice{:id #uuid"c4f6a2d8-5248-4d5e-beaa-8a0284361b05",
+  ;                               :date #inst"2020-03-10T19:00:00.000-00:00",
+  ;                               :total 539.94M}
+  ;                     #:invoice{:id #uuid"a017174c-269a-42b9-8fe2-c6ac1ee4dda9",
+  ;                               :date #inst"2020-01-05T20:00:00.000-00:00",
+  ;                               :total 76.50M}
+  (myparse ['({:account/invoices [:invoice/id :invoice/date :invoice/total]}
+              {:account/id #uuid "ffffffff-ffff-ffff-ffff-000000000102"})])
+
+
+
+  ; ok
+  ; #:youtube-playlist{:all-playlists [{:db/id 47476912088351523,
+  ;                                    :youtube-playlist/conf-id #:conference{:uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"},
+  ;                                    :youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9",
+  ;                                    :youtube-playlist/title "Keynotes - DevOps Enterprise Summit: Las Vegas 2019",
+  ;                                    :youtube-playlist/description "",
+  ;                                    :youtube-playlist/conf-uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}
+  ;                                   {:db/id 51993705855255354,
+  ;                                    :youtube-playlist/conf-id #:conference{:uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"},
+  ;                                    :youtube-playlist/id "PLvk9Yh_MWYuy7d2mRdp2jbr0oDwulqDSt",
+  ;                                    :youtube-playlist/title "Breakouts - DevOps Enterprise Summit: Las Vegas 2019",
+  ;                                    :youtube-playlist/description "",
+  ;                                    :youtube-playlist/conf-uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}]}
+
+  (myparse)
+
+  ;
+  ;
+  ;
+
+  (myparse [:conference/all-conferences])
+  ; ok
+  (myparse [{:conference/all-conferences
+             [:conference/uuid :conference/name]}])
+  ; ok
+  (myparse [{:conference/all-conferences
+             [:conference/uuid :conference/name
+              {:conference/youtube-playlists [:youtube-playlist/id]}]}])
+
+  (myparse [{:invoice/all-invoices
+             [:invoice/id :invoice/customer]}])
+  ; ok
+
+  (myparse [{[:account/id #uuid "ffffffff-ffff-ffff-ffff-000000000102"]
+             [:account/id :account/email]}])
+  ; ok
+
+  (myparse [{[:account/id #uuid "ffffffff-ffff-ffff-ffff-000000000102"]
+             [:account/id :account/email
+              {:account/invoices [:invoice/id]}]}])
+  ; not ok
+
+
+  (myparse [{[:account/id #uuid "ffffffff-ffff-ffff-ffff-000000000102"]
+             [:account/name
+              {:account/invoices [:invoice/id]}]}])
+
+
+  (myparse [[:account/id #uuid "ffffffff-ffff-ffff-ffff-000000000102"]
+            {:account/invoices [:invoice/id :invoice/date :invoice/total]}])
+
+
+  (myparse [:youtube-playlist/all-playlists])
+  (myparse {:youtube-playlist/id [:youtube-playlist/conf-uuid]})
+
+  (myparse [{:youtube-playlist/all-playlists
+             [:youtube-playlist/id
+              :youtube-playlist/title
+              [:youtube-playlist/conf-uuid
+               #uuid "d6a8d160-4af5-4d7a-b796-306f8f404753"]]}])
+
+
+
   (myparse [:youtube-video/all-videos])
   (myparse [{[:youtube-video/playlist-id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"]
              [:youtube-video/by-playlist]}])
