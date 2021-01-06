@@ -9,3 +9,6 @@ release:
 
 run-tests:
 	bin/kaocha --plugin notifier --watch
+
+cljs-compile:
+	npx shadow-cljs watch main

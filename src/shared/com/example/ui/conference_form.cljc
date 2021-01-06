@@ -56,7 +56,7 @@
                                            ;(fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 102)}))
                                            ; [app-or-component RouteTarget route-params]
                                            (rroute/route-to! this youtube-playlist-forms/YouTubePlaylistReport
-                                                             {:conference/uuid uuid}))}
+                                                             {:youtube-playlist/conf-uuid uuid}))}
    ;:category/label (fn [this {:category/keys [label]}]
    ;                  (control/set-parameter! this ::category label)
    ;                  (report/filter-rows! this))}

@@ -48,6 +48,11 @@
    ;                                                   (or (str value)
    ;                                                       "-"))}
 
+   :com.fulcrologic.rad.control/controls {:youtube-playlist/conf-uuid {:type   :uuid
+                                                                       :local? true
+                                                                       :label  "Account"}}
+
+
    ;ro/controls {:youtube-playlist/title {:type   :string
    ;                                      :local? true
    ;                                      :label  "Conference"
