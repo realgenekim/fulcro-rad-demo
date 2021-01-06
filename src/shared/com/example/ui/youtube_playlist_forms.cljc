@@ -48,9 +48,9 @@
    ;                                                   (or (str value)
    ;                                                       "-"))}
 
-   :com.fulcrologic.rad.control/controls {:youtube-playlist/conf-uuid {:type   :uuid
-                                                                       :local? true
-                                                                       :label  "Account"}}
+   :com.fulcrologic.rad.control/controls {:conference/uuid {:type   :uuid
+                                                            :local? true
+                                                            :label  "Account"}}
 
 
    ;ro/controls {:youtube-playlist/title {:type   :string
@@ -126,13 +126,13 @@
    ;                                          (report/filter-rows! this))}
 
    ro/run-on-mount?    true
-   ro/route            "youtube-playlist-report"}
-  (dom/div
-    (dom/h4
-      (str "Accounts for: " (-> props :ui/controls first
-                                :com.fulcrologic.rad.control/value)))
-    (dom/pre
-      (with-out-str (pp/pprint props)))))
+   ro/route            "youtube-playlist-report"})
+  ;(dom/div
+  ;  (dom/h4
+  ;    (str "Accounts for: " (-> props :ui/controls first
+  ;                              :com.fulcrologic.rad.control/value)))
+  ;  (dom/pre
+  ;    (with-out-str (pp/pprint props)))))
 
 
 (comment

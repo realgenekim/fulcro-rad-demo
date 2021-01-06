@@ -36,7 +36,7 @@
    :ident         (fn [] [:component/id ::LandingPage])
    :initial-state {}
    :route-segment ["landing-page"]}
-  (dom/div "Welcome to the Demo. Please log in."))
+  (dom/div "Welcome to the Demo. Please log in. Gene was here."))
 
 ;; This will just be a normal router...but there can be many of them.
 (defrouter MainRouter [this {:keys [current-state route-factory route-props]}]
@@ -78,8 +78,7 @@
     (dom/div
       (div :.ui.top.menu
         (div :.ui.item "Demo")
-
-        (when logged-in?
+        (when (or true logged-in?)
           #?(:cljs
              (comp/fragment
                (ui-dropdown {:className "item" :text "Account"}
@@ -122,10 +121,10 @@
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})
             ent/nbsp ent/nbsp ent/nbsp ent/nbsp)
-          (if logged-in?
+          (if (or true logged-in?)
             (comp/fragment
               (div :.ui.item
-                (str "Logged in as " username))
+                (str "XX Logged in as " username))
               (div :.ui.item
                 (dom/button :.ui.button {:onClick (fn []
                                                     ;; TODO: check if we can change routes...
