@@ -35,16 +35,23 @@
 
 (report/defsc-report YouTubePlaylistReport [this props]
   {ro/title            "YouTube Playlist Report 2"
-   ro/source-attribute :youtube-playlist/all-playlists
+   ;ro/source-attribute :youtube-playlist/all-playlists
+   ro/source-attribute :conference/youtube-playlists2
    ro/row-pk           youtube-playlist/id
    ro/columns          [youtube-playlist/id
-                        youtube-playlist/title
-                        youtube-playlist/description
-                        youtube-playlist/conf-uuid]
+                        youtube-playlist/title]
+                        ;youtube-playlist/description
+                        ;youtube-playlist/conf-uuid]
 
-   :com.fulcrologic.rad.control/controls {:youtube-playlist/conf-uuid {:type   :uuid
-                                                                       :local? true
-                                                                       :label  "Conference"}}
+   ;ro/column-formatters {:youtube-playlist/conf-uuid (fn [this value]
+   ;                                                   (println "youtubeplaylistreport: column formatter: " value)
+   ;                                                   (or (str value)
+   ;                                                       "-"))}
+
+   ;ro/controls {:youtube-playlist/title {:type   :string
+   ;                                      :local? true
+   ;                                      :label  "Conference"
+   ;                                      :onChange    (fn [this _] (report/filter-rows! this))}}
 
    ;session/speakers session/stype session/title session/venue session/start-time-utc]
 
@@ -114,12 +121,15 @@
    ;                                          (report/filter-rows! this))}
 
    ro/run-on-mount?    true
-   ro/route            "youtube-playlist-report"})
-  ;(dom/div
-  ;  (dom/pre
-  ;    (with-out-str (pp/pprint props)))))
+   ro/route            "youtube-playlist-report"}
+  (dom/div
+    (dom/h4
+      (str "Accounts for: " (-> props :ui/controls first
+                                :com.fulcrologic.rad.control/value)))
+    (dom/pre
+      (with-out-str (pp/pprint props)))))
 
 
 (comment
-  (comp/get-query YouTubeReport)
+  (comp/get-query YouTubePlaylistReport)
   (comp/get-query YouTubeForm))

@@ -43,7 +43,7 @@
 
 
 (report/defsc-report ConferenceReport [this props]
-  {ro/title            "Conference Report"
+  {ro/title            "Conference Report 22"
    ro/source-attribute :conference/all-conferences
    ro/row-pk           conference/id
    ro/columns          [conference/id conference/nm conference/youtube-playlists]
@@ -53,9 +53,10 @@
 
    ro/links            {:conference/uuid (fn [this {:conference/keys [uuid]}]
                                            (println "ConferenceReport: click: " uuid)
+                                           ;(fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 102)}))
                                            ; [app-or-component RouteTarget route-params]
                                            (rroute/route-to! this youtube-playlist-forms/YouTubePlaylistReport
-                                                             {:youtube-playlist/conf-uuid uuid}))}
+                                                             {:conference/uuid uuid}))}
    ;:category/label (fn [this {:category/keys [label]}]
    ;                  (control/set-parameter! this ::category label)
    ;                  (report/filter-rows! this))}

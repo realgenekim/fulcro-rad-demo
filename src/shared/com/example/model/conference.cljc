@@ -38,18 +38,23 @@
 ;                      {:account/invoices (queries/get-customer-invoices env query-params)}))})
 
 (defattr youtube-playlists :conference/youtube-playlists :ref
-  {ao/target      :conference/uuid
+  {ao/target      :youtube-playlist/id
    ao/cardinality :many
-   ;ao/identities #{:conference/uuid}
+   ao/identities #{:conference/uuid}
+   ao/schema      :video})
+
+(defattr youtube-playlists2 :conference/youtube-playlists2 :ref
+  {ao/target      :youtube-playlist/id
+   ao/cardinality :many
+   ao/identities #{:conference/uuid}
    ao/schema      :video
 
-   ao/pc-output   [{:conference/youtube-playlists [:youtube-playlist/id]}]
+   ao/pc-output   [{:conference/youtube-playlists2 [:youtube-playlist/id]}]
    ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
                     ;(println "defattr conference/youtube-playlists: " env)
-                    (println "defattr conference/youtube-playlists: " query-params)
+                    (println "defattr conference/youtube-playlists2: " query-params)
                     #?(:clj
-                       {:conference/youtube-playlists (queries/get-conference-playlists env query-params)}))})
-
+                       {:conference/youtube-playlists2 (queries/get-conference-playlists env query-params)}))})
 
 
 ;(defsc YouTubePlaylist [_ _]
@@ -63,7 +68,7 @@
   {ao/target     :conference/uuid
    ao/pc-output  [{:conference/all-conferences [:conference/uuid]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
-                   (println "defattr all-conferences: " env)
+                   ;(println "defattr all-conferences: " env)
                    #?(:clj
                       ;{:conference/all-conferences [{:conference/uuid #uuid"d6a8d160-4af5-4d7a-b796-306f8f404754"}]}))})
                       {:conference/all-conferences (queries/get-all-conferences env query-params)}))})
@@ -85,7 +90,7 @@
 
 ; WARNING: make sure to add all model attributes here!
 
-(def attributes [id nm youtube-playlists all-conferences])
+(def attributes [id nm youtube-playlists youtube-playlists2 all-conferences])
 ;item-name category description price in-stock all-items])
 
 #?(:clj

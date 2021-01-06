@@ -28,7 +28,11 @@
 (defattr conf-uuid :youtube-playlist/conf-uuid :uuid
   {ao/cardinality :one
    ao/identities #{:youtube-playlist/id}
-   ao/schema      :video})
+   ao/schema      :video
+   ro/column-formatter (fn [_ value]
+                         (println "conf-uuid: column-formatter: " value)
+                         (or (str value)
+                             "-"))})
 
 
 ;(defsc YouTubePlaylist [_ _]

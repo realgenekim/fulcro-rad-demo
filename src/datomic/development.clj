@@ -65,16 +65,10 @@
   ; ok
   ; vvv why is query-params empty?
   ; oh, special eql form for the query!
-  (myparse ['({:conference/youtube-playlists [:youtube-playlist/id :youtube-playlist/conf-uuid]}
+  (myparse ['({:conference/youtube-playlists2 [:youtube-playlist/id :youtube-playlist/conf-uuid]}
               {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"})])
 
 
-  (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
-             [:conference/name :conference/youtube-playlists]}])
-
-  (myparse [{[:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"]
-             [:conference/name {:conference/youtube-playlists
-                                [:youtube-playlist/id :youtube-playlist/title]}]}])
   ; empty query params
 
   ;
