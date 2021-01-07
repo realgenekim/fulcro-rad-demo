@@ -78,7 +78,7 @@
     (dom/div
       (div :.ui.top.menu
         (div :.ui.item "Demo")
-        (when (or true logged-in?)
+        (when logged-in?
           #?(:cljs
              (comp/fragment
                (ui-dropdown {:className "item" :text "Account"}
@@ -121,7 +121,7 @@
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})
             ent/nbsp ent/nbsp ent/nbsp ent/nbsp)
-          (if (or true logged-in?)
+          (if logged-in?
             (comp/fragment
               (div :.ui.item
                 (str "XX Logged in as " username))
