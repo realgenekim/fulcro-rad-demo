@@ -16,7 +16,7 @@
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.conference :as conference]
-    [com.example.ui.youtube-forms :as youtube-forms]
+    [com.example.ui.youtube-video-forms :as youtube-forms]
     [com.example.model.youtube-playlist :as youtube-playlist]
     [com.example.model.mutations :as mymutations]
     [com.fulcrologic.rad.routing :as rroute]

@@ -46,9 +46,10 @@
   ,)
 
 (defonce app (rad-app/fulcro-rad-app
-               {:client-did-mount (fn [app]
-                                    (df/load! app :session/all-sessions SessionListItem
-                                                      {:target [:component/id :session-list :session-list/sessions]}))}))
+               {:client-did-mount
+                (fn [app]
+                  (df/load! app :session/all-sessions SessionListItem
+                                    {:target [:component/id :session-list :session-list/sessions]}))}))
 
 (defn refresh []
   ;; hot code reload of installed controls

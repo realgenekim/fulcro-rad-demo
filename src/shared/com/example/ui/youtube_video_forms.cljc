@@ -1,4 +1,4 @@
-(ns com.example.ui.youtube-forms
+(ns com.example.ui.youtube-video-forms
   (:require
     ;[com.example.model.item :as item]
     [com.example.model.session :as session]

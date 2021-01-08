@@ -11,7 +11,7 @@
     [com.example.ui.line-item-forms :refer [LineItemForm]]
     [com.example.ui.session-forms :refer [SessionForm SessionReport CustomTopReport ui-session-list SessionList
                                           SessionListManual]]
-    [com.example.ui.youtube-forms :refer [YouTubeReportAll YouTubeForm YouTubeReportByPlaylist]]
+    [com.example.ui.youtube-video-forms :refer [YouTubeReportAll YouTubeForm YouTubeReportByPlaylist]]
     [com.example.ui.youtube-playlist-forms :refer [YouTubePlaylistReport YouTubePlaylistForm]]
     [com.example.ui.video-tag-forms :refer [VideoTagReport VideoTagForm]]
     [com.example.ui.conference-form :refer [ConferenceReport ConferencePlaylists]]
@@ -116,7 +116,10 @@
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this YouTubeReportAll {}))} "View YouTube Videos"),
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101")
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this ConferencePlaylists {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
-                                     "Playlists for Vegas 2019"))))))
+                                     "Playlists for Vegas 2019")))
+               (ui-dropdown {:className "item" :text "YouTube Channel"}
+                 (ui-dropdown-menu {}
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this ConferenceReport {}))} "Playlists"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})
