@@ -43,10 +43,12 @@
    ao/identities #{:conference/uuid}
    ao/schema      :video})
 
+; input: :conferene/uuid
+
 (defattr youtube-playlists2 :conference/youtube-playlists2 :ref
   {ao/target      :youtube-playlist/id
    ao/cardinality :many
-   ao/identities #{:conference/uuid}
+   ao/identities #{:conference/uuid}  ; <-- input?
    ao/schema      :video
 
    ao/pc-output   [{:conference/youtube-playlists2 [:youtube-playlist/id]}]

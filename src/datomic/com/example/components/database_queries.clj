@@ -242,8 +242,9 @@
                 db id))
     (log/error "No database atom for production schema!")))
 
-(defn youtube-video-by-playlist-id [env playlist-id]
-  (log/info "youtube-video-by-playlist-id: playlist-id: " playlist-id)
+; :youtube-video/by-playlist
+(defn youtube-video-by-playlist-id [env {:youtube-playlist/keys [id]}]
+  (println "dbquery: youtube-video-by-playlist-id: playlist-id: " id)
   (if-let [db (some-> (get-in env [do/databases :video]) deref)]
     (let [retval (d/q '[:find (pull ?e [*])
                         :in $ ?playlist-id
@@ -251,8 +252,8 @@
                         [?e :youtube-video/id ?id]
                         [?e :youtube-video/playlist-id ?ep]
                         [?ep :youtube-playlist/id ?playlist-id]]
-                      db playlist-id)]
-      (println "youtube-video-by-playlist-id: " retval)
+                      db id)]
+      (println "dbquery: youtube-video-by-playlist-id: " retval)
       ;retval
       (->> retval
            ;(take 5)

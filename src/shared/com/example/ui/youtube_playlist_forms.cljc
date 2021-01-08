@@ -48,9 +48,9 @@
    ;                                                   (or (str value)
    ;                                                       "-"))}
 
-   :com.fulcrologic.rad.control/controls {:conference/uuid {:type   :uuid
-                                                            :local? true
-                                                            :label  "Account"}}
+   ro/controls {:conference/uuid {:type   :uuid
+                                  :local? true
+                                  :label  "Account"}}
 
 
    ;ro/controls {:youtube-playlist/title {:type   :string
@@ -101,10 +101,12 @@
                         {:label  "Goto Playlist"
                          :action (fn [this row]
                                    ; [app-or-component RouteTarget route-params
+                                   (println "Go to Playlist" row)
+                                   ; :youtube-playlist/id
                                    (rroute/route-to! (comp/any->app this)
                                                      youtube-forms/YouTubeReportByPlaylist
-                                                     {[:youtube-video/playlist-id (:youtube-playlist/id row)]
-                                                      [:youtube-video/id :youtube-playlist/title :youtube-video/description]}))}
+                                                     ; {:youtube-video/by-playlist [:youtube-video/id]}
+                                                     {:youtube-playlist/id (:youtube-playlist/id row)}))}
 
                         {:label  "Select"
                          :action (fn [report-instance row]

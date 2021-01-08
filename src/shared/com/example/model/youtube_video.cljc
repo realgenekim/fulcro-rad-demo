@@ -143,41 +143,93 @@
 ;                      {:youtube-video/by-playlist [{:youtube-video/id "123 "}]}))})
 ;                      ;{:youtube-video/all-videos (queries/get-all-youtube-videos env query-params)}))})
 
+; TODO: delete this?
 
-(pc/defresolver youtube-video-by-id [{:keys [db] :as env} {:youtube-video/keys [id] :as input}]
-  {::pc/input #{:youtube-video/id}
-   ::pc/output [:youtube-video/description :youtube-video/playlist-id :youtube-video/title
-                :youtube-video/position :youtube-video/url :youtube-video/video-id]}
-  ;(println "defresolver: input: " env input)
-  (println "defresolver: youtube-video-by-id: id: " id)
-  #?(:clj
-     ;{:session/uuid "abc"
-     ; :session/venue "abc"}))
-     ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
-     (queries/youtube-video-by-id env id)))
+;(pc/defresolver youtube-video-by-id [{:keys [db] :as env} {:youtube-video/keys [id] :as input}]
+;  {::pc/input #{:youtube-video/id}
+;   ::pc/output [:youtube-video/description :youtube-video/playlist-id :youtube-video/title
+;                :youtube-video/position :youtube-video/url :youtube-video/video-id]}
+;  ;(println "defresolver: input: " env input)
+;  (println "defresolver: youtube-video-by-id: id: " id)
+;  #?(:clj
+;     ;{:session/uuid "abc"
+;     ; :session/venue "abc"}))
+;     ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))
+;     (queries/youtube-video-by-id env id)))
 
-(pc/defresolver youtube-video-by-playlist-id [{:keys [db] :as env} {:youtube-video/keys [playlist-id] :as input}]
-  {::pc/input #{:youtube-video/playlist-id}
-   ::pc/output [{:youtube-video/by-playlist [:youtube-video/id]}]}
-              ;[:youtube-video/description :youtube-video/playlist-id :youtube-video/title
-              ; :youtube-video/position :youtube-video/url :youtube-video/video-id]}
-  ;(println "defresolver: input: " env input)
-  (println "defresolver: youtube-video-by-playlist-id: playlist-id: " playlist-id)
-  #?(:clj
-     ;{:session/uuid "abc"
-     ; :session/venue "abc"}))
-     ;{:youtube-video/by-playlist [{:youtube-video/id "123 "}]}))
-     (let [r (queries/youtube-video-by-playlist-id env playlist-id)]
-       ;(println "retval: " r)
-       {:youtube-video/by-playlist r})))
+;(defattr youtube-playlists2 :conference/youtube-playlists2 :ref
+;  {ao/target      :youtube-playlist/id
+;   ao/cardinality :many
+;   ao/identities #{:conference/uuid}
+;   ao/schema      :video
+;
+;   ao/pc-output   [{:conference/youtube-playlists2 [:youtube-playlist/id]}]
+;   ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
+;                    ;(println "defattr conference/youtube-playlists: " env)
+;                    (println "defattr conference/youtube-playlists2: " query-params)
+;                    #?(:clj
+;                       {:conference/youtube-playlists2 (queries/get-conference-playlists env query-params)}))})
+
+(defattr youtube-playlists2 :conference/youtube-playlists2 :ref
+  {ao/target      :youtube-playlist/id
+   ao/cardinality :many
+   ao/identities #{:conference/uuid}
+   ao/schema      :video
+
+   ao/pc-output   [{:conference/youtube-playlists2 [:youtube-playlist/id]}]
+   ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
+                    ;(println "defattr conference/youtube-playlists: " env)
+                    (println "defattr conference/youtube-playlists2: " query-params)
+                    #?(:clj
+                       {:conference/youtube-playlists2 (queries/get-conference-playlists env query-params)}))})
+
+;
+; (myparse ['({:youtube-video/by-playlist [:youtube-video/id :youtube-video/title]}
+;              {:youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"})])
+
+(defattr youtube-video-by-id :youtube-video/videos-list :ref
+  {ao/target      :youtube-video/id
+   ao/cardinality :many
+   ao/identities  #{:youtube-playlist/id}  ; <-- input?
+   ao/schema      :video
+   ; {:youtube-video/by-playlist (:youtube-playlist/id row)}
+   :com.fulcrologic.rad.control/controls {:youtube-playlist/id {:type   :string
+                                                                :local? true
+                                                                :label  "Playlist ID"}}
+   ao/pc-output   [{:youtube-video/by-playlist [:youtube-video/id]}]
+   ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
+                    (println "defresolver: youtube-video-by-playlist-id: playlist-id: " query-params)
+                    #?(:clj
+                       (let [r (queries/youtube-video-by-playlist-id env query-params)]
+                         ;(println "retval: " r)
+                         {:youtube-video/by-playlist r})))})
+
+
+;(pc/defresolver youtube-video-by-playlist-id [{:keys [db] :as env} {:youtube-video/keys [playlist-id] :as input}]
+;  {
+;   ;::pc/input #{:youtube-video/playlist-id}
+;   ::pc/output [{:youtube-video/by-playlist [:youtube-video/id]}]}
+;              ;[:youtube-video/description :youtube-video/playlist-id :youtube-video/title
+;              ; :youtube-video/position :youtube-video/url :youtube-video/video-id]}
+;  ;(println "defresolver: input: " env input)
+;  (println "defresolver: youtube-video-by-playlist-id: playlist-id: " playlist-id)
+;  #?(:clj
+;     ;{:session/uuid "abc"
+;     ; :session/venue "abc"}))
+;     ;{:youtube-video/by-playlist [{:youtube-video/id "123 "}]}))
+;     (fn [{:keys [query-params] :as env} _]
+;       (let [r (queries/youtube-video-by-playlist-id env query-params)]
+;         ;(println "retval: " r)
+;         {:youtube-video/by-playlist r}))))
 
 
 
 ; WARNING: make sure to add all model attributes here!
 
-(def attributes [id description title playlist-id position url video-id all-videos])
+(def attributes [id description title playlist-id position url video-id all-videos
+                 youtube-video-by-id])
 ;item-name category description price in-stock all-items]) all-videos-by-playlist
 
 #?(:clj
-   (def resolvers [youtube-video-by-id youtube-video-by-playlist-id]))
+   (def resolvers [youtube-video-by-id]))
 

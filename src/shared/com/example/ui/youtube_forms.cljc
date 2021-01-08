@@ -148,28 +148,33 @@
    ro/source-attribute    :youtube-video/by-playlist
    ;ro/source-attribute    :youtube-video/all-videos
    ro/row-pk              youtube/id
-   ro/columns             [ youtube/title
+   ro/columns             [youtube/title
                            youtube/description]
    ; youtube/position youtube/playlist-id youtube/video-id
    ;                           youtube/url
 
-   ; If defined: sort is applied to rows after filtering (client-side)
-   ro/initial-sort-params {:sort-by          :youtube-video/position
-                           :sortable-columns #{:youtube-video/playlist-id
-                                               :youtube-video/title
-                                               :youtube-video/position}
-                           ;:session/title :session/speakers :session/venue}
-                           ; :session/stype
-                           :ascending?       true}
+   ; input: :youtube-playlist/id
+   ro/controls {:youtube-playlist/id {:type   :string
+                                      :local? true
+                                      :label  "Playlist ID"}}
 
-   ro/row-actions         [{:label  "Select"
-                            :action (fn [report-instance row]
-                                      (println "from youtube-row-actions: " row)
-                                      ;#?{:cljs (js/console.log row)}
-                                      (comp/transact!
-                                        report-instance
-                                        [(mymutations/fetch-vimeo-entry (select-keys row
-                                                                                     [:youtube-video/id]))]))}]
+   ; If defined: sort is applied to rows after filtering (client-side)
+   ;ro/initial-sort-params {:sort-by          :youtube-video/position
+   ;                        :sortable-columns #{:youtube-video/playlist-id
+   ;                                            :youtube-video/title
+   ;                                            :youtube-video/position}
+   ;                        ;:session/title :session/speakers :session/venue}
+   ;                        ; :session/stype
+   ;                        :ascending?       true}
+   ;
+   ;ro/row-actions         [{:label  "Select"
+   ;                         :action (fn [report-instance row]
+   ;                                   (println "from youtube-row-actions: " row)
+   ;                                   ;#?{:cljs (js/console.log row)}
+   ;                                   (comp/transact!
+   ;                                     report-instance
+   ;                                     [(mymutations/fetch-vimeo-entry (select-keys row
+   ;                                                                                  [:youtube-video/id]))]))}]
 
    ro/form-links          {youtube/title YouTubeForm}
 
@@ -178,9 +183,9 @@
    ;                                          (report/filter-rows! this))}
 
    ro/run-on-mount?       true
-   ro/route               "youtube-report-by-playlist"}
-  (dom/div
-    (dom/pre (with-out-str (pp/pprint props)))))
+   ro/route               "youtube-report-by-playlist"})
+  ;(dom/div
+  ;  (dom/pre (with-out-str (pp/pprint props)))))
 
 
 (comment

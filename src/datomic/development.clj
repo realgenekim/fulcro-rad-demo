@@ -20,10 +20,10 @@
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.type-support.date-time :as dt]
     [com.fulcrologic.rad.database-adapters.datomic-options :as do]
-    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
+    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]))
 
     ; my google-analytics-video library
-    [datomic.datomic :as mydatomic]))
+    ;[datomic.datomic :as mydatomic]))
 
 (set-refresh-dirs "src/main" "src/datomic" "src/dev" "src/shared")
 
@@ -78,7 +78,7 @@
   ; goal is to get playlists query running
   ;
 
-  (myparse [:youtube-playlist/all-playlists])
+  (myparse [:invoice/all-invoices])
 
   ; this works in eql explorer —- '( indicates query with argument to pathom?
   (myparse ['({:account/invoices [:invoice/id :invoice/date :invoice/total]}
@@ -95,6 +95,21 @@
   ;                               :total 76.50M}
   (myparse ['({:account/invoices [:invoice/id :invoice/date :invoice/total]}
               {:account/id #uuid "ffffffff-ffff-ffff-ffff-000000000102"})])
+
+  ; works: get playlists for conference
+
+  (myparse ['({:conference/youtube-playlists2 [:youtube-playlist/id :youtube-playlist/title]}
+              {:conference/uuid #uuid "2e24aa89-48ef-4a4c-879f-f1900ada35ea"})])
+
+  ; videos in playlist
+
+
+  (myparse [:youtube-playlist/all-playlists])
+
+  ; input: youtube-playlist/uuid
+
+  (myparse ['({:youtube-video/by-playlist [:youtube-video/id :youtube-video/title]}
+              {:youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"})])
 
 
 
@@ -193,6 +208,16 @@
 (comment
   (let [db (d/db (:main datomic-connections))]
     (d/pull db '[*] [:account/id (new-uuid 100)]))
+
+  (d/datoms (d/db (:main datomic-connections))
+            {:index      :eavt
+             :components [:account/id]})
+
+  (let [db (d/db (:main datomic-connections))]
+    (d/q '[:find ?e
+           :where
+           [?e :invoice/id _]]
+         db))
 
   ; OMG, it works!
 
@@ -592,8 +617,9 @@
         date-3     (dt/html-datetime-string->inst "2020-02-01T12:00")
         date-4     (dt/html-datetime-string->inst "2020-03-10T12:00")
         date-5     (dt/html-datetime-string->inst "2020-03-21T12:00")]
+    (log/info "SEEDING data 1.")
     (when connection
-      (log/info "SEEDING data.")
+      (println "SEEDING data.")
       (d/transact connection [(seed/new-address (new-uuid 1) "111 Main St.")
                               (seed/new-account (new-uuid 100) "Tony" "tony@example.com" "letmein"
                                                 :account/addresses ["111 Main St."]
@@ -652,4 +678,87 @@
   (tools-ns/refresh :after 'development/start))
 
 (def reset #'restart)
+
+;
+(comment
+  (d/create-database "example")
+  (d/history (d/get))
+
+  (for [r (range 1000)]
+    {:db/id r :invoice/name "abc"})
+
+  (let [conn (:main datomic-connections)]
+    (d/transact conn {:db/id "abc"
+                      :invoice/name "def"})
+    (doseq [r (range 1000)]
+      (d/transact conn {:db/id r :invoice/name "abc"}))
+    (d/transact conn (seed/new-category (new-uuid 1000) "Tools")))
+
+  (let [db (d/db (:main datomic-connections))]
+    (d/q '[:find ?e
+           :where
+           [?e :invoice/name "def"]]
+         db))
+
+  (let [db (d/db (:main datomic-connections))]
+    (d/pull db '[*] [:db/id "abc"]))
+
+  (d/datoms (d/db (:main datomic-connections))
+            {:index      :eavt
+             :components [:invoice/id]})
+
+  (d/list-databases (:main2 datomic-connections) {})
+
+  (def client (d/client {:server-type :dev-local
+                         :system "dev"}))
+  (d/list-databases client {})
+  (d/create-database client {:db-name "test"})
+  (def conn (d/connect client {:db-name "test"}))
+  (d/transact conn {:tx-data [{:db/id "abc" :invoice/name "def"}]})
+  (d/pull (d/db conn) '[*] [:db/id "abc"])
+  (d/pull (d/db conn) '[*] 13194139533318)
+
+
+  (def movie-schema [{:db/ident :movie/title
+                      :db/valueType :db.type/string
+                      :db/cardinality :db.cardinality/one
+                      :db/doc "The title of the movie"}
+
+                     {:db/ident :movie/genre
+                      :db/valueType :db.type/string
+                      :db/cardinality :db.cardinality/one
+                      :db/doc "The genre of the movie"}
+
+                     {:db/ident :movie/release-year
+                      :db/valueType :db.type/long
+                      :db/cardinality :db.cardinality/one
+                      :db/doc "The year the movie was released in theaters"}])
+
+  (d/transact conn {:tx-data movie-schema})
+
+  (def first-movies [{:movie/title "The Goonies"
+                      :movie/genre "action/adventure"
+                      :movie/release-year 1985}
+                     {:movie/title "Commando"
+                      :movie/genre "thriller/action"
+                      :movie/release-year 1985}
+                     {:movie/title "Repo Man"
+                      :movie/genre "punk dystopia"
+                      :movie/release-year 1984}])
+  (d/transact conn {:tx-data first-movies})
+
+  (def db (d/db conn))
+  (def all-titles-q '[:find ?movie-title
+                      :where [_ :movie/title ?movie-title]])
+  (d/q all-titles-q db)
+
+  (d/datoms db {:index :eavt})
+
+  (let [db (d/db conn)]
+    (d/q '[:find ?e
+           :where
+           [?e :invoice/name "def"]]
+         db))
+  ,)
+
 
