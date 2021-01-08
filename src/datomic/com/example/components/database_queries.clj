@@ -253,7 +253,7 @@
                         [?e :youtube-video/playlist-id ?ep]
                         [?ep :youtube-playlist/id ?playlist-id]]
                       db id)]
-      (println "dbquery: youtube-video-by-playlist-id: " retval)
+      ;(println "dbquery: youtube-video-by-playlist-id: " retval)
       ;retval
       (->> retval
            ;(take 5)

@@ -148,8 +148,10 @@
    ro/source-attribute    :youtube-video/by-playlist
    ;ro/source-attribute    :youtube-video/all-videos
    ro/row-pk              youtube/id
-   ro/columns             [youtube/title
-                           youtube/description]
+   ro/columns             [;youtube/id
+                           youtube/title
+                           youtube/description
+                           youtube/url]
    ; youtube/position youtube/playlist-id youtube/video-id
    ;                           youtube/url
 
@@ -157,6 +159,13 @@
    ro/controls {:youtube-playlist/id {:type   :string
                                       :local? true
                                       :label  "Playlist ID"}}
+
+   ro/row-actions      [{:label  "Download Video"
+                         :action (fn [report-instance row]
+                                   (println "from youtube-row-actions: " row))}]
+                                   ; [this form-class entity-id]
+                                   ;(form/edit! report-instance YouTubePlaylistForm
+                                   ;            (:youtube-playlist/id row)))}]
 
    ; If defined: sort is applied to rows after filtering (client-side)
    ;ro/initial-sort-params {:sort-by          :youtube-video/position

@@ -21,7 +21,7 @@
 (defattr description :youtube-video/description :string
   {ao/cardinality :one
    ao/identities #{:youtube-video/id}
-   ao/style       :multi-line
+   ;ao/style       :multi-line
    ao/schema      :video})
 
 ;(defattr playlist-id :youtube-video/playlist-id :ref
@@ -170,19 +170,6 @@
 ;                    #?(:clj
 ;                       {:conference/youtube-playlists2 (queries/get-conference-playlists env query-params)}))})
 
-(defattr youtube-playlists2 :conference/youtube-playlists2 :ref
-  {ao/target      :youtube-playlist/id
-   ao/cardinality :many
-   ao/identities #{:conference/uuid}
-   ao/schema      :video
-
-   ao/pc-output   [{:conference/youtube-playlists2 [:youtube-playlist/id]}]
-   ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
-                    ;(println "defattr conference/youtube-playlists: " env)
-                    (println "defattr conference/youtube-playlists2: " query-params)
-                    #?(:clj
-                       {:conference/youtube-playlists2 (queries/get-conference-playlists env query-params)}))})
-
 ;
 ; (myparse ['({:youtube-video/by-playlist [:youtube-video/id :youtube-video/title]}
 ;              {:youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"})])
@@ -193,15 +180,12 @@
    ao/identities  #{:youtube-playlist/id}  ; <-- input?
    ao/schema      :video
    ; {:youtube-video/by-playlist (:youtube-playlist/id row)}
-   :com.fulcrologic.rad.control/controls {:youtube-playlist/id {:type   :string
-                                                                :local? true
-                                                                :label  "Playlist ID"}}
    ao/pc-output   [{:youtube-video/by-playlist [:youtube-video/id]}]
    ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
-                    (println "defresolver: youtube-video-by-playlist-id: playlist-id: " query-params)
+                    (println "defattr: youtube-video-by-playlist-id: playlist-id: " query-params)
                     #?(:clj
                        (let [r (queries/youtube-video-by-playlist-id env query-params)]
-                         ;(println "retval: " r)
+                         (println "retval: " r)
                          {:youtube-video/by-playlist r})))})
 
 

@@ -53,35 +53,11 @@
                                   :label  "Account"}}
 
 
-   ;ro/controls {:youtube-playlist/title {:type   :string
-   ;                                      :local? true
-   ;                                      :label  "Conference"
-   ;                                      :onChange    (fn [this _] (report/filter-rows! this))}}
-
-   ;session/speakers session/stype session/title session/venue session/start-time-utc]
-
    ;ro/row-visible?        (fn [filter-parameters row] (let [{::keys [category]} filter-parameters
    ;                                                         row-category (get row :category/label)]
    ;                                                     (or (= "" category) (= category row-category))))
    ;
    ;;; A sample server-query based picker that sets a local parameter that we use to filter rows.
-
-   ;ro/controls {:conference/id}
-   ;ro/controls            {::category {:type                          :picker
-   ;                                    :local?                        true
-   ;                                    :label                         "Category"
-   ;                                    :default-value                 ""
-   ;                                    :action                        (fn [this] (report/filter-rows! this))
-   ;                                    picker-options/cache-time-ms   30000
-   ;                                    picker-options/cache-key       :all-category-options
-   ;                                    picker-options/query-key       :category/all-categories
-   ;                                    picker-options/query-component category/Category
-   ;                                    picker-options/options-xform   (fn [_ categories]
-   ;                                                                     (into [{:text "All" :value ""}]
-   ;                                                                           (map
-   ;                                                                             (fn [{:category/keys [label]}]
-   ;                                                                               {:text label :value label}))
-   ;                                                                           categories))}}
 
    ; If defined: sort is applied to rows after filtering (client-side)
    ;ro/initial-sort-params {:sort-by          :youtube-video/position
@@ -103,7 +79,7 @@
                                    ; [app-or-component RouteTarget route-params
                                    (println "Go to Playlist" row)
                                    ; :youtube-playlist/id
-                                   (rroute/route-to! (comp/any->app this)
+                                   (rroute/route-to! this
                                                      youtube-forms/YouTubeReportByPlaylist
                                                      ; {:youtube-video/by-playlist [:youtube-video/id]}
                                                      {:youtube-playlist/id (:youtube-playlist/id row)}))}
@@ -120,8 +96,19 @@
    ;  report-instance
    ;  '[(mutations/set-selected-org {:orgnr organization-number})]))}]
 
+   ;ro/column-formatters {:youtube-playlist/title
+   ;                      (fn [this row]
+   ;                        (println "column formatter: " row)
+   ;                        (println "column formatter: " this)
+   ;                        (dom/a {:onClick (fn []
+   ;                                           (rroute/route-to! this
+   ;                                                             youtube-forms/YouTubeReportByPlaylist
+   ;                                                             ; {:youtube-video/by-playlist [:youtube-video/id]}
+   ;                                                             {:youtube-playlist/id (:youtube-playlist/id row)}))}
+   ;                          (str row)))}
+                            ;(dom/a {:onClick #(form/edit! this AccountForm (-> this comp/props :account/id)} (str v)))}}
 
-   ro/form-links       {youtube-playlist/title YouTubePlaylistForm}
+   ;ro/form-links       {youtube-playlist/title YouTubePlaylistForm}
 
    ;ro/links               {:category/label (fn [this {:category/keys [label]}]
    ;                                          (control/set-parameter! this ::category label)
