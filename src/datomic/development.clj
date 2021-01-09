@@ -56,6 +56,7 @@
 
 
 
+
 (comment
 
   (myparse [:conference/all-conferences])
@@ -69,6 +70,8 @@
               {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"})])
 
 
+  (myparse [:from-youtube-playlist/all-playlists])
+  (myparse [:ui.from-youtube/playlists])
   ; empty query params
 
   ;

@@ -16,6 +16,7 @@
     [com.example.model.video-tag :as vtag]
     [com.example.model.session-tag-2 :as session-tag-2]
     [com.example.model.conference :as conference]
+    [com.example.model.from-youtube-playlist :as yt-playlist]
     ;
     [com.fulcrologic.rad.attributes :as attr]))
 
@@ -33,6 +34,7 @@
                            youtube/attributes
                            youtube-playlist/attributes
                            conference/attributes
+                           yt-playlist/attributes
                            vtag/attributes
                            session-tag-2/attributes)))
 
