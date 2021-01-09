@@ -13,6 +13,7 @@
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
+    [com.example.model.from-youtube-playlist :as yt-playlist]
     [com.example.model.mutations :as mymutations]
     [clojure.pprint :as pp]))
 
@@ -107,60 +108,59 @@
 ;                                  :youtube-video/video-id    "az3BOHoiiS0",
 ;                                  :youtube-video/position    1}]}})
 ;
-;(report/defsc-report FromYouTube-PlaylistReport [this props]
-;  {ro/title               "YouTube Report By Playlist"
-;   ro/source-attribute    :youtube-video/by-playlist
-;   ;ro/source-attribute    :youtube-video/all-videos
-;   ro/row-pk              youtube/id
-;   ro/columns             [;youtube/id
-;                           youtube/title
-;                           youtube/description
-;                           youtube/url]
-;   ; youtube/position youtube/playlist-id youtube/video-id
-;   ;                           youtube/url
-;
-;   ; input: :youtube-playlist/id
-;   ro/controls {:youtube-playlist/id {:type   :string
-;                                      :local? true
-;                                      :label  "Playlist ID"}}
-;
-;   ro/row-actions      [{:label  "Download Video"
-;                         :action (fn [report-instance row]
-;                                   (println "from youtube-row-actions: " row))}]
-;   ; [this form-class entity-id]
-;   ;(form/edit! report-instance YouTubePlaylistForm
-;   ;            (:youtube-playlist/id row)))}]
-;
-;   ; If defined: sort is applied to rows after filtering (client-side)
-;   ;ro/initial-sort-params {:sort-by          :youtube-video/position
-;   ;                        :sortable-columns #{:youtube-video/playlist-id
-;   ;                                            :youtube-video/title
-;   ;                                            :youtube-video/position}
-;   ;                        ;:session/title :session/speakers :session/venue}
-;   ;                        ; :session/stype
-;   ;                        :ascending?       true}
-;   ;
-;   ;ro/row-actions         [{:label  "Select"
-;   ;                         :action (fn [report-instance row]
-;   ;                                   (println "from youtube-row-actions: " row)
-;   ;                                   ;#?{:cljs (js/console.log row)}
-;   ;                                   (comp/transact!
-;   ;                                     report-instance
-;   ;                                     [(mymutations/fetch-vimeo-entry (select-keys row
-;   ;                                                                                  [:youtube-video/id]))]))}]
-;
-;   ro/form-links          {youtube/title YouTubeForm}
-;
-;   ;ro/links               {:category/label (fn [this {:category/keys [label]}]
-;   ;                                          (control/set-parameter! this ::category label)
-;   ;                                          (report/filter-rows! this))}
-;
-;   ro/run-on-mount?       true
-;   ro/route               "from-youtube-report-by-playlist"})
-;;(dom/div
-;;  (dom/pre (with-out-str (pp/pprint props)))))
-;
-;
+(report/defsc-report FromYouTube-PlaylistReport [this props]
+  {ro/title               "YouTube Report By Playlist"
+   ro/source-attribute    :from-youtube-playlist/all-playlists
+   ;ro/source-attribute    :youtube-video/all-videos
+   ro/row-pk              yt-playlist/id
+   ro/columns             [;youtube/id
+                           yt-playlist/title
+                           yt-playlist/item-count]
+   ; youtube/position youtube/playlist-id youtube/video-id
+   ;                           youtube/url
+
+   ; input: :youtube-playlist/id
+   ro/controls {:youtube-playlist/id {:type   :string
+                                      :local? true
+                                      :label  "Playlist ID"}}
+
+   ro/row-actions      [{:label  "Download Video"
+                         :action (fn [report-instance row]
+                                   (println "from youtube-row-actions: " row))}]
+   ; [this form-class entity-id]
+   ;(form/edit! report-instance YouTubePlaylistForm
+   ;            (:youtube-playlist/id row)))}]
+
+   ; If defined: sort is applied to rows after filtering (client-side)
+   ;ro/initial-sort-params {:sort-by          :youtube-video/position
+   ;                        :sortable-columns #{:youtube-video/playlist-id
+   ;                                            :youtube-video/title
+   ;                                            :youtube-video/position}
+   ;                        ;:session/title :session/speakers :session/venue}
+   ;                        ; :session/stype
+   ;                        :ascending?       true}
+   ;
+   ;ro/row-actions         [{:label  "Select"
+   ;                         :action (fn [report-instance row]
+   ;                                   (println "from youtube-row-actions: " row)
+   ;                                   ;#?{:cljs (js/console.log row)}
+   ;                                   (comp/transact!
+   ;                                     report-instance
+   ;                                     [(mymutations/fetch-vimeo-entry (select-keys row
+   ;                                                                                  [:youtube-video/id]))]))}]
+
+   ;ro/form-links          {youtube/title YouTubeForm}
+
+   ;ro/links               {:category/label (fn [this {:category/keys [label]}]
+   ;                                          (control/set-parameter! this ::category label)
+   ;                                          (report/filter-rows! this))}
+
+   ro/run-on-mount?       true
+   ro/route               "from-youtube-report-by-playlist"})
+;(dom/div
+;  (dom/pre (with-out-str (pp/pprint props)))))
+
+
 ;(comment
 ;  (comp/get-query YouTubeReportAll)
 ;  (comp/get-query YouTubeForm))

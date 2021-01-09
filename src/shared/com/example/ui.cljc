@@ -15,6 +15,7 @@
     [com.example.ui.youtube-playlist-forms :refer [YouTubePlaylistReport YouTubePlaylistForm]]
     [com.example.ui.video-tag-forms :refer [VideoTagReport VideoTagForm]]
     [com.example.ui.conference-form :refer [ConferenceReport ConferencePlaylists]]
+    [com.example.ui.from-youtube-playlist-forms :refer [FromYouTube-PlaylistReport]]
     [com.example.ui.login-dialog :refer [LoginForm]]
     [com.example.ui.sales-report :as sales-report]
     [com.example.ui.dashboard :as dashboard]
@@ -50,6 +51,7 @@
                          YouTubePlaylistReport YouTubePlaylistForm
                          VideoTagReport VideoTagForm CustomTopReport
                          ConferenceReport ConferencePlaylists
+                         FromYouTube-PlaylistReport
                          dashboard/Dashboard]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)
@@ -124,7 +126,9 @@
                                       (fn []
                                         (comp/transact! this [(mymutations/fetch-from-youtube-playlists {:abc 123})]))}
                                         ;(rroute/route-to! this FromYouTubePlaylists {}))}
-                                     "Playlists")
+                                     "Call Mutation (old)")
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this FromYouTube-PlaylistReport {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
+                                     "Playlists for Vegas 2019")
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101"))))))
         (div :.right.menu
           (div :.item
