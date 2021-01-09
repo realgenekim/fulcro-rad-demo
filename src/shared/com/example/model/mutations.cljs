@@ -56,7 +56,11 @@
 ;                   :title "def"}]})
 
 (defsc YouTubePlaylistItem [this {:youtube-playlist/keys [id title] :as props}]
-  {:query [:youtube-playlist/id :youtube-playlist/title]
+  {:query [:youtube-playlist/id
+           :youtube-playlist/title
+           :youtube-playlist/published-at
+           :youtube-playlist/item-count
+           :youtube-playlist/channel-id]
    :ident :youtube-playlist/id})
 
 (defsc FromYouTube-PlaylistReturn [_ _]

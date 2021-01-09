@@ -29,15 +29,29 @@
                  (assoc acc new-kw v)))
              {} m))
 
+; #:youtube-playlist{:id "PLvk9Yh_MWYuzAfazAe6m8uE-_lVvshjX6",
+;                    :publishedAt "2016-07-02T04:16:53Z",
+;                    :title "DevOps Enterprise Summit: London 2016 - Keynotes",
+;                    :description "Keynotes from DevOps Enterprise Summit London 2016.\n\nDOES16 UK",
+;                    :channelId "UCkAQCw5_sIZmj2IkSrNy00A",
+;                    :itemCount 9}
+
 (pc/defmutation fetch-from-youtube-playlists
    [env _]
    {::pc/output {:ui.from-youtube/playlists [:youtube-playlist/id
-                                             :youtube-playlist/title]}}
+                                             :youtube-playlist/title
+                                             :youtube-playlist/published-at
+                                             :youtube-playlist/item-count
+                                             :youtube-playlist/channel-id]}}
    (println "fetch-from-youtube-playlists: ")
    (let [ytchannel (:main yt/itrev-channels)
          retval (->> (yt/fetch-channel-playlists-parsed! ytchannel)
                      ;(take 15)
-                     (map #(select-keys % [:id :title]))
+                     (map #(clojure.set/rename-keys % {:publishedAt :published-at
+                                                       :itemCount :item-count
+                                                       :channelId :channel-id}))
+                     ;(map #(select-keys % [:id :title :published-a :itemCount]))
+                     ; make sure everything is namespaced: :youtube-playlist/id, ...
                      (map #(map->nsmap % "youtube-playlist")))]
      (println retval)
      {:ui.from-youtube/playlists retval}))
@@ -60,7 +74,10 @@
 
   (def playlists (yt/fetch-channel-playlists-parsed! ytchannel))
   (->> playlists
-       (map #(select-keys % [:id :title]))
+       ;(map #(select-keys % [:id :title]))
+       (map #(clojure.set/rename-keys % {:publishedAt :published-at
+                                         :itemCount :item-count
+                                         :channelId :channel-id}))
        (map #(map->nsmap % "youtube-playlist")))
   (identity playlists)),
 

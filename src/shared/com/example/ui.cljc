@@ -123,8 +123,9 @@
                    (ui-dropdown-item {:onClick
                                       (fn []
                                         (comp/transact! this [(mymutations/fetch-from-youtube-playlists {:abc 123})]))}
-                                        ;(rroute/route-to! this ConferenceReport {}))}
-                                     "Playlists"))))))
+                                        ;(rroute/route-to! this FromYouTubePlaylists {}))}
+                                     "Playlists")
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})
