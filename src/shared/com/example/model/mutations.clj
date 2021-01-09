@@ -1,6 +1,8 @@
 (ns com.example.model.mutations
   (:require
-    [com.wsscode.pathom.connect :as pc]))
+    [com.wsscode.pathom.connect :as pc]
+    [youtube.main :as yt]))
+
 
 ;
 ; server-side
@@ -13,16 +15,54 @@
   {:youtube-video/id 111
    :returned-url "abcdefdef"})
 
+
+; https://stackoverflow.com/questions/43722091/clojure-programmatically-namespace-map-keys
+
+(defn map->nsmap
+  " make all keys namespaced to namespace n "
+  [m n]
+  (reduce-kv (fn [acc k v]
+               (let [new-kw (if (and (keyword? k)
+                                     (not (qualified-keyword? k)))
+                              (keyword (str n) (name k))
+                              k)]
+                 (assoc acc new-kw v)))
+             {} m))
+
 (pc/defmutation fetch-from-youtube-playlists
    [env _]
    {::pc/output {:ui.from-youtube/playlists [:youtube-playlist/id
                                              :youtube-playlist/title]}}
    (println "fetch-from-youtube-playlists: ")
-   {:ui.from-youtube/playlists
-    [{:youtube-playlist/id "xyz"
-      :youtube-playlist/title "abc"}
-     {:youtube-playlist/id "xxx"
-      :youtube-playlist/title "def"}]})
+   (let [ytchannel (:main yt/itrev-channels)
+         retval (->> (yt/fetch-channel-playlists-parsed! ytchannel)
+                     ;(take 15)
+                     (map #(select-keys % [:id :title]))
+                     (map #(map->nsmap % "youtube-playlist")))]
+     (println retval)
+     {:ui.from-youtube/playlists retval}))
+   ;{:ui.from-youtube/playlists
+   ; [{:youtube-playlist/id "xyz"
+   ;   :youtube-playlist/title "abc"}
+   ;  {:youtube-playlist/id "xxx"
+   ;   :youtube-playlist/title "def"}]})
+
+; ({:id "PLvk9Yh_MWYuysEkC8lQCm_9vpEFh2eCrj",
+;  :publishedAt "2020-10-14T17:21:56Z",
+;  :title "Andy Patton's Antipatterns",
+;  :description "",
+;  :channelId "UCkAQCw5_sIZmj2IkSrNy00A",
+;  :itemCount 4}
+
+
+(comment
+  (def ytchannel (:main yt/itrev-channels))
+
+  (def playlists (yt/fetch-channel-playlists-parsed! ytchannel))
+  (->> playlists
+       (map #(select-keys % [:id :title]))
+       (map #(map->nsmap % "youtube-playlist")))
+  (identity playlists)),
 
 
 

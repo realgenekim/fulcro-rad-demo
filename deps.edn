@@ -26,6 +26,12 @@
            org.slf4j/jcl-over-slf4j               {:mvn/version "1.7.30"} ; auto-sends java.common.logging to slf4j
            com.fzakaria/slf4j-timbre              {:mvn/version "0.3.19"} ; hooks slf4j to timbre
 
+           ; https://github.com/thheller/shadow-cljs/issues/818
+           com.google.guava/guava                 {:mvn/version "30.1-jre"}
+
+           gk/datomic                             {:local/root "../google-analytics-video/"}
+           gk/youtube                             {:local/root "../google-analytics-video/"}
+
            org.clojure/clojurescript              {:mvn/version "1.10.773"}
            org.clojure/clojure                    {:mvn/version "1.10.1"}}
 
@@ -38,9 +44,9 @@
                                      com.fulcrologic/fulcro-rad-sql {:mvn/version "0.0.2-alpha"}}}
 
            :datomic   {:extra-paths ["src/datomic" "src/datomic-tests"]
-                       :extra-deps  {com.datomic/dev-local              {:mvn/version "0.9.225"}
+                       :extra-deps  {com.datomic/dev-local              {:mvn/version "0.9.229"}
                                      com.datomic/client-cloud           {:mvn/version "0.8.102"}
-                                     com.fulcrologic/fulcro-rad-datomic {:mvn/version "1.0.0"}}}
+                                     com.fulcrologic/fulcro-rad-datomic {:mvn/version "1.0.5"}}}
            :run-tests {:main-opts  ["-m" "kaocha.runner"]
                        :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.629"}}}
 

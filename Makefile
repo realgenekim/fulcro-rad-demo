@@ -10,5 +10,8 @@ release:
 run-tests:
 	bin/kaocha --plugin notifier --watch
 
+datomic:
+	datomic client access datomic-2
+
 cljs-compile:
 	npx shadow-cljs watch main
