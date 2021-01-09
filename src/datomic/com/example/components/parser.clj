@@ -27,6 +27,7 @@
     [com.example.model.youtube-playlist :as youtube-playlist]
     [com.example.model.conference :as conference]
     [com.example.model.from-youtube-playlist :as yt-playlist]
+    [com.example.model.from-youtube-video :as yt-video]
     [com.example.model.video-tag :as video-tag]
     [com.example.model.session-tag-2 :as session-tag-2]
     [com.example.model.mutations :as mymutations]
@@ -80,6 +81,7 @@
      youtube-playlist/resolvers
      conference/resolvers
      yt-playlist/resolvers
+     yt-video/resolvers
      video-tag/resolvers
      session-tag-2/resolvers
      invoice/resolvers
