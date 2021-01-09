@@ -51,41 +51,38 @@
 ; query-params:
 ;      input: :from-youtube-playlist/id
 
+
+#?(:clj
+    (defn fetch-playlist-parsed! [{:from-youtube-playlist/keys [id] :as params}]
+      (println "fetch-playlist-parsed: params: " params)
+      (println "fetch-playlist-parsed: id: " id)
+      (let [retval (yt/fetch-playlists-items-parsed! id)
+            parsed (->> retval
+                        (map #(clojure.set/rename-keys % {:publishedAt :published-at
+                                                          :playlistId :playlist-id
+                                                          :videoId :video-id}))
+                        (map #(utils/map->nsmap % "from-youtube-video")))]
+        ;(println "fetch-playlist-parsed: retval: " retval)
+        parsed)))
+
+(comment
+  (yt/fetch-playlists-items-parsed! "PLvk9Yh_MWYuzAfazAe6m8uE-_lVvshjX6")
+  (fetch-playlist-parsed! #:from-youtube-playlist{:id "PLvk9Yh_MWYuzAfazAe6m8uE-_lVvshjX6"})
+  ,)
+
 (defattr from-playlist :from-youtube-video/from-playlist :ref
   {ao/target      :from-youtube-video/id
    ao/cardinality :many
-   ao/identities #{:from-youtube-video/id}  ; <-- input?
+   ao/identities #{:from-youtube-playlist/id}  ; <-- input?
 
    ao/pc-output   [{:from-youtube-video/from-playlist [:from-youtube-video/id]}]
    ao/pc-resolve  (fn [{:keys [query-params] :as env} _]
                     (println "defattr :from-youtube-video/from-playlist: " query-params)
                     #?(:clj
                        {:from-youtube-video/from-playlist
-                        {:from-youtube-video/id "abc"}}))})
+                        (fetch-playlist-parsed! query-params)}))})
+                        ;{:from-youtube-video/id "abc"}}))})
                         ;(queries/get-conference-playlists env query-params)}))})
-
-
-;(defattr all-playlists :from-youtube-video/all-videos :ref
-;  {ao/target     :from-youtube-video/id
-;   ao/pc-output  [{:from-youtube-video/all-videos [:from-youtube-video/id]}]
-;   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
-;                   (println "defattr from-youtube-video: " query-params)
-;                   #?(:clj
-;                      (let [ytchannel (:main yt/itrev-channels)
-;                            retval (->> (yt/fetch-channel-playlists-parsed! ytchannel)
-;                                        ;(take 15)
-;                                        (map #(clojure.set/rename-keys % {:publishedAt :published-at
-;                                                                          :itemCount :item-count
-;                                                                          :channelId :channel-id}))
-;                                        ;(map #(select-keys % [:id :title :published-a :itemCount]))
-;                                        ; make sure everything is namespaced: :youtube-playlist/id, ...
-;                                        (map #(utils/map->nsmap % "from-youtube-playlist")))]
-;                        (println retval)
-;                        {:from-youtube-playlist/all-playlists retval})))})
-
-(comment
-  (yt/fetch-playlists-items-parsed! "PLvk9Yh_MWYuzAfazAe6m8uE-_lVvshjX6")
-  ,)
 
 
 (def attributes [id title published-at description url video-id position playlist-id

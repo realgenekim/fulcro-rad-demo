@@ -55,7 +55,7 @@
                                            (println "ConferenceReport: click: " uuid)
                                            ;(fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 102)}))
                                            ; [app-or-component RouteTarget route-params]
-                                           (rroute/route-to! this youtube-playlist-forms/YouTubePlaylistReport
+                                           (rroute/route-to! this youtube-playlist-forms/FromYouTubeVideoReport
                                                              {:conference/uuid uuid}))}
    ;:category/label (fn [this {:category/keys [label]}]
    ;                  (control/set-parameter! this ::category label)

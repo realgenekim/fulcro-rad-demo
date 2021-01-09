@@ -69,6 +69,8 @@
   (myparse ['({:conference/youtube-playlists2 [:youtube-playlist/id :youtube-playlist/conf-uuid]}
               {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"})])
 
+  (myparse ['({:from-youtube-video/from-playlist [:from-youtube-video/id :from-youtube-video/url]}
+              {:from-youtube-playlist/id "PLvk9Yh_MWYuzAfazAe6m8uE-_lVvshjX6"})])
 
   (myparse [:from-youtube-playlist/all-playlists])
   (myparse [:ui.from-youtube/playlists])
@@ -130,8 +132,6 @@
   ;                                    :youtube-playlist/description "",
   ;                                    :youtube-playlist/conf-uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}]}
 
-  (myparse ['({:from-youtube-video/from-playlist [:from-youtube-video/id]}
-              {:from-youtube-playlist/all-playlists "PLvk9Yh_MWYuzAfazAe6m8uE-_lVvshjX6"})])
 
   ;
   ;

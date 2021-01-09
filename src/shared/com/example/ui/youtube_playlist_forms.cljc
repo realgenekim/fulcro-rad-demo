@@ -32,8 +32,10 @@
 ;(dom/div :.ui.container.grid
 ;  "Hello!"))
 
+; this is an example of generating a report, with a query
+;   input: :conference/youtube-playlists2
 
-(report/defsc-report YouTubePlaylistReport [this props]
+(report/defsc-report FromYouTubeVideoReport [this props]
   {ro/title            "YouTube Playlist Report 2"
    ;ro/source-attribute :youtube-playlist/all-playlists
    ro/source-attribute :conference/youtube-playlists2

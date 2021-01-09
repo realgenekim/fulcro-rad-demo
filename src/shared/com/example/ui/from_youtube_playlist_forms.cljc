@@ -14,6 +14,8 @@
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.from-youtube-playlist :as yt-playlist]
+    [com.example.ui.from-youtube-video-forms :as yt-video-forms]
+    [com.fulcrologic.rad.routing :as rroute]
     [com.example.model.mutations :as mymutations]
     [clojure.pprint :as pp]))
 ;
@@ -37,8 +39,14 @@
                                       :label  "Playlist ID"}}
 
    ro/row-actions      [{:label  "Go to Playlist"
-                         :action (fn [report-instance row]
-                                   (println "from youtube-row-actions: " row))}
+                         :action (fn [this row]
+                                   (println "from youtube-row-actions: " row)
+                                   (rroute/route-to! this
+                                                     yt-video-forms/FromYouTubeVideoReport
+                                                     ; {:youtube-video/by-playlist [:youtube-video/id]}
+                                                     ;:from-youtube-playlist/id
+                                                     ;:from-youtube-video/from-playlist
+                                                     {:from-youtube-playlist/id (:from-youtube-playlist/id row)}))}
                         {:label  "Save Playlist to Database"
                          :action (fn [report-instance row]
                                    (println "from youtube-row-actions: " row))}]
