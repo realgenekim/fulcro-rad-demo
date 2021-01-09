@@ -447,4 +447,5 @@
 
 (comment
   (comp/get-query SessionReport)
-  (comp/get-query SessionForm))
+  (comp/get-query SessionForm)
+  (comp/get-query SessionListItem))

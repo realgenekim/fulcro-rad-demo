@@ -8,11 +8,21 @@
 
 (pc/defmutation fetch-vimeo-entry
   [env row]
-  {;pc/params [:orgnr]}
-   ::pc/output [:youtube-playlist/id :returned-url]}
+  {::pc/output [:youtube-playlist/id :returned-url]}
   (println "defmutation: " row)
   {:youtube-video/id 111
-   :returned-url "abc"})
+   :returned-url "abcdefdef"})
+
+(pc/defmutation fetch-from-youtube-playlists
+   [env _]
+   {::pc/output {:ui.from-youtube/playlists [:youtube-playlist/id
+                                             :youtube-playlist/title]}}
+   (println "fetch-from-youtube-playlists: ")
+   {:ui.from-youtube/playlists
+    [{:youtube-playlist/id "xyz"
+      :youtube-playlist/title "abc"}
+     {:youtube-playlist/id "xxx"
+      :youtube-playlist/title "def"}]})
 
 
 
@@ -49,4 +59,4 @@
 ;        :bill-run/logs (vec logs)})))
 
 
-(def resolvers [fetch-vimeo-entry])
+(def resolvers [fetch-vimeo-entry fetch-from-youtube-playlists])

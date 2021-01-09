@@ -96,7 +96,7 @@
                            ; :session/stype
                            :ascending?       true}
 
-   ro/row-actions         [{:label  "Select"
+   ro/row-actions         [{:label  "Select/Download"
                             :action (fn [report-instance row]
                                       (println "from youtube-row-actions: " row)
                                       ;#?{:cljs (js/console.log row)}

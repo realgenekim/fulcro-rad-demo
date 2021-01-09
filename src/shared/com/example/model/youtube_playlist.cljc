@@ -35,11 +35,6 @@
                              "-"))})
 
 
-;(defsc YouTubePlaylist [_ _]
-;  {:query [:youtube-playlist/id :youtube-playlist/title]
-;   :ident :youtube-playlist/id})
-
-; who cares about the attrs: no one except for you
 ; it's just a map: you use them in reports and forms, to tell the forms/reports what to display
 
 (defattr all-playlists :youtube-playlist/all-playlists :ref
@@ -73,4 +68,7 @@
 
 #?(:clj
    (def resolvers []))
+
+(comment
+  (comp/get-query all-playlists))
 

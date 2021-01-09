@@ -32,7 +32,6 @@
 (defattr playlist-id :youtube-video/playlist-id :ref
   {ao/target      :youtube-playlist/id
    ao/cardinality :one
-   ao/style       :youtube-playlist-id
    ao/schema      :video
    ro/column-formatter (fn [_ value]
                          (or (:youtube-playlist/title value) "-"))})

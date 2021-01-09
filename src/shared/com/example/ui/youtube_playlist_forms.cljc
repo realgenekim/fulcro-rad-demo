@@ -39,8 +39,8 @@
    ro/source-attribute :conference/youtube-playlists2
    ro/row-pk           youtube-playlist/id
    ro/columns          [youtube-playlist/id
-                        youtube-playlist/title
-                        youtube-playlist/description]
+                        youtube-playlist/title]
+                        ;youtube-playlist/description]
                         ; youtube-playlist/conf-uuid]
 
    ;ro/column-formatters {:youtube-playlist/conf-uuid (fn [this value]

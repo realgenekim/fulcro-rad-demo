@@ -27,6 +27,7 @@
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.ids :refer [new-uuid]]
     [com.fulcrologic.rad.routing :as rroute]
+    [com.example.model.mutations :as mymutations]
     [taoensso.timbre :as log]))
 
 ; (com.fulcrologic.fulcro.routing.dynamic-routing/current-route com.example.client/app)
@@ -119,7 +120,11 @@
                                      "Playlists for Vegas 2019")))
                (ui-dropdown {:className "item" :text "YouTube Channel"}
                  (ui-dropdown-menu {}
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this ConferenceReport {}))} "Playlists"))))))
+                   (ui-dropdown-item {:onClick
+                                      (fn []
+                                        (comp/transact! this [(mymutations/fetch-from-youtube-playlists {:abc 123})]))}
+                                        ;(rroute/route-to! this ConferenceReport {}))}
+                                     "Playlists"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})
@@ -142,4 +147,7 @@
         (ui-main-router router)))))
 
 (def ui-root (comp/factory Root))
+
+(comment
+  (comp/transact! ui-root [(mymutations/fetch-from-youtube-playlists {:abc 123})]))
 
