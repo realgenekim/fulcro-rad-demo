@@ -43,7 +43,9 @@
    ao/identities #{:conference/uuid}
    ao/schema      :video})
 
-; input: :conferene/uuid
+; this is an example of something that does a query, using passed in
+; query-params:
+;      input: :conference/uuid
 
 (defattr youtube-playlists2 :conference/youtube-playlists2 :ref
   {ao/target      :youtube-playlist/id
@@ -62,9 +64,6 @@
 ;(defsc YouTubePlaylist [_ _]
 ;  {:query [:youtube-playlist/id :youtube-playlist/title]
 ;   :ident :youtube-playlist/id})
-
-; who cares about the attrs: no one except for you
-; it's just a map: you use them in reports and forms, to tell the forms/reports what to display
 
 (defattr all-conferences :conference/all-conferences :ref
   {ao/target     :conference/uuid
