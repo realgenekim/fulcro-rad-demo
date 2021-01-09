@@ -38,7 +38,6 @@
    ao/identities #{:from-youtube-playlist/id}
    ao/schema :youtube})
 
-
 (defattr published-at :from-youtube-playlist/published-at :string
   {ao/cardinality :one
    ao/identities #{:from-youtube-playlist/id}
@@ -49,14 +48,10 @@
    ao/identities #{:from-youtube-playlist/id}
    ao/schema :youtube})
 
-;(defattr all-videos :youtube-video/all-videos :ref
-;  {ao/target     :youtube-video/id
-;   ao/pc-output  [{:youtube-video/all-videos [:youtube-video/id]}]
-;   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
-;                   (println "defattr all-videos: " env)
-;                   #?(:clj
-;                      ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))})
-;                      {:youtube-video/all-videos (queries/get-all-youtube-videos env query-params)}))})
+(defattr description :from-youtube-playlist/description :string
+  {ao/cardinality :one
+   ao/identities #{:from-youtube-playlist/id}
+   ao/schema :youtube})
 
 (defn map->nsmap
   " make all keys namespaced to namespace n "
@@ -69,43 +64,10 @@
                  (assoc acc new-kw v)))
              {} m))
 
-;(pc/defmutation fetch-from-youtube-playlists
-;  [env _]
-;  {::pc/output {:ui.from-youtube/playlists [:youtube-playlist/id
-;                                            :youtube-playlist/title
-;                                            :youtube-playlist/published-at
-;                                            :youtube-playlist/item-count
-;                                            :youtube-playlist/channel-id]}}
-;  (println "fetch-from-youtube-playlists: ")
-;  (let [ytchannel (:main yt/itrev-channels)
-;        retval (->> (yt/fetch-channel-playlists-parsed! ytchannel)
-;                    ;(take 15)
-;                    (map #(clojure.set/rename-keys % {:publishedAt :published-at
-;                                                      :itemCount :item-count
-;                                                      :channelId :channel-id}))
-;                    ;(map #(select-keys % [:id :title :published-a :itemCount]))
-;                    ; make sure everything is namespaced: :youtube-playlist/id, ...
-;                    (map #(map->nsmap % "youtube-playlist")))]
-;    (println retval)
-;    {:ui.from-youtube/playlists retval}))
-
-;(defattr all-videos :youtube-video/all-videos :ref
-;  {ao/target     :youtube-video/id
-;   ao/pc-output  [{:youtube-video/all-videos [:youtube-video/id]}]
-;   ao/pc-resolve (fn [{:keys [query-params] :as env} _]
-;                   (println "defattr all-videos: " env)
-;                   #?(:clj
-;                      ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))})
-;                      {:youtube-video/all-videos (queries/get-all-youtube-videos env query-params)}))})
-
 (defattr all-playlists :from-youtube-playlist/all-playlists :ref
   {ao/target     :from-youtube-playlist/id
    ; TODO: can I turn :from-youtube-playlist/id => :youtube-playlist/id?
    ao/pc-output  [{:from-youtube-playlist/all-playlists [:from-youtube-playlist/id]}]
-                                               ;:youtube-playlist/title
-                                               ;:youtube-playlist/published-at
-                                               ;:youtube-playlist/item-count
-                                               ;:youtube-playlist/channel-id]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
                    (println "defattr from-youtube-playlists: " query-params)
                    #?(:clj
@@ -120,12 +82,9 @@
                                         (map #(map->nsmap % "from-youtube-playlist")))]
                         (println retval)
                         {:from-youtube-playlist/all-playlists retval})))})
-                      ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))})
-                      ;{:youtube-video/all-videos (queries/get-all-youtube-videos env query-params)}))})
 
 
-(def attributes [id title published-at item-count all-playlists])
-;item-name category description price in-stock all-items]) all-videos-by-playlist
+(def attributes [id title published-at item-count description all-playlists])
 
 #?(:clj
    (def resolvers []))

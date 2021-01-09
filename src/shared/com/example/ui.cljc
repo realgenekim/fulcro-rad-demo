@@ -122,13 +122,14 @@
                                      "Playlists for Vegas 2019")))
                (ui-dropdown {:className "item" :text "YouTube Channel"}
                  (ui-dropdown-menu {}
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this FromYouTube-PlaylistReport {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
+                                     "All Playlists")
                    (ui-dropdown-item {:onClick
                                       (fn []
                                         (comp/transact! this [(mymutations/fetch-from-youtube-playlists {:abc 123})]))}
                                         ;(rroute/route-to! this FromYouTubePlaylists {}))}
                                      "Call Mutation (old)")
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this FromYouTube-PlaylistReport {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
-                                     "Playlists for Vegas 2019")
+
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101"))))))
         (div :.right.menu
           (div :.item
