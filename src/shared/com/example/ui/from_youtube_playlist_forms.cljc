@@ -33,10 +33,21 @@
    ; youtube/position youtube/playlist-id youtube/video-id
    ;                           youtube/url
 
-   ; input: :youtube-playlist/id
-   ro/controls {:youtube-playlist/id {:type   :string
+
+   ro/controls {; input: query-parameter: :youtube-playlist/id
+                :youtube-playlist/id {:type   :string
                                       :local? true
-                                      :label  "Playlist ID"}}
+                                      :label  "Playlist ID"}
+                ::upload-to-database {:type   :button
+                                      :local? true
+                                      :label  "Save to Database"
+                                      :action (fn [this]
+                                                (println "save-to-database: " this))}}
+                                                ;(comp/transact!
+                                                ;  this
+                                                ;  [(mymutations/save-youtube-playlist-to-database
+                                                ;     rows)]))}}
+                                                    ;(select-keys rows [:youtube-video/id]))]))}}
 
    ro/row-actions      [{:label  "Go to Playlist"
                          :action (fn [this row]

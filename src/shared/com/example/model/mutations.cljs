@@ -20,14 +20,36 @@
 (defmutation fetch-vimeo-entry
   [row]
   (action [{:keys [app state]}]
-          (println "hello from mutation" row))
+          (println "mutation: fetch-vimeo-entry: " row))
   ;(remote [env] true) ; see client/app definitioons for remotes
   (remote [env] (m/returning env VimeoComponent)) ; see client/app definitioons for remotes
   #_ (my-custom-remote [env] (do-whatever)))
 
-(defsc FromYouTubePlaylist [_ _]
-  {:query [:ui.from-youtube/playlists]
-   :ident :ui.from-youtube/playlists})
+;
+; save-youtube-playlist-to-database
+;
+
+(defsc SaveYouTubePlaylistComponent
+  [_ _]
+  {:query [:youtube-playlist/id :returned-url]
+   :ident :youtube-playlist/id})
+
+(defmutation save-youtube-playlist-to-database
+  [videos]
+  (action [{:keys [app state]}]
+          (println "mutation: save-youtube-playlist-to-database: " videos))
+  ;(remote [env] true) ; see client/app definitioons for remotes
+  (remote [env] (m/returning env VimeoComponent)) ; see client/app definitioons for remotes
+  #_ (my-custom-remote [env] (do-whatever)))
+
+;
+; fetch-from-youtube-playlists
+;
+
+
+;(defsc FromYouTubePlaylist [_ _]
+;  {:query [:ui.from-youtube/playlists]
+;   :ident :ui.from-youtube/playlists})
 
 ; (defsc SessionListItem [this {:session/keys [uuid speakers venue] :as props}]
 ;  {:query [:session/uuid :session/speakers :session/venue]
