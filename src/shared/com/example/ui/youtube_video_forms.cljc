@@ -162,7 +162,11 @@
 
    ro/row-actions      [{:label  "Download Video"
                          :action (fn [report-instance row]
-                                   (println "from youtube-row-actions: " row))}]
+                                   (println "from youtube-row-actions: " row)
+                                   (comp/transact!
+                                     report-instance
+                                     [(mymutations/fetch-vimeo-entry
+                                        (select-keys row [:youtube-video/id]))]))}]
                                    ; [this form-class entity-id]
                                    ;(form/edit! report-instance YouTubePlaylistForm
                                    ;            (:youtube-playlist/id row)))}]

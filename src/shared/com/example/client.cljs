@@ -51,6 +51,74 @@
                   (df/load! app :session/all-sessions SessionListItem
                                     {:target [:component/id :session-list :session-list/sessions]}))}))
 
+(comment
+  (keys app)
+  @(:com.fulcrologic.fulcro.application/state-atom app)
+  (keys @(:com.fulcrologic.fulcro.application/state-atom app))
+  ; => (:item/id
+  ; :com.fulcrologic.fulcro.ui-state-machines/asm-id
+  ; :youtube-video/id
+  ; :router
+  ; :account/id
+  ; :com.fulcrologic.rad.report/id
+  ; :fulcro.inspect.core/app-id
+  ; :com.fulcrologic.rad.authorization/authorization
+  ; :com.fulcrologic.rad.container/id
+  ; :fulcro.inspect.core/app-uuid
+  ; :ui.fulcro.client.data-fetch.load-markers/by-id
+  ; :session/uuid
+  ; :com.fulcrologic.fulcro.routing.dynamic-routing/id
+  ; :com.fulcrologic.rad.control/id
+  ; :ui/password
+  ; :com.fulcrologic.rad.authorization/id
+  ; :category/id
+  ; :com.fulcrologic.rad.picker-options/options-cache
+  ; :ui/username
+  ; :component/id
+  ; :com.fulcrologic.fulcro.components/queries
+  ; :com.fulcrologic.fulcro.application/active-remotes
+  ; :authenticator)
+  (:component/id @(:com.fulcrologic.fulcro.application/state-atom app))
+  (:com.fulcrologic.rad.report/id @(:com.fulcrologic.fulcro.application/state-atom app))
+  (->> app
+       :com.fulcrologic.fulcro.application/state-atom
+       deref
+       :com.fulcrologic.rad.report/id
+       :com.example.ui.from-youtube-playlist-forms/FromYouTube-PlaylistReport)
+
+  (->> app
+       :com.fulcrologic.fulcro.application/state-atom
+       deref
+       :from-youtube-playlist/id)
+
+  ; => {nil #:com.fulcrologic.rad.pathom{:errors {:message "Mutation not found",
+  ;                                           :data {:mutation com.example.model.mutations/save-youtube-playlist-to-database}}},
+  ; "PLvk9Yh_MWYuxwfRj8I8Y5Eo0-V4KH4lal" #:from-youtube-playlist{:published-at "2020-09-10T21:04:44Z",
+  ;                                                              :title "Shaaron Alvares: DevOps Enterprise Summit Las Vegas - Virtual 2020",
+  ;                                                              :item-count 1,
+  ;                                                              :description "",
+  ;                                                              :id "PLvk9Yh_MWYuxwfRj8I8Y5Eo0-V4KH4lal"},
+  ;
+
+  (as-> app $
+        (:com.fulcrologic.fulcro.application/state-atom $)
+        (deref $)
+        (:from-youtube-playlist/id $)
+        (take 3 $)
+        (rest $))
+
+  (->> app
+       (:com.fulcrologic.fulcro.application/state-atom)
+       (deref)
+       (:from-youtube-playlist/id)
+       ;(take 3 $)
+       (rest)
+       (map second))
+
+
+  ,)
+
+
 (defn refresh []
   ;; hot code reload of installed controls
   (log/info "Reinstalling controls")

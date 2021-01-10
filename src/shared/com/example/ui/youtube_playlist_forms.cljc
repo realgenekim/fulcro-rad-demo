@@ -35,7 +35,7 @@
 ; this is an example of generating a report, with a query
 ;   input: :conference/youtube-playlists2
 
-(report/defsc-report FromYouTubeVideoReport [this props]
+(report/defsc-report YouTubeVideoReport [this props]
   {ro/title            "YouTube Playlist Report 2"
    ;ro/source-attribute :youtube-playlist/all-playlists
    ro/source-attribute :conference/youtube-playlists2
@@ -84,16 +84,16 @@
                                    (rroute/route-to! this
                                                      youtube-forms/YouTubeReportByPlaylist
                                                      ; {:youtube-video/by-playlist [:youtube-video/id]}
-                                                     {:youtube-playlist/id (:youtube-playlist/id row)}))}
+                                                     {:youtube-playlist/id (:youtube-playlist/id row)}))}]
 
-                        {:label  "Select"
-                         :action (fn [report-instance row]
-                                   (println "from youtube-row-actions: " row)
-                                   ;#?{:cljs (js/console.log row)}
-                                   (comp/transact!
-                                     report-instance
-                                     [(mymutations/fetch-vimeo-entry (select-keys row
-                                                                                  [:youtube-video/id]))]))}]
+                        ;{:label  "Select"
+                        ; :action (fn [report-instance row]
+                        ;           (println "from youtube-row-actions: " row)
+                        ;           ;#?{:cljs (js/console.log row)}
+                        ;           (comp/transact!
+                        ;             report-instance
+                        ;             [(mymutations/fetch-vimeo-entry (select-keys row
+                        ;                                                          [:youtube-video/id]))]))}]
    ;(comp/transact!
    ;  report-instance
    ;  '[(mutations/set-selected-org {:orgnr organization-number})]))}]
@@ -117,7 +117,7 @@
    ;                                          (report/filter-rows! this))}
 
    ro/run-on-mount?    true
-   ro/route            "youtube-playlist-report"})
+   ro/route            "youtube-playlist-report2"})
   ;(dom/div
   ;  (dom/h4
   ;    (str "Accounts for: " (-> props :ui/controls first

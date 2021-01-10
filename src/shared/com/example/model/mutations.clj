@@ -1,6 +1,8 @@
 (ns com.example.model.mutations
   (:require
     [com.wsscode.pathom.connect :as pc]
+    [com.example.utils :as utils]
+    [clojure.pprint :as pp]
     [youtube.main :as yt]))
 
 
@@ -15,19 +17,6 @@
   {:youtube-video/id 111
    :returned-url "abcdefdef"})
 
-
-; https://stackoverflow.com/questions/43722091/clojure-programmatically-namespace-map-keys
-
-(defn map->nsmap
-  " make all keys namespaced to namespace n "
-  [m n]
-  (reduce-kv (fn [acc k v]
-               (let [new-kw (if (and (keyword? k)
-                                     (not (qualified-keyword? k)))
-                              (keyword (str n) (name k))
-                              k)]
-                 (assoc acc new-kw v)))
-             {} m))
 
 ; #:youtube-playlist{:id "PLvk9Yh_MWYuzAfazAe6m8uE-_lVvshjX6",
 ;                    :publishedAt "2016-07-02T04:16:53Z",
@@ -52,7 +41,7 @@
                                                        :channelId :channel-id}))
                      ;(map #(select-keys % [:id :title :published-a :itemCount]))
                      ; make sure everything is namespaced: :youtube-playlist/id, ...
-                     (map #(map->nsmap % "youtube-playlist")))]
+                     (map #(utils/map->nsmap % "youtube-playlist")))]
      (println retval)
      {:ui.from-youtube/playlists retval}))
    ;{:ui.from-youtube/playlists
@@ -60,14 +49,6 @@
    ;   :youtube-playlist/title "abc"}
    ;  {:youtube-playlist/id "xxx"
    ;   :youtube-playlist/title "def"}]})
-
-; ({:id "PLvk9Yh_MWYuysEkC8lQCm_9vpEFh2eCrj",
-;  :publishedAt "2020-10-14T17:21:56Z",
-;  :title "Andy Patton's Antipatterns",
-;  :description "",
-;  :channelId "UCkAQCw5_sIZmj2IkSrNy00A",
-;  :itemCount 4}
-
 
 (comment
   (def ytchannel (:main yt/itrev-channels))
@@ -78,8 +59,29 @@
        (map #(clojure.set/rename-keys % {:publishedAt :published-at
                                          :itemCount :item-count
                                          :channelId :channel-id}))
-       (map #(map->nsmap % "youtube-playlist")))
-  (identity playlists)),
+       (map #(utils/map->nsmap % "youtube-playlist")))
+  (identity playlists))
+
+;
+; save-youtube-playlist-to-database
+;
+
+(pc/defmutation save-youtube-playlist-to-database
+  [env rows]
+  {::pc/output [:youtube-playlist/id :returned-url]}
+  (println "defmutation: save-youtube-playlist-to-database: "
+           (with-out-str (pp/pprint rows)))
+  {:youtube-video/id 111
+   :returned-url "abcdefdef"})
+
+(pc/defmutation save-youtube-playlist-to-database-given-playlist-id
+  [env rows]
+  {::pc/output [:youtube-playlist/id :returned-url]}
+  (println "defmutation: save-youtube-playlist-to-database-given-playlist-id: "
+           (with-out-str (pp/pprint rows)))
+  {:from-youtube-playlist/id 333
+   :returned-url "xxxyyyzzz"})
+
 
 
 
@@ -116,4 +118,5 @@
 ;        :bill-run/logs (vec logs)})))
 
 
-(def resolvers [fetch-vimeo-entry fetch-from-youtube-playlists])
+(def resolvers [fetch-vimeo-entry fetch-from-youtube-playlists
+                save-youtube-playlist-to-database-given-playlist-id])

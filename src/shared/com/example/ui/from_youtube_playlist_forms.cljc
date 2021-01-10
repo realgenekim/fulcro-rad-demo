@@ -20,34 +20,34 @@
     [clojure.pprint :as pp]))
 ;
 (report/defsc-report FromYouTube-PlaylistReport [this props]
-  {ro/title               "YouTube Report By Playlist"
-   ro/source-attribute    :from-youtube-playlist/all-playlists
+  {ro/title            "YouTube Report By Playlist"
+   ro/source-attribute :from-youtube-playlist/all-playlists
    ;ro/source-attribute    :youtube-video/all-videos
-   ro/row-pk              yt-playlist/id
-   ro/columns             [;youtube/id
-                           yt-playlist/published-at
-                           yt-playlist/title
-                           yt-playlist/item-count
-                           yt-playlist/description]
+   ro/row-pk           yt-playlist/id
+   ro/columns          [;youtube/id
+                        yt-playlist/published-at
+                        yt-playlist/title
+                        yt-playlist/item-count
+                        yt-playlist/description]
 
    ; youtube/position youtube/playlist-id youtube/video-id
    ;                           youtube/url
 
 
-   ro/controls {; input: query-parameter: :youtube-playlist/id
-                :youtube-playlist/id {:type   :string
-                                      :local? true
-                                      :label  "Playlist ID"}
-                ::upload-to-database {:type   :button
-                                      :local? true
-                                      :label  "Save to Database"
-                                      :action (fn [this]
-                                                (println "save-to-database: " this))}}
-                                                ;(comp/transact!
-                                                ;  this
-                                                ;  [(mymutations/save-youtube-playlist-to-database
-                                                ;     rows)]))}}
-                                                    ;(select-keys rows [:youtube-video/id]))]))}}
+   ro/controls         {; input: query-parameter: :youtube-playlist/id
+                        :youtube-playlist/id {:type   :string
+                                              :local? true
+                                              :label  "Playlist ID"}
+                        ::upload-to-database {:type   :button
+                                              :local? true
+                                              :label  "Save to Database"
+                                              :action (fn [this]
+                                                        (println "button: save-to-database: " this)
+                                                        (comp/transact!
+                                                          this
+                                                          [(mymutations/save-youtube-playlist-to-database
+                                                             {})]))}}
+   ;(select-keys rows [:youtube-video/id]))]))}}
 
    ro/row-actions      [{:label  "Go to Playlist"
                          :action (fn [this row]
@@ -60,7 +60,11 @@
                                                      {:from-youtube-playlist/id (:from-youtube-playlist/id row)}))}
                         {:label  "Save Playlist to Database"
                          :action (fn [report-instance row]
-                                   (println "from youtube-row-actions: " row))}]
+                                   (println "from youtube-row-actions: " row)
+                                   (comp/transact!
+                                     report-instance
+                                     [(mymutations/save-youtube-playlist-to-database-given-playlist-id
+                                        {:from-youtube-playlist/id (:from-youtube-playlist/id row)})]))}]
    ; [this form-class entity-id]
    ;(form/edit! report-instance YouTubePlaylistForm
    ;            (:youtube-playlist/id row)))}]
@@ -81,8 +85,8 @@
    ;                                          (control/set-parameter! this ::category label)
    ;                                          (report/filter-rows! this))}
 
-   ro/run-on-mount?       true
-   ro/route               "from-youtube-report-by-playlist"})
+   ro/run-on-mount?    true
+   ro/route            "from-youtube-report-by-playlist"})
 ;(dom/div
 ;  (dom/pre (with-out-str (pp/pprint props)))))
 

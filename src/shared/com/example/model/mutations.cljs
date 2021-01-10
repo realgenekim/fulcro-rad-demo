@@ -1,7 +1,8 @@
 (ns com.example.model.mutations
   (:require
     [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
-    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]))
+    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+    [clojure.pprint :as pp]))
 
 
 ; POST to Vimeo (send server the Session entry)
@@ -31,51 +32,64 @@
 
 (defsc SaveYouTubePlaylistComponent
   [_ _]
-  {:query [:youtube-playlist/id :returned-url]
-   :ident :youtube-playlist/id})
+  {:query [:from-youtube-playlist/id :returned-url]
+   :ident :from-youtube-playlist/id})
+
+;(myparse ['({:youtube-video/by-playlist [:youtube-video/id :youtube-video/title]}
+;            {:youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"})])
 
 (defmutation save-youtube-playlist-to-database
-  [videos]
+  [params]
   (action [{:keys [app state]}]
-          (println "mutation: save-youtube-playlist-to-database: " videos))
+          (let [rows ;(->> state
+                      ;    deref
+                       ;   :from-youtube-playlist/id
+                     (->> state
+                          (deref)
+                          (:from-youtube-playlist/id)
+                          ;(take 3 $)
+                          ; get rid of
+                          ; {nil #:com.fulcrologic.rad.pathom{:errors {:message "Mutation not found",
+                          ;  ;                                           :data {:mutation com.example.model.mutations/save-youtube-playlist-to-database}}},
+                          (rest)
+                          (map second))]
+            (println "mutation: save-youtube-playlist-to-database: \n"
+                     (with-out-str (pp/pprint rows)))
+            (println (map :from-youtube-playlist/title rows))))
   ;(remote [env] true) ; see client/app definitioons for remotes
-  (remote [env] (m/returning env VimeoComponent)) ; see client/app definitioons for remotes
+  (remote [env] (m/returning env SaveYouTubePlaylistComponent)) ; see client/app definitioons for remotes
+  #_ (my-custom-remote [env] (do-whatever)))
+
+(defmutation save-youtube-playlist-to-database-given-playlist-id
+  [params]
+  (action [{:keys [app state]}]
+          (let [rows ;(->> state
+                ;    deref
+                ;   :from-youtube-playlist/id
+                (->> state
+                     (deref)
+                     (:from-youtube-playlist/id)
+                     ;(take 3 $)
+                     ; get rid of
+                     ; {nil #:com.fulcrologic.rad.pathom{:errors {:message "Mutation not found",
+                     ;  ;                                           :data {:mutation com.example.model.mutations/save-youtube-playlist-to-database}}},
+                     (rest)
+                     (map second))]
+               (println "save-youtube-playlist-to-database-given-playlist-id: params: " params)))
+            ;(println "mutation: save-youtube-playlist-to-database-given-playlist-id: \n"
+            ;         (with-out-str (pp/pprint params)))
+            ;(println (map :from-youtube-playlist/title rows))))
+  ;(remote [env] true) ; see client/app definitioons for remotes
+  (remote [env] (m/returning env SaveYouTubePlaylistComponent)) ; see client/app definitioons for remotes
   #_ (my-custom-remote [env] (do-whatever)))
 
 ;
 ; fetch-from-youtube-playlists
 ;
 
+(comment
 
-;(defsc FromYouTubePlaylist [_ _]
-;  {:query [:ui.from-youtube/playlists]
-;   :ident :ui.from-youtube/playlists})
-
-; (defsc SessionListItem [this {:session/keys [uuid speakers venue] :as props}]
-;  {:query [:session/uuid :session/speakers :session/venue]
-;   :ident :session/uuid}
-;
-; (comp/get-query SessionListItem)
-; => [:session/uuid :session/speakers :session/venue]
-
-; (defsc SessionList2 [this {:session-list/keys [sessions]}]
-;  {:query         [{:session-list/sessions (comp/get-query SessionListItem)}]
-;   :ident         (fn [] [:component/id :session-list])
-;   :initial-state {:session-list/sessions []}}
-
-; (defsc SessionListItem [this {:session/keys [uuid speakers venue] :as props}]
-;  {:query [:session/uuid :session/speakers :session/venue]
-;   :ident :session/uuid}
-
-;(pc/defmutation fetch-from-youtube-playlists
-;                [env _]
-;                {::pc/output [{:ui.from-youtube/playlists [:youtube-playlist/id]}]}
-;                (println "fetch-from-youtube-playlists: ")
-;                {:ui.from-youtube/playlists
-;                 [{:id "xyz"
-;                   :title "abc"}
-;                  {:id "xxx"
-;                   :title "def"}]})
+  ,)
 
 (defsc YouTubePlaylistItem [this {:youtube-playlist/keys [id title] :as props}]
   {:query [:youtube-playlist/id
