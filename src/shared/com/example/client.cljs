@@ -115,6 +115,18 @@
        (rest)
        (map second))
 
+  ; :com.fulcrologic.rad.report/id :com.example.ui.from-youtube-playlist-forms/FromYouTube-PlaylistReport
+
+  (->> app
+       (:com.fulcrologic.fulcro.application/state-atom)
+       (deref)
+       :com.fulcrologic.rad.report/id
+       :com.example.ui.from-youtube-playlist-forms/FromYouTube-PlaylistReport
+       :ui/current-rows)
+       ;(take 3 $)
+       ;(rest)
+       ;(map second))
+
 
   ,)
 
