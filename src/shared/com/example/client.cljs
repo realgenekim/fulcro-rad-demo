@@ -80,13 +80,12 @@
   ; :authenticator)
   (:component/id @(:com.fulcrologic.fulcro.application/state-atom app))
   (:com.fulcrologic.rad.report/id @(:com.fulcrologic.fulcro.application/state-atom app))
-  (->> app
-       :com.fulcrologic.fulcro.application/state-atom
-       deref
-       :com.fulcrologic.rad.report/id
-       :com.example.ui.from-youtube-playlist-forms/FromYouTube-PlaylistReport)
+  (->> app)
 
-  (->> app
+
+
+  (->>
+
        :com.fulcrologic.fulcro.application/state-atom
        deref
        :from-youtube-playlist/id)
