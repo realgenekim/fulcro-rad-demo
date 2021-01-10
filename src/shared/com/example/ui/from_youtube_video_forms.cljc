@@ -21,22 +21,59 @@
     [com.example.model.from-youtube-video :as yt-video]
     [com.example.model.mutations :as mymutations]
     [com.fulcrologic.rad.routing :as rroute]
-    [clojure.pprint :as pp]))
+    [clojure.pprint :as pp]
+    [com.fulcrologic.fulcro.application :as app]))
 
 ; this is an example of generating a report, with a query
 ;   input: :conference/youtube-playlists2
 ;   query parameter:
 
+(defsc MyRow
+  [this props]
+  {:query [:foo]
+   :ident :foo})
+
+(comment
+    (comp/get-query FromYouTubeVideoReport)
+    (comp/get-query FromYouTubeVideoReport-Row)
+    (app/current-state com.example.client/app)
+    (com.fulcrologic.fulcro.algorithms.denormalize/db->tree [{:authenticator ['*]}]
+                                                            (app/current-state com.example.client/app)
+                                                            (app/current-state com.example.client/app))
+
+    (let [current-state (app/current-state com.example.client/app)
+          path (comp/get-ident FromYouTubeVideoReport {})
+          ;path2 (conj path :ui/loaded-data)
+          ; this is exactly what shows up in Fulcro Inspect: at the path ^^
+          starting-entity (get-in current-state path)
+          query [{:ui/loaded-data (comp/get-query FromYouTubeVideoReport-Row)}]]
+
+      (com.fulcrologic.fulcro.algorithms.denormalize/db->tree query starting-entity current-state)
+
+      (comp/transact!))
+      ; or store sessions in namespace that isn't being reloades)
+
+    (->> com.example.client/app
+         :com.fulcrologic.fulcro.application/state-atom
+         deref)
+
+         ;:com.fulcrologic.rad.report/id
+         ;:com.example.ui.from-youtube-playlist-forms/FromYouTube-PlaylistReport)
+    ,)
+
 (report/defsc-report FromYouTubeVideoReport [this props]
   {ro/title            "From YouTube Videos Report 2"
    ro/source-attribute :from-youtube-video/from-playlist
    ro/row-pk           yt-video/id
+   ;ro/BodyItem MyRow
    ro/columns          [yt-video/title
                         yt-video/url]
 
    ro/controls {:from-youtube-playlist/id {:type   :string
                                            :local? true
                                            :label  "Playlist"}}
+
+   ;
 
 
 

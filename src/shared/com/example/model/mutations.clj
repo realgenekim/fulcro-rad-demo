@@ -43,6 +43,8 @@
                      ; make sure everything is namespaced: :youtube-playlist/id, ...
                      (map #(utils/map->nsmap % "youtube-playlist")))]
      (println retval)
+     ;; TASK: remove ui element from namespace
+     ; :com.youtube/playlists
      {:ui.from-youtube/playlists retval}))
    ;{:ui.from-youtube/playlists
    ; [{:youtube-playlist/id "xyz"
