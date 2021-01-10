@@ -12,6 +12,7 @@
     [com.example.ui.session-forms :refer [SessionForm SessionReport CustomTopReport ui-session-list SessionList
                                           SessionListManual]]
     [com.example.ui.youtube-video-forms :refer [YouTubeReportAll YouTubeForm YouTubeReportByPlaylist]]
+    [com.example.ui.youtube-playlist-forms :refer [YouTubeVideoReport]]
     [com.example.ui.video-tag-forms :refer [VideoTagReport VideoTagForm]]
     [com.example.ui.conference-form :refer [ConferenceReport ConferencePlaylists]]
     [com.example.ui.from-youtube-playlist-forms :refer [FromYouTube-PlaylistReport]]
@@ -48,11 +49,11 @@
                          sales-report/RealSalesReport
                          SessionReport SessionForm  SessionList SessionListManual
                          YouTubeReportAll YouTubeForm YouTubeReportByPlaylist
-                         FromYouTubeVideoReport
                          VideoTagReport VideoTagForm CustomTopReport
                          ConferenceReport ConferencePlaylists
                          FromYouTube-PlaylistReport
                          FromYouTubeVideoReport
+                         YouTubeVideoReport
                          dashboard/Dashboard]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)
