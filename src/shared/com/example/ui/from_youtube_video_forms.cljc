@@ -43,14 +43,36 @@
 
     (let [current-state (app/current-state com.example.client/app)
           path (comp/get-ident FromYouTubeVideoReport {})
-          ;path2 (conj path :ui/loaded-data)
-          ; this is exactly what shows up in Fulcro Inspect: at the path ^^
+          ; => [:com.fulcrologic.rad.report/id :com.example.ui.from-youtube-video-forms/FromYouTubeVideoReport]
           starting-entity (get-in current-state path)
-          query [{:ui/loaded-data (comp/get-query FromYouTubeVideoReport-Row)}]]
+          ; this is exactly what shows up in Fulcro Inspect: at the path ^^
+          ; => #:ui{:controls [],
+          ;     :current-rows [[:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"]
+          ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"]
+          ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4wMTcyMDhGQUE4NTIzM0Y5"]
+          ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4wOTA3OTZBNzVEMTUzOTMy"]],
+          ;     :busy? false,
+          ;     :parameters {:com.fulcrologic.rad.report/sort {:ascending? true},
+          ;                  :from-youtube-playlist/id "PLvk9Yh_MWYuysEkC8lQCm_9vpEFh2eCrj"},
+          ;     :page-count 1,
+          query [{:ui/loaded-data (comp/get-query FromYouTubeVideoReport-Row)}]
+          ; reminder: (comp/get-query FromYouTubeVideoReport-Row) returns
+          ; => [:from-youtube-video/title :from-youtube-video/url :from-youtube-video/id]
 
-      (com.fulcrologic.fulcro.algorithms.denormalize/db->tree query starting-entity current-state)
+          retval (com.fulcrologic.fulcro.algorithms.denormalize/db->tree query starting-entity current-state)]
+          ; => :ui{:loaded-data [#:from-youtube-video{:title "Bryan Finster on Andy Patton's Antipatterns",
+          ;                                        :url "https://www.youtube.com/watch?v=IZt8PqGWmCY",
+          ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"}
+          ;                   #:from-youtube-video{:title "Dominica DeGrandis on Andy Patton's Antipatterns",
+          ;                                        :url "https://www.youtube.com/watch?v=qIatlcomXwQ",
+          ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"}
+      retval)
 
-      (comp/transact!))
+    (get-in (app/current-state com.example.client/app)
+            (comp/get-ident FromYouTubeVideoReport {}))
+
+
+      ;(comp/transact!))
       ; or store sessions in namespace that isn't being reloades)
 
     (->> com.example.client/app
