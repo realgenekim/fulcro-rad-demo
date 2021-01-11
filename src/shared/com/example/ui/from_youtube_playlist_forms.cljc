@@ -37,16 +37,16 @@
    ro/controls         {; input: query-parameter: :youtube-playlist/id
                         :youtube-playlist/id {:type   :string
                                               :local? true
-                                              :label  "Playlist ID"}
-                        ::upload-to-database {:type   :button
-                                              :local? true
-                                              :label  "Save to Database"
-                                              :action (fn [this]
-                                                        (println "button: save-to-database: " this)
-                                                        (comp/transact!
-                                                          this
-                                                          [(mymutations/save-youtube-playlist-to-database
-                                                             {})]))}}
+                                              :label  "Playlist ID"}}
+                        ;::upload-to-database {:type   :button
+                        ;                      :local? true
+                        ;                      :label  "Save to Database"
+                        ;                      :action (fn [this]
+                        ;                                (println "button: save-to-database: " this)
+                        ;                                (comp/transact!
+                        ;                                  this
+                        ;                                  [(mymutations/save-youtube-playlist-to-database
+                        ;                                     {})]))}}
    ;(select-keys rows [:youtube-video/id]))]))}}
 
    ro/row-actions      [{:label  "Go to Playlist"
@@ -57,14 +57,14 @@
                                                      ; {:youtube-video/by-playlist [:youtube-video/id]}
                                                      ;:from-youtube-playlist/id
                                                      ;:from-youtube-video/from-playlist
-                                                     {:from-youtube-playlist/id (:from-youtube-playlist/id row)}))}
-                        {:label  "Save Playlist to Database"
-                         :action (fn [report-instance row]
-                                   (println "from youtube-row-actions: " row)
-                                   (comp/transact!
-                                     report-instance
-                                     [(mymutations/save-youtube-playlist-to-database-given-playlist-id
-                                        {:from-youtube-playlist/id (:from-youtube-playlist/id row)})]))}]
+                                                     {:from-youtube-playlist/id (:from-youtube-playlist/id row)}))}]
+                        ;{:label  "Save Playlist to Database"
+                        ; :action (fn [report-instance row]
+                        ;           (println "from youtube-row-actions: " row)
+                        ;           (comp/transact!
+                        ;             report-instance
+                        ;             [(mymutations/save-youtube-playlist-to-database-given-playlist-id
+                        ;                {:from-youtube-playlist/id (:from-youtube-playlist/id row)})]))}]
    ; [this form-class entity-id]
    ;(form/edit! report-instance YouTubePlaylistForm
    ;            (:youtube-playlist/id row)))}]

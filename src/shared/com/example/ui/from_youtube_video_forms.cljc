@@ -1,7 +1,6 @@
 (ns com.example.ui.from-youtube-video-forms
   (:require
-    ;[com.example.model.item :as item]
-    [com.example.model.session :as session]
+    [clojure.pprint :as pp]
     [com.fulcrologic.rad.picker-options :as picker-options]
     #?(:cljs [com.fulcrologic.semantic-ui.collections.form.ui-form-text-area :refer [ui-form-text-area]])
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
@@ -13,16 +12,20 @@
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
     [taoensso.timbre :as log]
+    [com.fulcrologic.fulcro.application :as app]
+    [com.fulcrologic.rad.routing :as rroute]
+
+    ;[com.example.model.item :as item]
+    [com.example.model.session :as session]
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.conference :as conference]
     [com.example.ui.youtube-video-forms :as youtube-forms]
     [com.example.model.youtube-playlist :as youtube-playlist]
     [com.example.model.from-youtube-video :as yt-video]
-    [com.example.model.mutations :as mymutations]
-    [com.fulcrologic.rad.routing :as rroute]
-    [clojure.pprint :as pp]
-    [com.fulcrologic.fulcro.application :as app]))
+    [com.example.model.mutations :as mymutations]))
+
+
 
 ; this is an example of generating a report, with a query
 ;   input: :conference/youtube-playlists2
@@ -41,8 +44,8 @@
                                                             (app/current-state com.example.client/app)
                                                             (app/current-state com.example.client/app))
 
-    (let [current-state (app/current-state com.example.client/app)
-          path (comp/get-ident FromYouTubeVideoReport {})
+    (let [current-state   (app/current-state com.example.client/app)
+          path            (comp/get-ident FromYouTubeVideoReport {})
           ; => [:com.fulcrologic.rad.report/id :com.example.ui.from-youtube-video-forms/FromYouTubeVideoReport]
           starting-entity (get-in current-state path)
           ; this is exactly what shows up in Fulcro Inspect: at the path ^^
@@ -55,17 +58,17 @@
           ;     :parameters {:com.fulcrologic.rad.report/sort {:ascending? true},
           ;                  :from-youtube-playlist/id "PLvk9Yh_MWYuysEkC8lQCm_9vpEFh2eCrj"},
           ;     :page-count 1,
-          query [{:ui/loaded-data (comp/get-query FromYouTubeVideoReport-Row)}]
+          query           [{:ui/loaded-data (comp/get-query FromYouTubeVideoReport-Row)}]
           ; reminder: (comp/get-query FromYouTubeVideoReport-Row) returns
           ; => [:from-youtube-video/title :from-youtube-video/url :from-youtube-video/id]
 
-          retval (com.fulcrologic.fulcro.algorithms.denormalize/db->tree query starting-entity current-state)]
-          ; => :ui{:loaded-data [#:from-youtube-video{:title "Bryan Finster on Andy Patton's Antipatterns",
-          ;                                        :url "https://www.youtube.com/watch?v=IZt8PqGWmCY",
-          ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"}
-          ;                   #:from-youtube-video{:title "Dominica DeGrandis on Andy Patton's Antipatterns",
-          ;                                        :url "https://www.youtube.com/watch?v=qIatlcomXwQ",
-          ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"}
+          retval          (com.fulcrologic.fulcro.algorithms.denormalize/db->tree query starting-entity current-state)]
+      ; => :ui{:loaded-data [#:from-youtube-video{:title "Bryan Finster on Andy Patton's Antipatterns",
+      ;                                        :url "https://www.youtube.com/watch?v=IZt8PqGWmCY",
+      ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"}
+      ;                   #:from-youtube-video{:title "Dominica DeGrandis on Andy Patton's Antipatterns",
+      ;                                        :url "https://www.youtube.com/watch?v=qIatlcomXwQ",
+      ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"}
       retval)
 
     (get-in (app/current-state com.example.client/app)
@@ -83,8 +86,54 @@
          ;:com.example.ui.from-youtube-playlist-forms/FromYouTube-PlaylistReport)
     ,)
 
+(declare FromYouTubeVideoReport FromYouTubeVideoReport-Row)
+
+(defn- get-all-report-rows
+  " gets report rows from app state "
+  []
+  #?(:cljs
+      (let [current-state   (app/current-state com.example.client/app)
+            path            (comp/get-ident FromYouTubeVideoReport {})
+            ; => [:com.fulcrologic.rad.report/id :com.example.ui.from-youtube-video-forms/FromYouTubeVideoReport]
+            starting-entity (get-in current-state path)
+            ; this is exactly what shows up in Fulcro Inspect: at the path ^^
+            ; => #:ui{:controls [],
+            ;     :current-rows [[:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"]
+            ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"]
+            ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4wMTcyMDhGQUE4NTIzM0Y5"]
+            ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4wOTA3OTZBNzVEMTUzOTMy"]],
+            ;     :busy? false,
+            ;     :parameters {:com.fulcrologic.rad.report/sort {:ascending? true},
+            ;                  :from-youtube-playlist/id "PLvk9Yh_MWYuysEkC8lQCm_9vpEFh2eCrj"},
+            ;     :page-count 1,
+            query           [{:ui/loaded-data (comp/get-query FromYouTubeVideoReport-Row)}]
+            ; reminder: (comp/get-query FromYouTubeVideoReport-Row) returns
+            ; => [:from-youtube-video/title :from-youtube-video/url :from-youtube-video/id]
+
+            ;_ (println current-state)
+            ;_ (println path)
+            ;_ (println starting-entity)
+
+            retval          (com.fulcrologic.fulcro.algorithms.denormalize/db->tree query starting-entity current-state)]
+        ; => :ui{:loaded-data [#:from-youtube-video{:title "Bryan Finster on Andy Patton's Antipatterns",
+        ;                                        :url "https://www.youtube.com/watch?v=IZt8PqGWmCY",
+        ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"}
+        ;                   #:from-youtube-video{:title "Dominica DeGrandis on Andy Patton's Antipatterns",
+        ;                                        :url "https://www.youtube.com/watch?v=qIatlcomXwQ",
+        ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"}
+        (-> retval
+            :ui/loaded-data))))
+
+(comment
+  (def rows (get-all-report-rows))
+  (comp/transact!
+    (app/current-state com.example.client/app)
+    [(mymutations/save-youtube-playlist-to-database
+       {:from-youtube/videos (get-all-report-rows)})])
+  ,)
+
 (report/defsc-report FromYouTubeVideoReport [this props]
-  {ro/title            "From YouTube Videos Report 2"
+  {ro/title            "From YouTube: Videos"
    ro/source-attribute :from-youtube-video/from-playlist
    ro/row-pk           yt-video/id
    ;ro/BodyItem MyRow
@@ -93,7 +142,17 @@
 
    ro/controls {:from-youtube-playlist/id {:type   :string
                                            :local? true
-                                           :label  "Playlist"}}
+                                           :label  "Playlist"}
+                ::upload-to-database {:type   :button
+                                      :local? true
+                                      :label  "Save to Database"
+                                      :action (fn [this]
+                                                (let [rows (get-all-report-rows)]
+                                                  (println "button: save-to-database: " rows)
+                                                  (comp/transact!
+                                                    this
+                                                    [(mymutations/save-youtube-playlist-to-database
+                                                       {:from-youtube/videos rows})])))}}
 
    ;
 

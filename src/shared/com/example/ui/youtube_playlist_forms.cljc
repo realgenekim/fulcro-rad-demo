@@ -112,9 +112,12 @@
 
    ;ro/form-links       {youtube-playlist/title YouTubePlaylistForm}
 
-   ;ro/links               {:category/label (fn [this {:category/keys [label]}]
-   ;                                          (control/set-parameter! this ::category label)
-   ;                                          (report/filter-rows! this))}
+   ro/links               {:youtube-playlist/id
+                           (fn [this row]
+                             (rroute/route-to! this
+                                               youtube-forms/YouTubeReportByPlaylist
+                                               ; {:youtube-video/by-playlist [:youtube-video/id]}
+                                               {:youtube-playlist/id (:youtube-playlist/id row)}))}
 
    ro/run-on-mount?    true
    ro/route            "youtube-playlist-report2"})

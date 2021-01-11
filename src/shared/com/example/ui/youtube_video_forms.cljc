@@ -12,6 +12,7 @@
     [com.fulcrologic.rad.form-options :as fo]
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
+    [com.fulcrologic.fulcro.application :as app]
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
     [com.example.model.youtube-video :as youtube]
@@ -143,6 +144,11 @@
                                   :youtube-video/video-id    "az3BOHoiiS0",
                                   :youtube-video/position    1}]}})
 
+(comment
+  (comp/transact!
+    (app/current-state com.example.client/app)
+    [(mymutations/fetch-vimeo-entry {:youtube-video/id "abc"})]))
+
 (report/defsc-report YouTubeReportByPlaylist [this props]
   {ro/title               "YouTube Report By Playlist"
    ro/source-attribute    :youtube-video/by-playlist
@@ -160,7 +166,7 @@
                                       :local? true
                                       :label  "Playlist ID"}}
 
-   ro/row-actions      [{:label  "Download Video"
+   ro/row-actions      [{:label  "Call Vimeo Mutation"
                          :action (fn [report-instance row]
                                    (println "from youtube-row-actions: " row)
                                    (comp/transact!

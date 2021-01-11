@@ -13,7 +13,7 @@
 (pc/defmutation fetch-vimeo-entry
   [env row]
   {::pc/output [:youtube-playlist/id :returned-url]}
-  (println "defmutation: " row)
+  (println "defmutation: fetch-vimeo-entry: " row)
   {:youtube-video/id 111
    :returned-url "abcdefdef"})
 
@@ -67,22 +67,32 @@
 ;
 ; save-youtube-playlist-to-database
 ;
+; com.example.model.mutations/save-youtube-playlist-to-database
+
+;(pc/defmutation save-youtube-playlist-to-database
+;  [env rows]
+;  {::pc/output [:youtube-playlist/id :returned-url]}
+;  (println "defmutation: save-youtube-playlist-to-database: "
+;           (with-out-str (pp/pprint rows)))
+;  {:youtube-video/id 111
+;   :returned-url "abcdefdef"})
+
 
 (pc/defmutation save-youtube-playlist-to-database
-  [env rows]
-  {::pc/output [:youtube-playlist/id :returned-url]}
+  [env row]
+  {::pc/output [:from-youtube/videos :returned-url]}
   (println "defmutation: save-youtube-playlist-to-database: "
-           (with-out-str (pp/pprint rows)))
+           (with-out-str (pp/pprint row)))
   {:youtube-video/id 111
    :returned-url "abcdefdef"})
 
-(pc/defmutation save-youtube-playlist-to-database-given-playlist-id
-  [env rows]
-  {::pc/output [:youtube-playlist/id :returned-url]}
-  (println "defmutation: save-youtube-playlist-to-database-given-playlist-id: "
-           (with-out-str (pp/pprint rows)))
-  {:from-youtube-playlist/id 333
-   :returned-url "xxxyyyzzz"})
+;(pc/defmutation save-youtube-playlist-to-database-given-playlist-id
+;  [env rows]
+;  {::pc/output [:youtube-playlist/id :returned-url]}
+;  (println "defmutation: save-youtube-playlist-to-database-given-playlist-id: "
+;           (with-out-str (pp/pprint rows)))
+;  {:from-youtube-playlist/id 333
+;   :returned-url "xxxyyyzzz"})
 
 
 
@@ -121,4 +131,6 @@
 
 
 (def resolvers [fetch-vimeo-entry fetch-from-youtube-playlists
-                save-youtube-playlist-to-database-given-playlist-id])
+                save-youtube-playlist-to-database])
+
+; save-youtube-playlist-to-database-given-playlist-id

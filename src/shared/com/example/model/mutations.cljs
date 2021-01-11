@@ -23,7 +23,9 @@
   (action [{:keys [app state]}]
           (println "mutation: fetch-vimeo-entry: " row))
   ;(remote [env] true) ; see client/app definitioons for remotes
-  (remote [env] (m/returning env VimeoComponent)) ; see client/app definitioons for remotes
+  (remote [env] (m/returning env VimeoComponent))
+          ;(let [retval (m/returning env VimeoComponent)]
+          ;  (println "remote: retval: " retval)))              ; see client/app definitioons for remotes
   #_ (my-custom-remote [env] (do-whatever)))
 
 ;
@@ -32,8 +34,8 @@
 
 (defsc SaveYouTubePlaylistComponent
   [_ _]
-  {:query [:from-youtube-playlist/id :returned-url]
-   :ident :from-youtube-playlist/id})
+  {:query [:from-youtube/videos :returned-url]
+   :ident :from-youtube/videos})
 
 ;(myparse ['({:youtube-video/by-playlist [:youtube-video/id :youtube-video/title]}
 ;            {:youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"})])
@@ -41,46 +43,13 @@
 (defmutation save-youtube-playlist-to-database
   [params]
   (action [{:keys [app state]}]
-          (let [rows ;(->> state
-                      ;    deref
-                       ;   :from-youtube-playlist/id
-                     (->> state
-                          (deref)
-                          (:from-youtube-playlist/id)
-                          ;(take 3 $)
-                          ; get rid of
-                          ; {nil #:com.fulcrologic.rad.pathom{:errors {:message "Mutation not found",
-                          ;  ;                                           :data {:mutation com.example.model.mutations/save-youtube-playlist-to-database}}},
-                          (rest)
-                          (map second))]
-            (println "mutation: save-youtube-playlist-to-database: \n"
-                     (with-out-str (pp/pprint rows)))
-            (println (map :from-youtube-playlist/title rows))))
-  ;(remote [env] true) ; see client/app definitioons for remotes
-  (remote [env] (m/returning env SaveYouTubePlaylistComponent)) ; see client/app definitioons for remotes
-  #_ (my-custom-remote [env] (do-whatever)))
-
-(defmutation save-youtube-playlist-to-database-given-playlist-id
-  [params]
-  (action [{:keys [app state]}]
-          (let [rows ;(->> state
-                ;    deref
-                ;   :from-youtube-playlist/id
-                (->> state
-                     (deref)
-                     (:from-youtube-playlist/id)
-                     ;(take 3 $)
-                     ; get rid of
-                     ; {nil #:com.fulcrologic.rad.pathom{:errors {:message "Mutation not found",
-                     ;  ;                                           :data {:mutation com.example.model.mutations/save-youtube-playlist-to-database}}},
-                     (rest)
-                     (map second))]
-               (println "save-youtube-playlist-to-database-given-playlist-id: params: " params)))
-            ;(println "mutation: save-youtube-playlist-to-database-given-playlist-id: \n"
-            ;         (with-out-str (pp/pprint params)))
-            ;(println (map :from-youtube-playlist/title rows))))
-  ;(remote [env] true) ; see client/app definitioons for remotes
-  (remote [env] (m/returning env SaveYouTubePlaylistComponent)) ; see client/app definitioons for remotes
+          (println "mutation: save-youtube-playlist-to-database: params:\n"
+                   (with-out-str (pp/pprint params))))
+  ;(remote [env] true) ; see client/app definitions for remotes
+  (remote [env] (m/returning env SaveYouTubePlaylistComponent))
+          ;(let [retval (m/returning env SaveYouTubePlaylistComponent)]
+          ;  (println "mutation: retval: " retval)
+          ;  retval)) ; see client/app definitioons for remotes
   #_ (my-custom-remote [env] (do-whatever)))
 
 ;
