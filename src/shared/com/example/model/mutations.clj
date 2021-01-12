@@ -3,7 +3,8 @@
     [com.wsscode.pathom.connect :as pc]
     [com.example.utils :as utils]
     [clojure.pprint :as pp]
-    [youtube.main :as yt]))
+    [youtube.main :as yt]
+    [datomic.datomic :as mydatomic]))
 
 
 ;
@@ -42,7 +43,7 @@
                      ;(map #(select-keys % [:id :title :published-a :itemCount]))
                      ; make sure everything is namespaced: :youtube-playlist/id, ...
                      (map #(utils/map->nsmap % "youtube-playlist")))]
-     (println retval)
+     ;(println retval)
      ;; TASK: remove ui element from namespace
      ; :com.youtube/playlists
      {:ui.from-youtube/playlists retval}))
@@ -77,14 +78,32 @@
 ;  {:youtube-video/id 111
 ;   :returned-url "abcdefdef"})
 
+(comment
+  (def x {:from-youtube-playlist/title "Keynotes - DevOps Enterprise Summit: Las Vegas 2019",
+          :from-youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9",
+          :from-youtube-playlist/description ""})
+
+  (utils/nsmap->map x)
+
+  (mydatomic/tx!
+    (mydatomic/create-youtube-playlist-no-conf (utils/nsmap->map x)))
+  ,)
+
 
 (pc/defmutation save-youtube-playlist-to-database
   [env row]
   {::pc/output [:from-youtube/videos :returned-url]}
-  (println "defmutation: save-youtube-playlist-to-database: "
-           (with-out-str (pp/pprint row)))
-  {:youtube-video/id 111
-   :returned-url "abcdefdef"})
+  ; TASK: maybe return the new list of playlists, and return it?
+  (do
+    (println "defmutation: save-youtube-playlist-to-database: \n"
+             (with-out-str (pp/pprint row)))
+    (let [m (utils/nsmap->map row)
+          retval (mydatomic/tx!
+                   (mydatomic/create-youtube-playlist-no-conf m))]
+      (println retval)
+  ;(mydatomic/create-youtube-playlist)
+      {:youtube-video/id 111
+       :returned-url retval})))
 
 ;(pc/defmutation save-youtube-playlist-to-database-given-playlist-id
 ;  [env rows]

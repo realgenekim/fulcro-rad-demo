@@ -35,8 +35,41 @@
 ; this is an example of generating a report, with a query
 ;   input: :conference/youtube-playlists2
 
+(report/defsc-report AllYouTubePlaylists [this props]
+  {ro/title            "Database: YouTube Playlists (All)"
+   ro/source-attribute :youtube-playlist/all-playlists
+   ro/row-pk           youtube-playlist/id
+   ro/columns          [youtube-playlist/id
+                        youtube-playlist/title]
+
+   ro/row-actions      [{:label  "Edit Playlist"
+                         :action (fn [report-instance row]
+                                   (println "from youtube-row-actions: " row)
+                                   ; [this form-class entity-id]
+                                   (form/edit! report-instance YouTubePlaylistForm
+                                               (:youtube-playlist/id row)))}
+                        {:label  "Goto Playlist"
+                         :action (fn [this row]
+                                   ; [app-or-component RouteTarget route-params
+                                   (println "Go to Playlist" row)
+                                   ; :youtube-playlist/id
+                                   (rroute/route-to! this
+                                                     youtube-forms/YouTubeReportByPlaylist
+                                                     ; {:youtube-video/by-playlist [:youtube-video/id]}
+                                                     {:youtube-playlist/id (:youtube-playlist/id row)}))}]
+
+   ro/links               {:youtube-playlist/id
+                           (fn [this row]
+                             (rroute/route-to! this
+                                               youtube-forms/YouTubeReportByPlaylist
+                                               ; {:youtube-video/by-playlist [:youtube-video/id]}
+                                               {:youtube-playlist/id (:youtube-playlist/id row)}))}
+
+   ro/run-on-mount?    true
+   ro/route            "youtube-playlist-all"})
+
 (report/defsc-report YouTubeVideoReport [this props]
-  {ro/title            "YouTube Playlist Report 2"
+  {ro/title            "Database: YouTube Playlists (query)"
    ;ro/source-attribute :youtube-playlist/all-playlists
    ro/source-attribute :conference/youtube-playlists2
    ro/row-pk           youtube-playlist/id

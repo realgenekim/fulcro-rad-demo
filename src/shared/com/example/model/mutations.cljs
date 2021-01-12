@@ -34,8 +34,8 @@
 
 (defsc SaveYouTubePlaylistComponent
   [_ _]
-  {:query [:from-youtube/videos :returned-url]
-   :ident :from-youtube/videos})
+  {:query [:from-youtube-playlist/id :returned-url]
+   :ident :from-youtube-playlist/id})
 
 ;(myparse ['({:youtube-video/by-playlist [:youtube-video/id :youtube-video/title]}
 ;            {:youtube-playlist/id "PLvk9Yh_MWYuwXC0iU5EAB1ryI62YpPHR9"})])

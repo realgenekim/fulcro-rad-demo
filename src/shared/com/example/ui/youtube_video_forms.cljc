@@ -55,7 +55,7 @@
 
 
 (report/defsc-report YouTubeReportAll [this props]
-  {ro/title               "All YouTube Report"
+  {ro/title               "Database: All YouTube Videos"
    ro/source-attribute    :youtube-video/all-videos
    ro/row-pk              youtube/id
    ro/columns             [youtube/position youtube/title

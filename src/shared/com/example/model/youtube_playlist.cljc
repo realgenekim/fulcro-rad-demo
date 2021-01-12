@@ -41,7 +41,7 @@
   {ao/target     :youtube-playlist/id
    ao/pc-output  [{:youtube-playlist/all-playlists [:youtube-playlist/id]}]
    ao/pc-resolve (fn [{:keys [query-params] :as env} _]
-                   (println "defattr all-playlists: " env)
+                   (println "defattr all-playlists: " query-params)
                    #?(:clj
                       ;{:youtube-video/all-videos [{:youtube-video/video-id "123" :youtube-video/id "123 "}]}))})
                       {:youtube-playlist/all-playlists (queries/get-all-youtube-playlists env query-params)}))})

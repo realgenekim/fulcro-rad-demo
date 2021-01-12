@@ -5,6 +5,7 @@
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
        :cljs [com.fulcrologic.fulcro.dom :as dom])
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+    [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.rad.control :as control]
     [com.fulcrologic.rad.form :as form]
     [com.fulcrologic.rad.form-options :as fo]
@@ -18,13 +19,60 @@
     [com.fulcrologic.rad.routing :as rroute]
     [com.example.model.mutations :as mymutations]
     [clojure.pprint :as pp]))
-;
+
+(declare FromYouTube-PlaylistReport FromYouTube-PlaylistReport-Row)
+
+(defn- get-all-report-rows
+  " gets report rows from app state "
+  []
+  #?(:cljs
+     (let [current-state   (app/current-state com.example.client/app)
+           path            (comp/get-ident FromYouTube-PlaylistReport {})
+           ; => [:com.fulcrologic.rad.report/id :com.example.ui.from-youtube-video-forms/FromYouTubeVideoReport]
+           starting-entity (get-in current-state path)
+           ; this is exactly what shows up in Fulcro Inspect: at the path ^^
+           ; => #:ui{:controls [],
+           ;     :current-rows [[:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"]
+           ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"]
+           ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4wMTcyMDhGQUE4NTIzM0Y5"]
+           ;                    [:from-youtube-video/id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4wOTA3OTZBNzVEMTUzOTMy"]],
+           ;     :busy? false,
+           ;     :parameters {:com.fulcrologic.rad.report/sort {:ascending? true},
+           ;                  :from-youtube-playlist/id "PLvk9Yh_MWYuysEkC8lQCm_9vpEFh2eCrj"},
+           ;     :page-count 1,
+           query           [{:ui/loaded-data (comp/get-query FromYouTube-PlaylistReport-Row)}]
+           ; reminder: (comp/get-query FromYouTubeVideoReport-Row) returns
+           ; => [:from-youtube-video/title :from-youtube-video/url :from-youtube-video/id]
+
+           ;_ (println current-state)
+           ;_ (println path)
+           ;_ (println starting-entity)
+
+           retval          (com.fulcrologic.fulcro.algorithms.denormalize/db->tree query starting-entity current-state)]
+       ; => :ui{:loaded-data [#:from-youtube-video{:title "Bryan Finster on Andy Patton's Antipatterns",
+       ;                                        :url "https://www.youtube.com/watch?v=IZt8PqGWmCY",
+       ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai41NkI0NEY2RDEwNTU3Q0M2"}
+       ;                   #:from-youtube-video{:title "Dominica DeGrandis on Andy Patton's Antipatterns",
+       ;                                        :url "https://www.youtube.com/watch?v=qIatlcomXwQ",
+       ;                                        :id "UEx2azlZaF9NV1l1eXNFa0M4bFFDbV85dnBFRmgyZUNyai4yODlGNEE0NkRGMEEzMEQy"}
+       (-> retval
+           :ui/loaded-data))))
+
+(comment
+  (def rows (get-all-report-rows))
+  (comp/transact!
+    (app/current-state com.example.client/app)
+    [(mymutations/save-youtube-playlist-to-database
+       {:from-youtube/videos (get-all-report-rows)})])
+  ,)
+
+
 (report/defsc-report FromYouTube-PlaylistReport [this props]
-  {ro/title            "YouTube Report By Playlist"
+  {ro/title            "From YouTube: All Playlists"
    ro/source-attribute :from-youtube-playlist/all-playlists
    ;ro/source-attribute    :youtube-video/all-videos
    ro/row-pk           yt-playlist/id
-   ro/columns          [;youtube/id
+   ro/columns          [yt-playlist/id
                         yt-playlist/published-at
                         yt-playlist/title
                         yt-playlist/item-count
@@ -38,18 +86,34 @@
                         :youtube-playlist/id {:type   :string
                                               :local? true
                                               :label  "Playlist ID"}}
-                        ;::upload-to-database {:type   :button
-                        ;                      :local? true
-                        ;                      :label  "Save to Database"
-                        ;                      :action (fn [this]
-                        ;                                (println "button: save-to-database: " this)
-                        ;                                (comp/transact!
-                        ;                                  this
-                        ;                                  [(mymutations/save-youtube-playlist-to-database
-                        ;                                     {})]))}}
-   ;(select-keys rows [:youtube-video/id]))]))}}
 
-   ro/row-actions      [{:label  "Go to Playlist"
+   ro/links            {:from-youtube-playlist/title
+                        (fn [this row]
+                          (rroute/route-to! this
+                                            yt-video-forms/FromYouTubeVideoReport
+                                            ; {:youtube-video/by-playlist [:youtube-video/id]}
+                                            ;:from-youtube-playlist/id
+                                            ;:from-youtube-video/from-playlist
+                                            {:from-youtube-playlist/id (:from-youtube-playlist/id row)}))}
+
+   ro/row-actions      [{:label  "Create Database Entry"
+                         :action (fn [this row]
+                                   (println "from youtube-row-actions: "
+                                            (with-out-str (pp/pprint row)))
+                                   (comp/transact!
+                                     this
+                                     [(mymutations/save-youtube-playlist-to-database
+                                        (select-keys row
+                                                     [:from-youtube-playlist/title
+                                                      :from-youtube-playlist/id
+                                                      :from-youtube-playlist/description]))]))}
+                        ;(rroute/route-to! this
+                        ;                  yt-video-forms/FromYouTubeVideoReport
+                        ;                  ; {:youtube-video/by-playlist [:youtube-video/id]}
+                        ;                  ;:from-youtube-playlist/id
+                        ;                  ;:from-youtube-video/from-playlist
+                        ;                  {:from-youtube-playlist/id (:from-youtube-playlist/id row)}))}
+                        {:label  "Go to Playlist"
                          :action (fn [this row]
                                    (println "from youtube-row-actions: " row)
                                    (rroute/route-to! this
@@ -58,13 +122,13 @@
                                                      ;:from-youtube-playlist/id
                                                      ;:from-youtube-video/from-playlist
                                                      {:from-youtube-playlist/id (:from-youtube-playlist/id row)}))}]
-                        ;{:label  "Save Playlist to Database"
-                        ; :action (fn [report-instance row]
-                        ;           (println "from youtube-row-actions: " row)
-                        ;           (comp/transact!
-                        ;             report-instance
-                        ;             [(mymutations/save-youtube-playlist-to-database-given-playlist-id
-                        ;                {:from-youtube-playlist/id (:from-youtube-playlist/id row)})]))}]
+   ;{:label  "Save Playlist to Database"
+   ; :action (fn [report-instance row]
+   ;           (println "from youtube-row-actions: " row)
+   ;           (comp/transact!
+   ;             report-instance
+   ;             [(mymutations/save-youtube-playlist-to-database-given-playlist-id
+   ;                {:from-youtube-playlist/id (:from-youtube-playlist/id row)})]))}]
    ; [this form-class entity-id]
    ;(form/edit! report-instance YouTubePlaylistForm
    ;            (:youtube-playlist/id row)))}]
@@ -80,6 +144,8 @@
    ;
 
    ;ro/form-links          {youtube/title YouTubeForm}
+
+
 
    ;ro/links               {:category/label (fn [this {:category/keys [label]}]
    ;                                          (control/set-parameter! this ::category label)
