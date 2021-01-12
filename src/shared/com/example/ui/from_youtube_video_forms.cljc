@@ -138,20 +138,29 @@
    ro/row-pk           yt-video/id
    ;ro/BodyItem MyRow
    ro/columns          [yt-video/title
-                        yt-video/url]
+                        yt-video/published-at
+                        yt-video/description
+                        yt-video/url
+                        yt-video/video-id
+                        yt-video/position
+                        yt-video/playlist-id]
+
+
+   ;[id title published-at description url video-id position playlist-id
+   ; from-playlist]
 
    ro/controls {:from-youtube-playlist/id {:type   :string
                                            :local? true
                                            :label  "Playlist"}
                 ::upload-to-database {:type   :button
                                       :local? true
-                                      :label  "Save to Database"
+                                      :label  "Save All Videos To Database"
                                       :action (fn [this]
                                                 (let [rows (get-all-report-rows)]
                                                   (println "button: save-to-database: " rows)
                                                   (comp/transact!
                                                     this
-                                                    [(mymutations/save-youtube-playlist-to-database
+                                                    [(mymutations/save-all-videos-to-database
                                                        {:from-youtube/videos rows})])))}}
 
    ;

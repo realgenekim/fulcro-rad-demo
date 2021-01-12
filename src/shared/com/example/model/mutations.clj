@@ -93,7 +93,7 @@
 (pc/defmutation save-youtube-playlist-to-database
   [env row]
   {::pc/output [:from-youtube/videos :returned-url]}
-  ; TASK: maybe return the new list of playlists, and return it?
+  ; TASK: maybe return the new playlists, and return it?
   (do
     (println "defmutation: save-youtube-playlist-to-database: \n"
              (with-out-str (pp/pprint row)))
@@ -104,6 +104,82 @@
   ;(mydatomic/create-youtube-playlist)
       {:youtube-video/id 111
        :returned-url retval})))
+
+(comment
+  (def x {:from-youtube/videos
+          [{:from-youtube-video/title
+                                             "DOES19 Las Vegas - Lightning Talks presented by Sonatype (Full)",
+            :from-youtube-video/published-at "2019-11-02T20:21:14Z",
+            :from-youtube-video/description
+                                             "DOES19 Las Vegas\nDOES 2019 US\nDevOps Enterprise Summit\nhttps://events.itrevolution.com/us/",
+            :from-youtube-video/url
+                                             "https://www.youtube.com/watch?v=ISxcNdc0gLg",
+            :from-youtube-video/video-id     "ISxcNdc0gLg",
+            :from-youtube-video/position     0,
+            :from-youtube-video/playlist-id
+                                             "PLvk9Yh_MWYuwRnn_W242n-AdYJtnflEOR",
+            :from-youtube-video/id
+                                             "UEx2azlZaF9NV1l1d1Jubl9XMjQybi1BZFlKdG5mbEVPUi41NkI0NEY2RDEwNTU3Q0M2"}
+           {:from-youtube-video/title        "Lightning Talks - DJ Schleen",
+            :from-youtube-video/published-at "2019-11-02T20:22:41Z",
+            :from-youtube-video/description
+                                             "DOES19 Las Vegas\nDOES 2019 US\nDevOps Enterprise Summit\nhttps://events.itrevolution.com/us/",
+            :from-youtube-video/url
+                                             "https://www.youtube.com/watch?v=LK99X3jLhYI",
+            :from-youtube-video/video-id     "LK99X3jLhYI",
+            :from-youtube-video/position     1,
+            :from-youtube-video/playlist-id
+                                             "PLvk9Yh_MWYuwRnn_W242n-AdYJtnflEOR",
+            :from-youtube-video/id
+                                             "UEx2azlZaF9NV1l1d1Jubl9XMjQybi1BZFlKdG5mbEVPUi4yODlGNEE0NkRGMEEzMEQy"}]})
+
+
+  (def playlist-id (-> x :from-youtube/videos first :from-youtube-video/playlist-id))
+
+  (def txs (->> x
+                :from-youtube/videos
+                (map utils/nsmap->map)
+                (take 10)
+                ;(map #(utils/map->nsmap % "youtube-video"))
+                (map #(mydatomic/create-youtube-video-from-youtube-api % playlist-id))))
+
+  (map mydatomic/tx! txs)
+
+  (mydatomic/tx! #:youtube-video{:id "UEx2azlZaF9NV1l1d1Jubl9XMjQybi1BZFlKdG5mbEVPUi41NkI0NEY2RDEwNTU3Q0M2",
+                                 :playlist-id [:youtube-playlist/id "PLvk9Yh_MWYuwRnn_W242n-AdYJtnflEOR"],
+                                 :position 0,
+                                 :description "DOES19 Las Vegas
+                               DOES 2019 US
+                               DevOps Enterprise Summit
+                               https://events.itrevolution.com/us/",
+                                 :title "DOES19 Las Vegas - Lightning Talks presented by Sonatype (Full)",
+                                 :url "https://www.youtube.com/watch?v=ISxcNdc0gLg",
+                                 :video-id "ISxcNdc0gLg"})
+
+  ,)
+
+(pc/defmutation save-all-videos-to-database
+  [env videos]
+  {::pc/output [:from-youtube/videos :returned-url]}
+  ; TASK: maybe return the new playlists, and return it?
+  (do
+    (println "defmutation: save-all-videos-to-database: \n"
+             (with-out-str (pp/pprint videos)))
+    (let [playlist-id (-> videos :from-youtube/videos first :from-youtube-video/playlist-id)
+          ms          (->> videos
+                           :from-youtube/videos
+                           ;(take 10)
+                           (map utils/nsmap->map)
+                           ;(map #(utils/map->nsmap % "youtube-video"))
+                           (map #(mydatomic/create-youtube-video-from-youtube-api % playlist-id)))
+          _           (println "write maps: \n" (with-out-str (pp/pprint ms)))
+          retval      (doall (map mydatomic/tx! ms))]
+      (println "=== return from tx!")
+      (println retval)
+      ;(println (with-out-str (pp/pprint retval)))
+      ;(mydatomic/create-youtube-playlist)
+      {:youtube-video/id 111
+       :returned-url     "retval"})))
 
 ;(pc/defmutation save-youtube-playlist-to-database-given-playlist-id
 ;  [env rows]
@@ -150,6 +226,7 @@
 
 
 (def resolvers [fetch-vimeo-entry fetch-from-youtube-playlists
-                save-youtube-playlist-to-database])
+                save-youtube-playlist-to-database
+                save-all-videos-to-database])
 
 ; save-youtube-playlist-to-database-given-playlist-id

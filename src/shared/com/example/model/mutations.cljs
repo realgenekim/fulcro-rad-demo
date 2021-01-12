@@ -53,6 +53,27 @@
   #_ (my-custom-remote [env] (do-whatever)))
 
 ;
+; save-all-videos-to-database
+;
+
+(defsc SaveVideosComponent
+  [_ _]
+  {:query [:from-youtube/videos :returned-url]
+   :ident :from-youtube/videos})
+
+(defmutation save-all-videos-to-database
+  [params]
+  (action [{:keys [app state]}]
+          (println "mutation: save-all-videos-to-database: params:\n"
+                   (with-out-str (pp/pprint params))))
+  ;(remote [env] true) ; see client/app definitions for remotes
+  (remote [env] (m/returning env SaveVideosComponent))
+  ;(let [retval (m/returning env SaveYouTubePlaylistComponent)]
+  ;  (println "mutation: retval: " retval)
+  ;  retval)) ; see client/app definitioons for remotes
+  #_ (my-custom-remote [env] (do-whatever)))
+
+;
 ; fetch-from-youtube-playlists
 ;
 
