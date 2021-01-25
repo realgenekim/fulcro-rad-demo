@@ -18,6 +18,7 @@
     [com.example.model.conference :as conference]
     [com.example.model.from-youtube-playlist :as yt-playlist]
     [com.example.model.from-youtube-video :as yt-video]
+    [com.example.model.vimeo-video :as vimeo]
     ;
     [com.fulcrologic.rad.attributes :as attr]))
 
@@ -38,7 +39,8 @@
                            yt-playlist/attributes
                            yt-video/attributes
                            vtag/attributes
-                           session-tag-2/attributes)))
+                           session-tag-2/attributes
+                           vimeo/attributes)))
 
 ; XXX: delete this?  no, we need it
 (def all-video-attributes (vec (concat

@@ -17,6 +17,7 @@
     [com.example.ui.conference-form :refer [ConferenceReport ConferencePlaylists]]
     [com.example.ui.from-youtube-playlist-forms :refer [FromYouTube-PlaylistReport]]
     [com.example.ui.from-youtube-video-forms :refer [FromYouTubeVideoReport]]
+    [com.example.ui.vimeo-video-forms :refer [AllVimeoVideos]]
     [com.example.ui.login-dialog :refer [LoginForm]]
     [com.example.ui.sales-report :as sales-report]
     [com.example.ui.dashboard :as dashboard]
@@ -54,6 +55,7 @@
                          FromYouTube-PlaylistReport
                          FromYouTubeVideoReport
                          AllYouTubePlaylists YouTubeVideoReport
+                         AllVimeoVideos
                          dashboard/Dashboard]}
   ;; Normal Fulcro code to show a loader on slow route change (assuming Semantic UI here, should
   ;; be generalized for RAD so UI-specific code isn't necessary)
@@ -135,8 +137,8 @@
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101")))
                (ui-dropdown {:className "item" :text "From Vimeo"}
                  (ui-dropdown-menu {}
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this FromYouTube-PlaylistReport {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
-                                     "All Showcases"))))))
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AllVimeoVideos {}))}
+                                     "All Videos"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})

@@ -27,10 +27,12 @@
            com.fzakaria/slf4j-timbre              {:mvn/version "0.3.19"} ; hooks slf4j to timbre
 
            ; https://github.com/thheller/shadow-cljs/issues/818
+           ; to fix shadow-cljs build problems
            com.google.guava/guava                 {:mvn/version "30.1-jre"}
 
            gk/datomic                             {:local/root "../google-analytics-video/"}
            gk/youtube                             {:local/root "../google-analytics-video/"}
+           gk/vimeo                               {:local/root "../google-analytics-video/"}
 
            org.clojure/clojurescript              {:mvn/version "1.10.773"}
            org.clojure/clojure                    {:mvn/version "1.10.1"}}

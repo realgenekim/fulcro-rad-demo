@@ -22,6 +22,8 @@
     [com.example.model.item :as item]
     [com.wsscode.pathom.core :as p]
     [com.fulcrologic.rad.type-support.date-time :as dt]
+    [com.wsscode.pathom.connect :as pc]
+
     [com.example.model.session :as session]
     [com.example.model.youtube-video :as youtube]
     [com.example.model.youtube-playlist :as youtube-playlist]
@@ -30,8 +32,9 @@
     [com.example.model.from-youtube-video :as yt-video]
     [com.example.model.video-tag :as video-tag]
     [com.example.model.session-tag-2 :as session-tag-2]
-    [com.example.model.mutations :as mymutations]
-    [com.wsscode.pathom.connect :as pc]))
+    [com.example.model.vimeo-video :as vimeo]
+    [com.example.model.mutations :as mymutations]))
+
 
 (pc/defresolver index-explorer [{::pc/keys [indexes]} _]
                 {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
@@ -84,6 +87,7 @@
      yt-video/resolvers
      video-tag/resolvers
      session-tag-2/resolvers
+     vimeo/resolvers
      invoice/resolvers
      item/resolvers
      sales/resolvers

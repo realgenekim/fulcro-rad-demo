@@ -20,10 +20,12 @@
     [com.fulcrologic.rad.attributes :as attr]
     [com.fulcrologic.rad.type-support.date-time :as dt]
     [com.fulcrologic.rad.database-adapters.datomic-options :as do]
-    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]))
+    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
 
     ; my google-analytics-video library
-    ;[datomic.datomic :as mydatomic]))
+    ;[datomic.datomic :as mydatomic]
+    [vimeo.main :as vimeo]
+    [com.example.utils :as utils]))
 
 (set-refresh-dirs "src/main" "src/datomic" "src/dev" "src/shared")
 
@@ -33,7 +35,8 @@
 (def leadership-uuid #uuid"5d81f6f7-a5a8-4196-aef6-4ba3ae125777")
 
 (comment
-  (mydatomic/get-all-confs))
+  (mydatomic/get-all-confs)
+  (vimeo/fetch-all-videos-parsed!))
 
 (comment
   (clojure.core/require 'development)
@@ -74,6 +77,8 @@
 
   (myparse [:from-youtube-playlist/all-playlists])
   (myparse [:ui.from-youtube/playlists])
+
+  (myparse [:vimeo-video/all-videos])
   ; empty query params
 
   ;

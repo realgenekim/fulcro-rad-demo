@@ -8,7 +8,9 @@
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
        :cljs [com.fulcrologic.fulcro.dom :as dom])
     #?(:clj [com.example.components.database-queries :as queries])
-    [taoensso.timbre :as log]))
+    [taoensso.timbre :as log]
+
+    [com.example.utils :as utils]))
 
 
 ; who cares about the attrs: no one except for you
