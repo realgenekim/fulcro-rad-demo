@@ -114,7 +114,7 @@
                                                  (rroute/route-to! this SessionListManual {}))
                                                  ;(dr/change-route! this SessionListManual))
                                       ,} "Custom Manual")))
-               (ui-dropdown {:className "item" :text "Conferences"}
+               (ui-dropdown {:className "item" :text "From Database"}
                  (ui-dropdown-menu {}
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this ConferenceReport {}))} "Conferences")
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AllYouTubePlaylists {}))} "View All YouTube Playlists")
@@ -122,7 +122,7 @@
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101")
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this ConferencePlaylists {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
                                      "Playlists for Vegas 2019")))
-               (ui-dropdown {:className "item" :text "YouTube Channel"}
+               (ui-dropdown {:className "item" :text "From YouTube"}
                  (ui-dropdown-menu {}
                    (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this FromYouTube-PlaylistReport {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
                                      "All Playlists")
@@ -132,7 +132,11 @@
                                         ;(rroute/route-to! this FromYouTubePlaylists {}))}
                                      "Call Mutation (old)")
 
-                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101"))))))
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this AccountInvoices {:account/id (new-uuid 101)}))} "Invoices for Account 101")))
+               (ui-dropdown {:className "item" :text "From Vimeo"}
+                 (ui-dropdown-menu {}
+                   (ui-dropdown-item {:onClick (fn [] (rroute/route-to! this FromYouTube-PlaylistReport {:conference/uuid #uuid"2e24aa89-48ef-4a4c-879f-f1900ada35ea"}))}
+                                     "All Showcases"))))))
         (div :.right.menu
           (div :.item
             (div :.ui.tiny.loader {:classes [(when busy? "active")]})

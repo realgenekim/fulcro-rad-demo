@@ -8,6 +8,12 @@
                                                              :system "fulcro-rad-demo"}
                                             :datomic/prevent-changes? true}
 
+                                     :main2 {:datomic/schema :production
+                                             :datomic/database "example2"
+                                             :datomic/client {:server-type :dev-local
+                                                              :system "fulcro-rad-demo"}
+                                             :datomic/prevent-changes? true}
+
                                      :video {:datomic/schema :video
                                              :datomic/client  {:server-type   :ion
                                                                :region        "us-west-2"                        ;; e.g. us-east-1
@@ -53,8 +59,8 @@
                                      :log-requests?  true
                                      :log-responses? true}
 
- :taoensso.timbre/logging-config    {;:level        :debug
-                                     :level        :info
+ :taoensso.timbre/logging-config    {:level        :debug
+                                     ;:level        :info
                                      :ns-whitelist []
                                      :ns-blacklist ["com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool"
                                                     "com.mchange.v2.c3p0.stmt.GooGooStatementCache"

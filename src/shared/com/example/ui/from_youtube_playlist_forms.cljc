@@ -1,5 +1,6 @@
 (ns com.example.ui.from-youtube-playlist-forms
   (:require
+    [clojure.pprint :as pp]
     [com.fulcrologic.rad.picker-options :as picker-options]
     #?(:cljs [com.fulcrologic.semantic-ui.collections.form.ui-form-text-area :refer [ui-form-text-area]])
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom]
@@ -11,14 +12,13 @@
     [com.fulcrologic.rad.form-options :as fo]
     [com.fulcrologic.rad.report :as report]
     [com.fulcrologic.rad.report-options :as ro]
+    [com.fulcrologic.rad.routing :as rroute]
     [taoensso.timbre :as log]
     [com.example.model.category :as category]
-    [com.example.model.youtube-video :as youtube]
     [com.example.model.from-youtube-playlist :as yt-playlist]
+    [com.example.model.youtube-video :as youtube]
     [com.example.ui.from-youtube-video-forms :as yt-video-forms]
-    [com.fulcrologic.rad.routing :as rroute]
-    [com.example.model.mutations :as mymutations]
-    [clojure.pprint :as pp]))
+    [com.example.model.mutations :as mymutations]))
 
 (declare FromYouTube-PlaylistReport FromYouTube-PlaylistReport-Row)
 
@@ -26,7 +26,7 @@
   " gets report rows from app state "
   []
   #?(:cljs
-     (let [current-state   (app/current-state com.example.client/app)
+     (let [current-state   (app/current-state 'com.example.client/app)
            path            (comp/get-ident FromYouTube-PlaylistReport {})
            ; => [:com.fulcrologic.rad.report/id :com.example.ui.from-youtube-video-forms/FromYouTubeVideoReport]
            starting-entity (get-in current-state path)
