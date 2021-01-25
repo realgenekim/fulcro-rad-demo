@@ -22,10 +22,21 @@
 
 (defattr description :vimeo-video/description :string
   {ao/identities #{:vimeo-video/uri}
-   ao/style       :multi-line})
+   ao/style       :multi-line
+   ro/column-formatter (fn [_ value]
+                         ;(println value)
+                         ; https://stackoverflow.com/questions/8627902/new-line-in-text-area
+                         (if value
+                           (clojure.string/replace value #"\n" "<br/>")))})
 
 (defattr nm :vimeo-video/name :string
   {ao/identities #{:vimeo-video/uri}})
+
+(defattr transcode :vimeo-video/transcode :string
+  {ao/identities #{:vimeo-video/uri}}
+  ro/column-formatter (fn [_ value]
+                        ;(println value)
+                        (:status value)))
 
 
 (defattr all-videos :vimeo-video/all-videos :ref
@@ -56,7 +67,7 @@
 
 ; WARNING: make sure to add all model attributes here!
 
-(def attributes [uri nm description all-videos])
+(def attributes [uri nm description transcode all-videos])
 ;item-name category description price in-stock all-items])
 
 #?(:clj

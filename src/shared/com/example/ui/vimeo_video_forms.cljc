@@ -35,7 +35,7 @@
   {ro/title            "Vimeo: All Videos"
    ro/source-attribute :vimeo-video/all-videos
    ro/row-pk           vimeo/uri
-   ro/columns          [vimeo/nm vimeo/description]
+   ro/columns          [vimeo/uri vimeo/nm vimeo/description] ;vimeo/transcode]
    ro/run-on-mount?    true
    ro/route            "vimeo-video"})
 
