@@ -12,7 +12,7 @@
     [com.example.ui.session-forms :refer [SessionForm SessionReport CustomTopReport ui-session-list SessionList
                                           SessionListManual]]
     [com.example.ui.youtube-video-forms :refer [YouTubeReportAll YouTubeForm YouTubeReportByPlaylist]]
-    [com.example.ui.youtube-playlist-forms :refer [AllYouTubePlaylists YouTubeVideoReport]]
+    [com.example.ui.youtube-playlist-forms :refer [AllYouTubePlaylists YouTubeVideoReport YouTubePlaylistForm]]
     [com.example.ui.video-tag-forms :refer [VideoTagReport VideoTagForm]]
     [com.example.ui.conference-form :refer [ConferenceReport ConferencePlaylists]]
     [com.example.ui.from-youtube-playlist-forms :refer [FromYouTube-PlaylistReport]]
@@ -49,7 +49,7 @@
                          sales-report/SalesReport InventoryReport
                          sales-report/RealSalesReport
                          SessionReport SessionForm  SessionList SessionListManual
-                         YouTubeReportAll YouTubeForm YouTubeReportByPlaylist
+                         YouTubeReportAll YouTubeForm YouTubeReportByPlaylist YouTubePlaylistForm
                          VideoTagReport VideoTagForm CustomTopReport
                          ConferenceReport ConferencePlaylists
                          FromYouTube-PlaylistReport

@@ -26,7 +26,9 @@
   {fo/id           youtube-playlist/id
    fo/attributes   [
                     youtube-playlist/title
+                    youtube-playlist/year-city-type
                     youtube-playlist/description]
+
    fo/route-prefix "youtube-playlist-edit"
    fo/title        "Edit YouTube Playlist"})
 ;(dom/div :.ui.container.grid
@@ -40,7 +42,8 @@
    ro/source-attribute :youtube-playlist/all-playlists
    ro/row-pk           youtube-playlist/id
    ro/columns          [youtube-playlist/id
-                        youtube-playlist/title]
+                        youtube-playlist/title
+                        youtube-playlist/year-city-type]
 
    ro/row-actions      [{:label  "Edit Playlist"
                          :action (fn [report-instance row]

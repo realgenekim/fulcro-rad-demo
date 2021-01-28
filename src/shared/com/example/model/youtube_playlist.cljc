@@ -34,6 +34,11 @@
                          (or (str value)
                              "-"))})
 
+(defattr year-city-type :youtube-playlist/year-city-type :string
+  {ao/cardinality :one
+   ao/schema      :video
+   ao/identities #{:youtube-playlist/id}})
+
 
 ; it's just a map: you use them in reports and forms, to tell the forms/reports what to display
 
@@ -63,7 +68,7 @@
 
 ; WARNING: make sure to add all model attributes here!
 
-(def attributes [id description title conf-uuid all-playlists])
+(def attributes [id description title conf-uuid year-city-type all-playlists])
 ;item-name category description price in-stock all-items])
 
 #?(:clj

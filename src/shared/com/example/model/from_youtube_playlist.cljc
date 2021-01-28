@@ -40,7 +40,7 @@
                    (println "defattr from-youtube-playlists: " query-params)
                    #?(:clj
                       (let [ytchannel (:main yt/itrev-channels)
-                            retval (->> (yt/fetch-channel-playlists-parsed! ytchannel)
+                            retval (->> (yt/fetch-channel-playlists-parsed!)
                                         ;(take 15)
                                         (map #(clojure.set/rename-keys % {:publishedAt :published-at
                                                                           :itemCount :item-count
