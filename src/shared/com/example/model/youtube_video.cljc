@@ -23,7 +23,7 @@
 (defattr description :youtube-video/description :string
   {ao/cardinality :one
    ao/identities #{:youtube-video/id}
-   ;ao/style       :multi-line
+   ro/column-class "respect-newlines"
    ao/schema      :video})
 
 ;(defattr playlist-id :youtube-video/playlist-id :ref

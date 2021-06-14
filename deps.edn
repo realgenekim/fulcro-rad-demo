@@ -1,7 +1,7 @@
 {:paths   ["src/shared"]
 
  :deps    {com.fulcrologic/fulcro                 {:mvn/version "3.4.8"}
-           com.fulcrologic/fulcro-rad             {:mvn/version "1.0.8"}
+           com.fulcrologic/fulcro-rad             {:mvn/version "1.0.10"}
            com.fulcrologic/fulcro-rad-semantic-ui {:mvn/version "1.0.3"}
            com.fulcrologic/fulcro-i18n            {:mvn/version "0.0.5-alpha"}
            com.wsscode/pathom                     {:mvn/version "2.3.0-alpha17"}
@@ -33,6 +33,7 @@
            gk/datomic                             {:local/root "../google-analytics-video/"}
            gk/youtube                             {:local/root "../google-analytics-video/"}
            gk/vimeo                               {:local/root "../google-analytics-video/"}
+           gk/analytics                           {:local/root "../google-analytics-video/"}
 
            org.clojure/clojurescript              {:mvn/version "1.10.773"}
            org.clojure/clojure                    {:mvn/version "1.10.1"}}
@@ -53,7 +54,7 @@
                        :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.629"}}}
 
            :dev       {:extra-paths ["src/dev" "resources"]
-                       :extra-deps  {thheller/shadow-cljs                {:mvn/version "2.11.8"}
+                       :extra-deps  {thheller/shadow-cljs                {:mvn/version "2.11.17"}
                                      com.fulcrologic/semantic-ui-wrapper {:mvn/version "2.0.1"}
                                      binaryage/devtools                  {:mvn/version "1.0.0"}
                                      org.clojure/tools.namespace         {:mvn/version "1.0.0"}

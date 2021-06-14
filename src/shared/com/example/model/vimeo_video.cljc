@@ -22,12 +22,8 @@
 
 (defattr description :vimeo-video/description :string
   {ao/identities #{:vimeo-video/uri}
-   ao/style       :multi-line
-   ro/column-formatter (fn [_ value]
-                         ;(println value)
-                         ; https://stackoverflow.com/questions/8627902/new-line-in-text-area
-                         (if value
-                           (clojure.string/replace value #"\n" "<br/>")))})
+   ro/column-class "respect-newlines"})
+
 
 (defattr nm :vimeo-video/name :string
   {ao/identities #{:vimeo-video/uri}})

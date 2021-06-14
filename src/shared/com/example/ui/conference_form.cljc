@@ -43,7 +43,7 @@
 
 
 (report/defsc-report ConferenceReport [this props]
-  {ro/title            "Conference Report 22"
+  {ro/title            "Conference Report 23"
    ro/source-attribute :conference/all-conferences
    ro/row-pk           conference/id
    ro/columns          [conference/id conference/nm conference/youtube-playlists]
