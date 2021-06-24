@@ -41,6 +41,7 @@
 (comment
   (clojure.core/require 'development)
   (development/go)
+  ; no difference between these two?
   (restart)
   (development/reset)
 

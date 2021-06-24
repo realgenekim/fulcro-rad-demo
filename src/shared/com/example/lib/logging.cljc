@@ -5,7 +5,8 @@
     #?@(:clj [[clojure.pprint :refer [pprint]]])
     [clojure.string :as str]
     [taoensso.encore :as enc]
-    [taoensso.timbre :as log]))
+    [taoensso.timbre :as log]
+    [taoensso.timbre.appenders.3rd-party.syslog-appender :as syslog]))
 
 #?(:clj
    (defmacro p
@@ -58,6 +59,15 @@
      (let [{:keys [taoensso.timbre/logging-config]} config]
        (log/merge-config! (assoc logging-config
                             :middleware [(pretty-middleware #(with-out-str (pprint %)))]
-                            :output-fn custom-output-fn))
+                            :output-fn custom-output-fn
+                            :appenders
+                            {:syslog-appender
+                             (syslog/syslog-appender
+                               {:ident "my-app"
+                                :syslog-options (byte 0x03)
+                                :facility :log-user})}))
        (log/debug "Configured Timbre with " (p logging-config)))))
+
+
+
 

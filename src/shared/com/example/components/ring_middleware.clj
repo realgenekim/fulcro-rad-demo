@@ -31,6 +31,17 @@
       [:div#app]
       [:script {:src "/js/main/main.js"}]]]))
 
+
+; from Jakub: when we want to handle an oAuth callback, from say, Trello
+;(defn wrap-oauth-req [handler uri]
+;  (fn [request]
+;    (if (= uri (:uri request))
+;      (server/handle-api-request (:transit-params request)
+;        (fn [query]
+;          (parser/parser {:ring/request request}
+;            query)))
+;      (handler request))))
+
 (defn wrap-api [handler uri]
   (fn [request]
     (if (= uri (:uri request))
